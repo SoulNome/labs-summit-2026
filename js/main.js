@@ -33,22 +33,31 @@ setInterval(updateCountdown, 1000);
    SCROLL PROGRESS BAR + NAV
 ───────────────────────────────── */
 const pbar = document.getElementById('pbar');
+let _scrollPending = false;
 window.addEventListener('scroll',()=>{
-  const pct = (window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
-  pbar.style.width = pct+'%';
-  updateJourneyNav();
-});
+  if(_scrollPending) return;
+  _scrollPending = true;
+  requestAnimationFrame(()=>{
+    const pct = (window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+    pbar.style.width = pct+'%';
+    updateJourneyNav();
+    _scrollPending = false;
+  });
+},{passive:true});
 
 /* ─────────────────────────────────
    JOURNEY NAV
 ───────────────────────────────── */
 const jSections = ['hero','days','tickets','speakers','sponsors','videos','galeria','faq'];
 const jDots = document.querySelectorAll('.jn-dot');
+let _jOffsets = null;
+function cacheOffsets(){ _jOffsets = jSections.map(id=>{ const el=document.getElementById(id); return el?el.offsetTop:0; }); }
+window.addEventListener('resize',()=>{ _jOffsets=null; },{passive:true});
 function updateJourneyNav(){
+  if(!_jOffsets) cacheOffsets();
   let current = 'hero';
-  jSections.forEach(id=>{
-    const el = document.getElementById(id);
-    if(el && window.scrollY >= el.offsetTop - 200) current = id;
+  jSections.forEach((id,i)=>{
+    if(_jOffsets[i] && window.scrollY >= _jOffsets[i] - 200) current = id;
   });
   jDots.forEach(d=>{
     d.classList.toggle('active', d.dataset.section === current);
