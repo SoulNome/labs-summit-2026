@@ -815,6 +815,32 @@ body{background:var(--bg)}
   user-select:none;
   transition:transform .72s cubic-bezier(.25,.46,.45,.94),opacity .6s ease,filter .6s ease,box-shadow .6s ease
 }
+/* ── Speaker slides in gallery carousel ── */
+.cflow-speaker-slide { position: relative; }
+.cflow-speaker-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: .75rem 1rem;
+  background: linear-gradient(to top, rgba(10,6,30,.85) 0%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  pointer-events: none;
+}
+.cflow-sp-name {
+  font-size: .95rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .02em;
+}
+.cflow-sp-role {
+  font-size: .72rem;
+  color: #A855F7;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 600;
+}
+
 .cflow-slide[data-pos="0"]{
   transform:translateX(0) rotateY(0deg) scale(1);
   opacity:1;filter:brightness(1);z-index:10;
