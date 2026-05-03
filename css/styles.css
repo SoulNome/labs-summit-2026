@@ -469,7 +469,7 @@ section{padding:6rem 4rem;position:relative}
   box-shadow:0 0 24px rgba(168,85,247,.28);
   overflow:hidden;
 }
-.sp-av img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;}
+.sp-av img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 .sp-name{font-size:.92rem;font-weight:700;color:var(--navy)}
 .sp-role{font-size:.72rem;color:var(--purple);font-weight:600;margin-top:.2rem;letter-spacing:.03em}
 .sp-org{font-size:.7rem;color:var(--gray);margin-top:.15rem}
