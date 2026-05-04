@@ -951,22 +951,21 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   padding:0 1rem;
 }
 .aliado-card{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(168,85,247,.18);
+  background:#fff;
+  border:2px solid rgba(168,85,247,.15);
   border-radius:20px;
   padding:1.8rem 1.5rem 1.2rem;
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:.9rem;
-  transition:transform .28s,box-shadow .28s,border-color .28s,background .28s;
+  transition:transform .28s,box-shadow .28s,border-color .28s;
   width:220px;
 }
 .aliado-card:hover{
   transform:translateY(-6px);
-  background:rgba(168,85,247,.07);
-  border-color:rgba(168,85,247,.45);
-  box-shadow:0 12px 40px rgba(168,85,247,.15);
+  border-color:rgba(168,85,247,.6);
+  box-shadow:0 12px 40px rgba(168,85,247,.2);
 }
 .aliado-logo-wrap{
   width:160px;
@@ -981,23 +980,22 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   height:90px;
   object-fit:contain;
   display:block;
-  filter:brightness(0) invert(1) opacity(.75);
-  transition:filter .28s;
+  transition:transform .28s;
 }
 .aliado-card:hover .aliado-logo-wrap img{
-  filter:brightness(0) invert(1) opacity(1);
+  transform:scale(1.05);
 }
 .aliado-name{
   font-size:.62rem;
-  font-weight:600;
-  letter-spacing:.1em;
+  font-weight:700;
+  letter-spacing:.08em;
   text-transform:uppercase;
-  color:rgba(168,85,247,.6);
+  color:rgba(109,40,217,.7);
   text-align:center;
   line-height:1.4;
 }
 .aliado-card:hover .aliado-name{
-  color:rgba(168,85,247,.9);
+  color:#6d28d9;
 }
 
 /* ── Price urgency design ── */
