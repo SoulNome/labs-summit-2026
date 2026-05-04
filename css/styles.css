@@ -943,24 +943,24 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 /* ── Aliados Oficiales grid ── */
 .aliados-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fit,220px);
+  justify-content:center;
   gap:1.5rem;
   margin:3rem auto 0;
-  max-width:1100px;
+  max-width:1200px;
   padding:0 1rem;
 }
 .aliado-card{
   background:rgba(255,255,255,.04);
   border:1px solid rgba(168,85,247,.18);
   border-radius:20px;
-  padding:2rem 1.5rem 1.2rem;
+  padding:1.8rem 1.5rem 1.2rem;
   display:flex;
   flex-direction:column;
   align-items:center;
-  justify-content:center;
-  gap:1rem;
+  gap:.9rem;
   transition:transform .28s,box-shadow .28s,border-color .28s,background .28s;
-  cursor:default;
+  width:220px;
 }
 .aliado-card:hover{
   transform:translateY(-6px);
@@ -969,32 +969,32 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   box-shadow:0 12px 40px rgba(168,85,247,.15);
 }
 .aliado-logo-wrap{
-  width:100%;
+  width:160px;
   height:90px;
   display:flex;
   align-items:center;
   justify-content:center;
+  flex-shrink:0;
 }
 .aliado-logo-wrap img{
-  max-width:100%;
-  max-height:80px;
-  width:auto;
-  height:auto;
+  width:160px;
+  height:90px;
   object-fit:contain;
   display:block;
   filter:brightness(0) invert(1) opacity(.75);
-  transition:filter .28s,opacity .28s;
+  transition:filter .28s;
 }
 .aliado-card:hover .aliado-logo-wrap img{
   filter:brightness(0) invert(1) opacity(1);
 }
 .aliado-name{
-  font-size:.65rem;
+  font-size:.62rem;
   font-weight:600;
   letter-spacing:.1em;
   text-transform:uppercase;
   color:rgba(168,85,247,.6);
   text-align:center;
+  line-height:1.4;
 }
 .aliado-card:hover .aliado-name{
   color:rgba(168,85,247,.9);
