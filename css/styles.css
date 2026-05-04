@@ -1010,15 +1010,15 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   letter-spacing:-.02em;line-height:1;
 }
 .tc-price-next{
-  font-size:.72rem;font-weight:500;
-  color:rgba(255,255,255,.45);
-  background:rgba(239,68,68,.12);
-  border:1px solid rgba(239,68,68,.25);
+  font-size:.78rem;font-weight:600;
+  color:rgba(255,255,255,.9);
+  background:rgba(239,68,68,.22);
+  border:1px solid rgba(239,68,68,.55);
   border-radius:20px;
-  padding:.3rem .8rem;
+  padding:.35rem 1rem;
   letter-spacing:.01em;
 }
 .tc-price-next strong{
-  color:rgba(239,68,68,.85);
-  font-weight:700;
+  color:#ff6b6b;
+  font-weight:800;
 }
