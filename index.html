@@ -543,9 +543,9 @@
   background:linear-gradient(145deg,rgba(92,45,0,.32),rgba(180,83,9,.18));
 }
 
-/* Speakers section — white bg overrides (section level only, not inside dark cards) */
+/* Speakers section — dark bg */
 #speakers .s-label{color:#A855F7}
-#speakers .s-title{color:#1a1040}
+#speakers .s-title{color:#F0EAFF}
 
 /* ── Mystery locked wild-card speakers ── */
 .sp-card.mystery-locked{
@@ -799,7 +799,7 @@
         <span class="day-atmo-ico">🌟</span>
         <div class="day-atmo-tag">Noche de apertura</div>
         <h4>Día de Gala</h4>
-        <p>El evento que conecta al ecosistema tech de Tuluá y el suroccidente colombiano con los grandes actores del sector privado y público. Una noche que marca el inicio de algo extraordinario.</p>
+        <p>El evento que conecta al ecosistema tech de los mas grandes actores del sector privado y público. Una noche que marca el inicio de algo extraordinario.</p>
         <div class="day-atmo-pill"><span>👔</span> Dresscode · Business Elegant</div>
         <div class="day-atmo-pill" style="margin-top:.6rem"><span>🍽️</span> Ruta Gastronómica · Stands incluidos</div>
         <div class="day-atmo-pill" style="margin-top:.6rem"><span>🍷</span> Cóctel VIP · Welcome drink</div>
@@ -877,6 +877,7 @@
       <div class="tc-name">General</div>
       <div class="tc-days">Día 2 · Conferencias</div>
       <div class="tc-price-wrap"><div class="tc-price">$129.000</div><div class="tc-price-next">↑ Sube a <strong>$149.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
       <ul class="tc-features">
         <li>Acceso Día 2 — Conferencias</li>
         <li>15+ speakers nacionales</li>
@@ -895,6 +896,7 @@
       <div class="tc-name">VIP</div>
       <div class="tc-days">Día 2 · Conferencias</div>
       <div class="tc-price-wrap"><div class="tc-price">$249.000</div><div class="tc-price-next">↑ Sube a <strong>$279.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
       <ul class="tc-features">
         <li>Acceso Día 2 — Conferencias</li>
         <li>Zona preferencial — mejor ubicación</li>
@@ -914,6 +916,7 @@
       <div class="tc-name">Diamante</div>
       <div class="tc-days">Día 2 · Conferencias</div>
       <div class="tc-price-wrap"><div class="tc-price">$497.000</div><div class="tc-price-next">↑ Sube a <strong>$529.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
       <ul class="tc-features">
         <li>Todo lo del VIP</li>
         <li>Acceso prioritario Día 2</li>
@@ -949,122 +952,149 @@
 </section>
 
 <!-- ══ SPEAKERS ══ -->
-<section id="speakers" style="background:var(--white)">
+<section id="speakers">
   <div style="text-align:center">
     <span class="s-label">Voces que inspiran</span>
     <h2 class="s-title reveal">Nuestros <span class="ac">Speakers</span></h2>
   </div>
   <div class="speakers-grid" role="list">
 
-    <!-- ── SPEAKERS CONFIRMADOS ── -->
-    <div class="sp-card reveal" role="listitem">
-      <div class="sp-av">DR</div>
-      <div class="sp-name">David Rojas</div>
-      <div class="sp-role">Ecommerce & Retail</div>
-      <div class="sp-org">Fashion Ecommerce</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.06s" role="listitem">
-      <div class="sp-av"><img src="/speakers/juan_david_carmona.jpg" alt="Juan David Carmona"></div>
-      <div class="sp-name">Juan David Carmona</div>
-      <div class="sp-role">Ponente Confirmado</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.12s" role="listitem">
-      <div class="sp-av"><img src="/speakers/sara_montoya.jpg" alt="Sara Montoya"></div>
-      <div class="sp-name">Sara Montoya</div>
-      <div class="sp-role">Ponente Confirmada</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.18s" role="listitem">
-      <div class="sp-av">FV</div>
-      <div class="sp-name">Felipe Vargas</div>
-      <div class="sp-role">Ponente Confirmado</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.24s" role="listitem">
-      <div class="sp-av">SS</div>
-      <div class="sp-name">Santiago Sanchez</div>
-      <div class="sp-role">Ponente Confirmado</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.30s" role="listitem">
-      <div class="sp-av">JA</div>
-      <div class="sp-name">Jose Aguirre</div>
-      <div class="sp-role">Ponente Confirmado</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card reveal" style="transition-delay:.36s" role="listitem">
-      <div class="sp-av">LA</div>
-      <div class="sp-name">Laura Aguirre</div>
-      <div class="sp-role">Ponente Confirmada</div>
-      <div class="sp-org">Labs Summit 2026</div>
-    </div>
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.42s" role="listitem" tabindex="0" aria-label="Speaker no revelado">
-      <div class="sp-av-sil">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none"><circle cx="24" cy="14" r="8.5" fill="rgba(168,85,247,0.2)"/><path d="M3 46Q3 28 24 28Q45 28 45 46" fill="rgba(168,85,247,0.2)"/></svg>
-        <div class="sil-lock-badge">🔒</div>
+    <!-- ── SPEAKERS CONFIRMADOS (flip card) ── -->
+
+    <!-- Juan David Carmona -->
+    <div class="sp-card featured reveal" role="listitem">
+      <div class="sp-inner">
+        <div class="sp-front">
+          <img class="sp-bg" src="/speakers/Juan David Carmona.png" alt="Juan David Carmona">
+          <div class="sp-gradient"></div>
+          <div class="sp-tint"></div>
+          <div class="sp-arrow">↗</div>
+          <div class="sp-info">
+            <span class="sp-logo-label">Labs Summit</span>
+            <div class="sp-name">Juan David Carmona</div>
+            <div class="sp-role">Ponente Confirmado</div>
+            <span class="sp-badge">18–20 Sep · 2026</span>
+          </div>
+        </div>
+        <div class="sp-back">
+          <div>
+            <div class="sp-back-tag">Ponente Confirmado</div>
+            <div class="sp-back-name">Juan David Carmona</div>
+            <div class="sp-back-role">Labs Summit 2026</div>
+          </div>
+          <p class="sp-back-bio">juan david : Cofundador de @grupoeffi, fundador de la @feriaeffix y referente digital colombiano que ha construido una comunidad sólida desde la autenticidad, conectando con millones a través de historias reales, humor y experiencias de vida..</p>
+          <div class="sp-back-topics">
+            <span>Ecommerce</span>
+            <span>IA Aplicada</span>
+            <span>Escala Digital</span>
+          </div>
+          <div class="sp-back-close">↺ Toca para volver</div>
+        </div>
       </div>
-      <div class="sp-sil-tag">No revelado</div>
-      <div class="sp-sil-hint">Próximamente</div>
     </div>
 
-    <!-- ── WILD CARDS — no revelados ── -->
-
-    <!-- Masculino 1 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.42s" role="listitem" tabindex="0" aria-label="Speaker no revelado">
-      <div class="sp-av-sil">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none"><circle cx="24" cy="14" r="8.5" fill="rgba(168,85,247,0.2)"/><path d="M3 46Q3 28 24 28Q45 28 45 46" fill="rgba(168,85,247,0.2)"/></svg>
-        <div class="sil-lock-badge">🔒</div>
+    <!-- Sara Montoya -->
+    <div class="sp-card featured reveal" style="transition-delay:.08s" role="listitem">
+      <div class="sp-inner">
+        <div class="sp-front">
+          <img class="sp-bg" src="/speakers/SaraMontoya.png" alt="Sara Montoya">
+          <div class="sp-gradient"></div>
+          <div class="sp-tint"></div>
+          <div class="sp-arrow">↗</div>
+          <div class="sp-info">
+            <span class="sp-logo-label">Labs Summit</span>
+            <div class="sp-name">Sara Montoya</div>
+            <div class="sp-role">Ponente Confirmada</div>
+            <span class="sp-badge">18–20 Sep · 2026</span>
+          </div>
+        </div>
+        <div class="sp-back">
+          <div>
+            <div class="sp-back-tag">Ponente Confirmada</div>
+            <div class="sp-back-name">Sara Montoya</div>
+            <div class="sp-back-role">Labs Summit 2026</div>
+          </div>
+          <p class="sp-back-bio">Sara: Cofundadora del @grupoeffi , fundadora de la @feriaeffix y referente digital que ha construido una comunidad desde la autenticidad, compartiendo su estilo de vida, experiencias y una visión cercana de lo que significa crecer en el mundo digital.</p>
+          <div class="sp-back-topics">
+            <span>Marketing Digital</span>
+            <span>Marca Personal</span>
+            <span>Comunidad</span>
+          </div>
+          <div class="sp-back-close">↺ Toca para volver</div>
+        </div>
       </div>
-      <div class="sp-sil-tag">No revelado</div>
-      <div class="sp-sil-name">Ponente ???</div>
-      <div class="sp-sil-hint">Retail · Escala Nacional</div>
     </div>
 
-    <!-- Masculino 2 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.48s" role="listitem" tabindex="0" aria-label="Speaker no revelado">
-      <div class="sp-av-sil">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none"><circle cx="24" cy="14" r="8.5" fill="rgba(168,85,247,0.2)"/><path d="M3 46Q3 28 24 28Q45 28 45 46" fill="rgba(168,85,247,0.2)"/></svg>
-        <div class="sil-lock-badge">🔒</div>
+    <!-- Jose Aguirre -->
+    <div class="sp-card featured reveal" style="transition-delay:.16s" role="listitem">
+      <div class="sp-inner">
+        <div class="sp-front">
+          <img class="sp-bg" src="/speakers/JoseAguirre.png" alt="Jose Aguirre">
+          <div class="sp-gradient"></div>
+          <div class="sp-tint"></div>
+          <div class="sp-arrow">↗</div>
+          <div class="sp-info">
+            <span class="sp-logo-label">Labs Summit</span>
+            <div class="sp-name">Jose Aguirre</div>
+            <div class="sp-role">Ponente Confirmado</div>
+            <span class="sp-badge">18–20 Sep · 2026</span>
+          </div>
+        </div>
+        <div class="sp-back">
+          <div>
+            <div class="sp-back-tag">Ponente Confirmado</div>
+            <div class="sp-back-name">Jose Aguirre</div>
+            <div class="sp-back-role">Labs Summit 2026</div>
+          </div>
+          <p class="sp-back-bio">jose: Fundador de @technolabs, @labssummit y @mastercommerce emprendedor digital y creador de contenido que ha inspirado a miles de personas a creer en el poder de empezar desde cero y construir oportunidades reales a través del mundo digital.</p>
+          <div class="sp-back-topics">
+            <span>Ventas Digitales</span>
+            <span>Automatización</span>
+            <span>IA Comercial</span>
+          </div>
+          <div class="sp-back-close">↺ Toca para volver</div>
+        </div>
       </div>
-      <div class="sp-sil-tag">No revelado</div>
-      <div class="sp-sil-name">Ponente ???</div>
-      <div class="sp-sil-hint">Venture Capital · Tech</div>
     </div>
 
-    <!-- Masculino 3 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.54s" role="listitem" tabindex="0" aria-label="Speaker no revelado">
-      <div class="sp-av-sil">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none"><circle cx="24" cy="14" r="8.5" fill="rgba(168,85,247,0.2)"/><path d="M3 46Q3 28 24 28Q45 28 45 46" fill="rgba(168,85,247,0.2)"/></svg>
-        <div class="sil-lock-badge">🔒</div>
+  </div><!-- /speakers-grid -->
+
+  <!-- Mini speaker cards -->
+  <div class="speakers-mini-grid" role="list">
+
+    <!-- Laura Aguirre -->
+    <div class="sp-mini reveal" role="listitem">
+      <div class="sp-mini-av"><img src="/speakers/LauraAguirre.png" alt="Laura Aguirre"></div>
+      <div>
+        <div class="sp-mini-name">Laura Aguirre</div>
+        <div class="sp-mini-role">Ponente Confirmada</div>
+        <div class="sp-mini-tags"><span>Emprendimiento</span><span>Ecosistema Tech</span></div>
       </div>
-      <div class="sp-sil-tag">No revelado</div>
-      <div class="sp-sil-name">Ponente ???</div>
-      <div class="sp-sil-hint">Media & Contenido · CO</div>
     </div>
 
-    <!-- Femenino 1 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.60s" role="listitem" tabindex="0" aria-label="Speaker no revelada">
-      <div class="sp-av-sil" style="border-color:rgba(232,121,249,.25);background:rgba(232,121,249,.07)">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none"><circle cx="24" cy="14" r="8.5" fill="rgba(232,121,249,0.22)"/><path d="M12 46Q12 28 24 28Q36 28 36 46" fill="rgba(232,121,249,0.22)"/></svg>
-        <div class="sil-lock-badge" style="border-color:rgba(232,121,249,.4)">🔒</div>
-      </div>
-      <div class="sp-sil-tag" style="color:rgba(232,121,249,.5);border-color:rgba(232,121,249,.18)">No revelada</div>
-      <div class="sp-sil-name">Ponente ???</div>
-      <div class="sp-sil-hint" style="color:rgba(232,121,249,.55);border-color:rgba(232,121,249,.18)">Emprendimiento · Valle del Cauca</div>
+    <div class="sp-mini reveal" style="transition-delay:.06s" role="listitem">
+      <div class="sp-mini-lock">🔒</div>
+      <div><div class="sp-mini-name">No revelado</div><div class="sp-mini-role">Retail · Escala Nacional</div></div>
     </div>
 
-    <!-- Desconocido total -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.66s" role="listitem" tabindex="0" aria-label="Gran sorpresa">
-      <div class="sp-av-sil" style="border-style:dashed">
-        <svg viewBox="0 0 48 48" width="42" height="42" fill="none">
-          <circle cx="24" cy="24" r="19" stroke="rgba(168,85,247,0.25)" stroke-width="1.5" stroke-dasharray="4 3"/>
-          <text x="24" y="32" text-anchor="middle" fill="rgba(168,85,247,0.45)" font-size="22" font-family="Inter,sans-serif" font-weight="700">?</text>
-        </svg>
-      </div>
-      <div class="sp-sil-tag">???</div>
-      <div class="sp-sil-name">Gran Sorpresa</div>
-      <div class="sp-sil-hint">Perfil Internacional · TBA</div>
+    <div class="sp-mini reveal" style="transition-delay:.12s" role="listitem">
+      <div class="sp-mini-lock">🔒</div>
+      <div><div class="sp-mini-name">No revelado</div><div class="sp-mini-role">Venture Capital · Tech</div></div>
+    </div>
+
+    <div class="sp-mini reveal" style="transition-delay:.18s" role="listitem">
+      <div class="sp-mini-lock">🔒</div>
+      <div><div class="sp-mini-name">No revelado</div><div class="sp-mini-role">Media & Contenido · CO</div></div>
+    </div>
+
+    <div class="sp-mini reveal" style="transition-delay:.24s" role="listitem">
+      <div class="sp-mini-lock" style="border-color:rgba(232,121,249,.3)">🔒</div>
+      <div><div class="sp-mini-name">No revelada</div><div class="sp-mini-role">Emprendimiento · Valle del Cauca</div></div>
+    </div>
+
+    <div class="sp-mini reveal" style="transition-delay:.30s" role="listitem">
+      <div class="sp-mini-lock" style="border-style:dashed;font-size:1.5rem">?</div>
+      <div><div class="sp-mini-name">???</div><div class="sp-mini-role">Perfil Internacional · TBA</div></div>
     </div>
 
   </div>
@@ -1088,216 +1118,199 @@
     🌟 A mayor inversión, mayor visibilidad — 50.000+ personas en alcance digital · 3.500 clientes potenciales en vivo
   </div>
 
-  <div class="aliados-grid" role="list">
-    <div class="aliado-card reveal" role="listitem">
-      <div class="aliado-logo-wrap"><img src="/aliados/acaldiatulua.jpg" alt="Alcaldía de Tuluá"></div>
-      <div class="aliado-name">Alcaldía de Tuluá</div>
-    </div>
-    <div class="aliado-card reveal" role="listitem" style="transition-delay:.08s">
-      <div class="aliado-logo-wrap"><img src="/aliados/camaradecomerciotulua.jpg" alt="Cámara de Comercio de Tuluá"></div>
-      <div class="aliado-name">Cámara de Comercio</div>
-    </div>
-    <div class="aliado-card reveal" role="listitem" style="transition-delay:.16s">
-      <div class="aliado-logo-wrap"><img src="/aliados/feriaeffix.jpg" alt="Feria Effix"></div>
-      <div class="aliado-name">Feria Effix</div>
-    </div>
-    <div class="aliado-card reveal" role="listitem" style="transition-delay:.24s">
-      <div class="aliado-logo-wrap"><img src="/aliados/grupoeffi.jpg" alt="Grupo Effi"></div>
-      <div class="aliado-name">Grupo Effi</div>
-    </div>
-    <div class="aliado-card reveal" role="listitem" style="transition-delay:.32s">
-      <div class="aliado-logo-wrap"><img src="/aliados/mastercommerce.jpg" alt="Master Commerce"></div>
-      <div class="aliado-name">Master Commerce</div>
+  <!-- ── TICKER ALIADOS INSTITUCIONALES ── -->
+  <div class="ticker-section">
+    <p class="ticker-eyebrow">Aliados Institucionales</p>
+    <div class="ticker-outer" aria-label="Aliados institucionales del evento">
+      <div class="ticker-track">
+
+        <!-- ─ SET 1 ─ -->
+        <div class="ticker-card">
+          <img src="/aliados/acaldiatulua.jpg" alt="Alcaldía de Tuluá">
+          <div class="ticker-brand">Alcaldía de Tuluá</div>
+        </div>
+
+        <div class="ticker-card">
+          <img src="/aliados/camaradecomerciotulua.jpg" alt="Cámara de Comercio de Tuluá">
+          <div class="ticker-brand">Cámara de Comercio</div>
+        </div>
+
+        <div class="ticker-card">
+          <img src="/aliados/logo feria effix (2)(1).png" alt="Feria Effix">
+          <div class="ticker-brand">Feria Effix</div>
+        </div>
+
+        <div class="ticker-card">
+          <img src="/aliados/GrupoEffi2.png" alt="Grupo Effi">
+          <div class="ticker-brand">Grupo Effi</div>
+        </div>
+
+        <div class="ticker-card">
+          <img src="/aliados/mastercommerce2.png" alt="Master Commerce">
+          <div class="ticker-brand">Master Commerce</div>
+        </div>
+
+        <div class="ticker-card">
+          <img src="/aliados/LOGO TECHNOLABS.png" alt="Technolabs">
+          <div class="ticker-brand">Technolabs</div>
+        </div>
+
+        <!-- ─ SET 2 (duplicado para loop perfecto) ─ -->
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/acaldiatulua.jpg" alt="">
+          <div class="ticker-brand">Alcaldía de Tuluá</div>
+        </div>
+
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/camaradecomerciotulua.jpg" alt="">
+          <div class="ticker-brand">Cámara de Comercio</div>
+        </div>
+
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/logo feria effix (2)(1).png" alt="">
+          <div class="ticker-brand">Feria Effix</div>
+        </div>
+
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/grupoeffi.jpg" alt="">
+          <div class="ticker-brand">Grupo Effi</div>
+        </div>
+
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/LOGO - MASTER COMMERCE - AJUSTE_2.png" alt="">
+          <div class="ticker-brand">Master Commerce</div>
+        </div>
+
+        <div class="ticker-card" aria-hidden="true">
+          <img src="/aliados/LOGO TECHNOLABS.png" alt="">
+          <div class="ticker-brand">Technolabs</div>
+        </div>
+
+      </div>
     </div>
   </div>
 
-  <!-- Paquetes de patrocinio -->
-  <div style="margin-top:4rem">
+  <!-- Paquetes de patrocinio — nuevo diseño compacto -->
+  <div class="pt-section">
     <div style="text-align:center;margin-bottom:2.5rem">
       <span class="s-label">Paquetes de Patrocinio</span>
-      <h3 class="s-title reveal" style="font-size:clamp(1.6rem,4vw,2.8rem)">Haz parte del evento más <span class="ac">grande</span> de Tuluá y el suroccidente</h3>
-      <p style="color:var(--gray);max-width:600px;margin:.8rem auto 0;font-size:.9rem">Respaldo para tu marca como SPONSOR OFICIAL en la categoría de Emprendimiento Digital más grande en Tuluá y el Valle del Cauca.</p>
+      <h3 class="s-title reveal" style="font-size:clamp(1.6rem,4vw,2.8rem)">Haz parte del evento más <span class="ac">grande</span> del Valle Del Cauca <h3>
+      <p style="color:var(--gray);max-width:600px;margin:.8rem auto 0;font-size:.95rem">Respaldo para tu marca como SPONSOR OFICIAL en la categoría de Emprendimiento Digital más grande en Tuluá y el Valle del Cauca.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1200px;margin:0 auto">
+    <div class="pt-list">
 
-      <!-- OFICIAL -->
-      <div class="sp-tier-card sp-tier-oficial">
-        <div style="position:absolute;top:0;right:0;background:linear-gradient(135deg,#6d28d9,#A855F7);font-size:.6rem;font-weight:800;letter-spacing:.15em;color:#fff;padding:.35rem .9rem;border-radius:0 20px 0 12px">★ TOP</div>
-        <div style="font-size:.65rem;font-weight:800;letter-spacing:.3em;color:#A855F7;text-transform:uppercase;margin-bottom:.5rem">Oficial</div>
-        <div style="font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:.1rem">$79M <span style="font-size:.95rem;font-weight:500;color:rgba(255,255,255,.45)">+IVA</span></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:1.2rem">Stand 16 M² · Exclusividad por categoría</div>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#A855F7;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(168,85,247,.2)">Stand &amp; Espacio</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Stand 16 M² — ubicación estratégica</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Zona de alimentos y espacios comerciales</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Zona de aparcaderos (2 vehículos)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Escarapela Sponsor + boletería</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Photo booth con branding (logo sponsor)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Gigantografía</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#A855F7;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(168,85,247,.2)">Visibilidad de Marca</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Logo dominante escenario principal y pabellón 2</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Logo en pantallas durante el evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Material publicitario (abanico)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Logo zona lounge y zona descenso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Bolsas + regalos oficiales del evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Material impreso (a solicitud)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Logo web + brochure Ruta Gastronómica</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Mención en tarima (6 veces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Visualización en tarima (+50 voces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Video comercial 45 seg en pantallas</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Podcast post evento + acceso a speakers</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Base de datos asistentes al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Ponencia en el evento (20 min)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Participación en noche de gala</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#A855F7;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(168,85,247,.2)">Comunicación &amp; Alcance</div>
-        <ul style="list-style:none;padding:0;margin:0 0 1rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Mención en TODOS los anuncios y comunicaciones</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Exclusividad por categoría</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Publicaciones en redes sociales</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Exposición previa y posterior al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Activaciones en comunidad post-evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#A855F7;flex-shrink:0">✓</span> Interacción directa con +3.500 asistentes</li>
-        </ul>
-        <div style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);border-radius:10px;padding:.65rem 1rem;margin-bottom:1.2rem;font-size:.78rem;color:#C9AEFF">🎟️ <strong>3 Diamante Black + 35 Generales</strong></div>
-        <button class="btn-pri" style="width:100%;font-size:.78rem" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Solicitar propuesta →</button>
-      </div>
+      <!-- QUIERO SER ALIADO -->
+      <button class="pt-card pt-cta pt-cta-aliado reveal" onclick="startAliado()" aria-label="Quiero ser aliado">
+        <div class="pt-left">
+          <div class="pt-name">QUIERO SER ALIADO</div>
+          <div class="pt-desc">Tu marca presente en Labs Summit 2026</div>
+        </div>
+        <div class="pt-arrow">↗</div>
+      </button>
 
-      <!-- GOLD -->
-      <div class="sp-tier-card sp-tier-gold">
-        <div style="font-size:.65rem;font-weight:800;letter-spacing:.3em;color:#F59E0B;text-transform:uppercase;margin-bottom:.5rem">Gold</div>
-        <div style="font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:.1rem">$49M <span style="font-size:.95rem;font-weight:500;color:rgba(255,255,255,.45)">+IVA</span></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:1.2rem">Stand 8 M² · Ubicación estratégica</div>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#F59E0B;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(245,158,11,.2)">Stand &amp; Espacio</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Stand 8 M² — ubicación estratégica</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Zona de parqueaderos, ingreso y boletería</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Gigantografía</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Branding en 2 zonas específicas</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#F59E0B;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(245,158,11,.2)">Visibilidad de Marca</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Logo destacado en escenario principal</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Logo en pantallas (2 pabellones)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Logo zona lounge y zona descenso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Bolsas + regalos oficiales del evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Material impreso (a solicitud)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Logo web + brochure Ruta Gastronómica</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Mención en tarima (3 veces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Visualización en tarima (+30 voces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Logo pantalla pabellón 2</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Acceso a zonas con speakers</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Base de datos asistentes al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Participación en noche de gala</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#F59E0B;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(245,158,11,.2)">Comunicación &amp; Alcance</div>
-        <ul style="list-style:none;padding:0;margin:0 0 1rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Mención en algunos anuncios y comunicaciones</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Publicaciones en redes sociales</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Exposición previa y posterior al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Interacción directa con +3.500 asistentes</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#F59E0B;flex-shrink:0">✓</span> Acceso a charla privada con speakers</li>
-        </ul>
-        <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:.65rem 1rem;margin-bottom:1.2rem;font-size:.78rem;color:#FCD34D">🎟️ <strong>4 Diamante + 30 Generales</strong></div>
-        <button style="width:100%;padding:.8rem;border:1.5px solid #F59E0B;background:transparent;color:#F59E0B;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(245,158,11,.15)'" onmouseout="this.style.background='transparent'" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Solicitar propuesta →</button>
-      </div>
+      <!-- COMPRAR TICKETS -->
+      <button class="pt-card pt-cta pt-cta-tickets reveal" style="transition-delay:.08s" onclick="window.open('https://TU-TICKETERA.com','_blank')" aria-label="Comprar tickets">
+        <div class="pt-left">
+          <div class="pt-name">COMPRAR TICKETS <span class="pt-top">★ DISPONIBLE</span></div>
+          <div class="pt-desc">Accede al evento de emprendimiento más grande del suroccidente</div>
+        </div>
+        <div class="pt-arrow">↗</div>
+      </button>
 
-      <!-- SILVER -->
-      <div class="sp-tier-card sp-tier-silver">
-        <div style="font-size:.65rem;font-weight:800;letter-spacing:.3em;color:#94A3B8;text-transform:uppercase;margin-bottom:.5rem">Silver</div>
-        <div style="font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:.1rem">$20M <span style="font-size:.95rem;font-weight:500;color:rgba(255,255,255,.45)">+IVA</span></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:1.2rem">Stand 6 M² · Zona parqueaderos</div>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#94A3B8;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(148,163,184,.2)">Stand &amp; Espacio</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Stand 6 M²</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Zona de parqueaderos, ingreso y boletería</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Gigantografía</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Branding en 2 zonas específicas</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#94A3B8;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(148,163,184,.2)">Visibilidad de Marca</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Logo destacado pantallas (salón principal)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Logo zona lounge y zona descenso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Bolsas del evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Material impreso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Logo web + brochure Ruta Gastronómica</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Acceso a zonas con speakers</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Mención en tarima (3 veces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Visualización en tarima (+30 voces)</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Logo pantalla pabellón 2</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Base de datos asistentes al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Participación en noche de gala</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#94A3B8;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(148,163,184,.2)">Comunicación &amp; Alcance</div>
-        <ul style="list-style:none;padding:0;margin:0 0 1rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Mención en algunos anuncios y comunicaciones</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Publicaciones en redes sociales</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Exposición previa y posterior al evento</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#94A3B8;flex-shrink:0">✓</span> Interacción directa con +3.500 asistentes</li>
-        </ul>
-        <div style="background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.25);border-radius:10px;padding:.65rem 1rem;margin-bottom:1.2rem;font-size:.78rem;color:#CBD5E1">🎟️ <strong>5 VIP + 15 Generales</strong></div>
-        <button style="width:100%;padding:.8rem;border:1.5px solid #94A3B8;background:transparent;color:#94A3B8;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(148,163,184,.12)'" onmouseout="this.style.background='transparent'" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Solicitar propuesta →</button>
-      </div>
-
-      <!-- BRONZE -->
-      <div class="sp-tier-card sp-tier-bronze">
-        <div style="font-size:.65rem;font-weight:800;letter-spacing:.3em;color:#D97706;text-transform:uppercase;margin-bottom:.5rem">Bronze</div>
-        <div style="font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:.1rem">$10M <span style="font-size:.95rem;font-weight:500;color:rgba(255,255,255,.45)">+IVA</span></div>
-        <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-bottom:1.2rem">Stand 4 M² · Branding en 1 zona</div>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#D97706;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(180,83,9,.2)">Stand &amp; Espacio</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Stand 4 M²</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Zona de parqueaderos, ingreso y boletería</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Branding en 1 zona específica</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#D97706;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(180,83,9,.2)">Visibilidad de Marca</div>
-        <ul style="list-style:none;padding:0;margin:0 0 .9rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Logo en pantalla durante pausas</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Logo zona lounge y zona descenso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Material impreso</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Logo web + brochure Ruta Gastronómica</li>
-        </ul>
-        <div style="font-size:.58rem;font-weight:700;letter-spacing:.15em;color:#D97706;text-transform:uppercase;margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid rgba(180,83,9,.2)">Comunicación &amp; Alcance</div>
-        <ul style="list-style:none;padding:0;margin:0 0 1rem;display:flex;flex-direction:column;gap:.38rem">
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Mención en algunos anuncios</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Publicaciones en redes sociales</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Interacción directa con +3.500 asistentes</li>
-          <li style="font-size:.78rem;color:rgba(255,255,255,.7);display:flex;gap:.5rem"><span style="color:#D97706;flex-shrink:0">✓</span> Posibilidad de material promocional</li>
-        </ul>
-        <div style="background:rgba(180,83,9,.08);border:1px solid rgba(180,83,9,.25);border-radius:10px;padding:.65rem 1rem;margin-bottom:1.2rem;font-size:.78rem;color:#FCD34D">🎟️ <strong>1 VIP + 5 Generales</strong></div>
-        <button style="width:100%;padding:.8rem;border:1.5px solid #D97706;background:transparent;color:#D97706;font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;border-radius:10px;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(180,83,9,.12)'" onmouseout="this.style.background='transparent'" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Solicitar propuesta →</button>
-      </div>
+      <!-- QUIERO UN STAND -->
+      <button class="pt-card pt-cta pt-cta-stand reveal" style="transition-delay:.16s" onclick="startStand()" aria-label="Quiero un stand">
+        <div class="pt-left">
+          <div class="pt-name">QUIERO UN STAND</div>
+          <div class="pt-desc">Exhibe tu empresa frente a +3.500 clientes potenciales</div>
+        </div>
+        <div class="pt-arrow">↗</div>
+      </button>
 
     </div>
-  </div>
-
-  <!-- Stands -->
-  <div class="stands-section reveal">
-    <div class="stands-info">
-      <h4>🏪 Reserva tu Stand — Día 2 · Conferencias</h4>
-      <p>Exhibe tu empresa o startup frente a más de 3.500 clientes potenciales. Stands en la zona de mayor tráfico y conversación comercial durante el día de conferencias. Posicionamiento, reconocimiento de marca y exposición ante medios de comunicación. Cupos limitados.</p>
-      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem">
-        <span style="font-size:.72rem;font-weight:600;color:var(--purple);background:rgba(168,85,247,.1);padding:.25rem .7rem;border-radius:100px;border:1px solid rgba(168,85,247,.2)">📐 2×2 metros</span>
-        <span style="font-size:.72rem;font-weight:600;color:var(--purple);background:rgba(168,85,247,.1);padding:.25rem .7rem;border-radius:100px;border:1px solid rgba(168,85,247,.2)">🎯 3.500+ clientes potenciales</span>
-        <span style="font-size:.72rem;font-weight:600;color:var(--purple);background:rgba(168,85,247,.1);padding:.25rem .7rem;border-radius:100px;border:1px solid rgba(168,85,247,.2)">📺 Cubrimiento por medios locales</span>
-        <span style="font-size:.72rem;font-weight:600;color:var(--purple);background:rgba(168,85,247,.1);padding:.25rem .7rem;border-radius:100px;border:1px solid rgba(168,85,247,.2)">✅ Acceso a todas las conferencias</span>
-      </div>
-    </div>
-    <div class="stands-cta">
-      <div class="stands-price" style="font-size:1.1rem;letter-spacing:.04em">Consultar precio</div>
-      <div style="font-size:.7rem;color:var(--gray)">cupos muy limitados</div>
-      <button class="btn-stands" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Solicitar información →</button>
-    </div>
-  </div>
-
-  <div class="sponsor-cta-section">
-    <p>¿Quieres que tu marca esté en Labs Summit 2026? Escríbenos y te enviamos el portafolio de patrocinio completo.</p>
-    <button class="btn-sponsor" onclick="document.getElementById('register').scrollIntoView({behavior:'smooth'})">Ser Sponsor →</button>
   </div>
 </section>
+
+<!-- ══ MODAL ALIADO — WIZARD 4 PASOS ══ -->
+<div id="aliado-modal" role="dialog" aria-modal="true" aria-labelledby="aliado-modal-title" style="display:none">
+  <div class="ali-backdrop" onclick="closeAliado()"></div>
+  <div class="ali-box">
+
+    <button class="ali-close" onclick="closeAliado()" aria-label="Cerrar">✕</button>
+
+    <div class="ali-prog-track" aria-hidden="true">
+      <div class="ali-prog-bar" id="ali-prog"></div>
+    </div>
+
+    <div class="ali-step-counter" id="ali-counter">Paso 1 de 4</div>
+
+    <div class="ali-steps" id="ali-steps">
+
+      <!-- PASO 1 -->
+      <div class="ali-step" id="ali-s1">
+        <h2 class="ali-q" id="aliado-modal-title">¿Qué tipo de empresa eres?</h2>
+        <div class="quiz-options-wrap">
+          <button class="quiz-option" data-step="1" data-val="Startup / Emprendimiento" onclick="selectOpt(this)">🚀 Startup / Emprendimiento</button>
+          <button class="quiz-option" data-step="1" data-val="Empresa establecida (1–50 empleados)" onclick="selectOpt(this)">🏢 Empresa establecida</button>
+          <button class="quiz-option" data-step="1" data-val="Empresa mediana/grande (+50 empleados)" onclick="selectOpt(this)">🏛️ Empresa grande</button>
+          <button class="quiz-option" data-step="1" data-val="Marca personal / Freelance" onclick="selectOpt(this)">👤 Marca personal</button>
+        </div>
+      </div>
+
+      <!-- PASO 2 -->
+      <div class="ali-step" id="ali-s2" style="display:none">
+        <h2 class="ali-q">¿Cuál es tu objetivo principal?</h2>
+        <div class="quiz-options-wrap">
+          <button class="quiz-option" data-step="2" data-val="Conseguir clientes directos" onclick="selectOpt(this)">🎯 Clientes directos</button>
+          <button class="quiz-option" data-step="2" data-val="Posicionamiento y reconocimiento de marca" onclick="selectOpt(this)">📣 Posicionamiento de marca</button>
+          <button class="quiz-option" data-step="2" data-val="Conectar con otros empresarios" onclick="selectOpt(this)">🤝 Conectar empresarios</button>
+          <button class="quiz-option" data-step="2" data-val="Lanzar un producto o servicio" onclick="selectOpt(this)">🛍️ Lanzar producto</button>
+        </div>
+      </div>
+
+      <!-- PASO 3 -->
+      <div class="ali-step" id="ali-s3" style="display:none">
+        <h2 class="ali-q">¿Cuál es tu presupuesto aproximado?</h2>
+        <div class="quiz-options-wrap">
+          <button class="quiz-option" data-step="3" data-val="Menos de $5M" onclick="selectOpt(this)">💰 Menos de $5M</button>
+          <button class="quiz-option" data-step="3" data-val="Entre $5M y $20M" onclick="selectOpt(this)">💰💰 Entre $5M y $20M</button>
+          <button class="quiz-option" data-step="3" data-val="Entre $20M y $50M" onclick="selectOpt(this)">💰💰💰 Entre $20M y $50M</button>
+          <button class="quiz-option" data-step="3" data-val="Más de $50M" onclick="selectOpt(this)">💎 Más de $50M</button>
+        </div>
+      </div>
+
+      <!-- PASO 4 -->
+      <div class="ali-step" id="ali-s4" style="display:none">
+        <h2 class="ali-q">¿Cuándo puedes decidir?</h2>
+        <div class="quiz-options-wrap">
+          <button class="quiz-option" data-step="4" data-val="Esta semana" onclick="selectOpt(this)">⚡ Esta semana</button>
+          <button class="quiz-option" data-step="4" data-val="En los próximos 15 días" onclick="selectOpt(this)">📅 Próximos 15 días</button>
+          <button class="quiz-option" data-step="4" data-val="En el próximo mes" onclick="selectOpt(this)">🗓️ Próximo mes</button>
+          <button class="quiz-option" data-step="4" data-val="Solo estoy explorando" onclick="selectOpt(this)">👀 Solo explorando</button>
+        </div>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="ali-step" id="ali-result" style="display:none">
+        <div class="ali-result-icon">✅</div>
+        <h2 class="ali-q" style="text-align:center">¡Perfecto! Tenemos algo para ti</h2>
+        <div class="ali-result-msg" id="ali-result-msg"></div>
+        <button class="ali-wa-btn" id="ali-wa-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Hablar con el equipo →
+        </button>
+        <button class="ali-restart" onclick="restartAliado()">↺ Volver a empezar</button>
+      </div>
+
+    </div>
+
+    <div class="ali-nav" id="ali-nav">
+      <button class="ali-back" id="ali-back" onclick="aliBack()" style="visibility:hidden">← Atrás</button>
+      <button class="ali-next" id="ali-next" onclick="aliNext()" disabled>Siguiente →</button>
+    </div>
+
+  </div>
+</div>
 
 <!-- ══ VIDEOS ══ (documentada temporalmente) -->
 <section id="videos" style="display:none">
@@ -1352,16 +1365,7 @@
       <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_DSC2361.jpg" alt="Labs Summit experiencia 5" loading="lazy"></div>
       <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_DSC2462.jpg" alt="Labs Summit experiencia 6" loading="lazy"></div>
       <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_T1A6082.jpeg" alt="Labs Summit experiencia 7" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_T1A6157.jpg" alt="Labs Summit experiencia 8" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_T1A6199.jpg" alt="Labs Summit experiencia 9" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/_T1A6542.jpg" alt="Labs Summit experiencia 10" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/_DSC2914.jpg" alt="Labs Summit experiencia 11" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/IMG_4264.jpg" alt="Labs Summit experiencia 12" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/IMG_4294.jpg" alt="Labs Summit experiencia 13" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/IMG_4300.jpg" alt="Labs Summit experiencia 14" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/IMG_4401.jpg" alt="Labs Summit experiencia 15" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Fotos_Web/IMG_4492.jpg" alt="Labs Summit experiencia 16" loading="lazy"></div>
-      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/KS-LABSSUMIT-7158.jpg" alt="Labs Summit experiencia 17" loading="lazy"></div>
+      <div class="cflow-slide"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/_DSC2914.jpg" alt="Labs Summit experiencia 8" loading="lazy"></div>
     </div>
   </div>
   <div class="cflow-footer">
@@ -1399,10 +1403,7 @@
       <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Cómo puedo ser sponsor o exponer un stand?<span class="faq-arrow">+</span></button>
       <div class="faq-a">Los stands son exclusivos del Día 2 (Conferencias). Tenemos paquetes de patrocinio (Oro, Plata, Bronce) con beneficios diferenciados. Contáctanos para recibir el portafolio de patrocinio completo.</div>
     </div>
-    <div class="faq-item" role="listitem">
-      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Hay transmisión virtual?<span class="faq-arrow">+</span></button>
-      <div class="faq-a">Estamos evaluando la opción de transmisión híbrida para algunos paneles del Día 2. La información se confirmará próximamente. El Día 3 es exclusivamente presencial.</div>
-    </div>
+    
     <div class="faq-item" role="listitem">
       <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Cuál es la política de reembolsos?<span class="faq-arrow">+</span></button>
       <div class="faq-a">Las entradas adquiridas no tienen reembolso una vez confirmada la compra. Sin embargo, puedes transferir tu entrada a otra persona notificándonos con mínimo 48 horas de anticipación al evento. Para casos de fuerza mayor, contáctanos directamente.</div>
@@ -1415,63 +1416,18 @@
       <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Cómo se protegen mis datos personales?<span class="faq-arrow">+</span></button>
       <div class="faq-a">Tus datos personales son tratados de conformidad con la Ley 1581 de 2012 (Protección de Datos Personales de Colombia). La información recolectada se utiliza únicamente para comunicaciones relacionadas con Labs Summit 2026 y eventos futuros. No compartimos tu información con terceros sin tu consentimiento. Puedes solicitar la eliminación de tus datos en cualquier momento contactándonos directamente.</div>
     </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Qué es Labs Summit y por qué debería ir?<span class="faq-arrow">+</span></button>
+      <div class="faq-a">Labs Summit es el punto de encuentro donde líderes, marcas, emprendedores y visionarios se conectan para hablar sobre tecnología, e-commerce, marketing, innovación y negocios. No es solo un evento de charlas: es una experiencia diseñada para aprender, crear conexiones reales y descubrir oportunidades que pueden cambiar tu visión y tu crecimiento profesional.</div>
+    </div>
+    <div class="faq-item" role="listitem">
+      <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Cuánto cuesta la boleta?<span class="faq-arrow">+</span></button>
+      <div class="faq-a">General desde $129.000, VIP desde $249.000 y Diamante desde $497.000 hasta el 30 de julio. Después de esa fecha, las entradas subirán al siguiente valor de etapa. Diamante Black tiene cupos ultra limitados y acceso exclusivo a los 3 días del evento. Aprovecha precios de lanzamiento antes del 30 de julio.</div>
+    </div>
   </div>
 </section>
 
-<!-- ══ REGISTER ══ -->
-<section id="register">
-  <div class="reg-glow" aria-hidden="true"></div>
-  <div class="reg-box">
-    <span class="s-label" style="color:var(--purple-sm)">Networking exclusivo · Cupos limitados</span>
-    <h2 class="s-title reveal">Tu próxima gran <span class="ac">conexión</span> empieza aquí</h2>
-    <p>Los negocios más importantes no se cierran en oficinas. Se cierran en eventos como este, entre personas que comparten visión. Labs Summit 2026 es el lugar donde el ecosistema del suroccidente se encuentra.</p>
 
-    <!-- Formulario de captura de leads -->
-    <form id="lead-form" onsubmit="submitLead(event)" style="margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:680px;margin-left:auto;margin-right:auto" aria-label="Formulario de interés">
-      <div style="display:flex;flex-direction:column;gap:.4rem">
-        <label for="lead-name" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase">Nombre completo *</label>
-        <input id="lead-name" type="text" placeholder="Tu nombre" required style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(168,85,247,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'" autocomplete="name">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.4rem">
-        <label for="lead-phone" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase">WhatsApp / Teléfono *</label>
-        <input id="lead-phone" type="tel" placeholder="+57 300 000 0000" required style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(168,85,247,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'" autocomplete="tel">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.4rem">
-        <label for="lead-email" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase">Correo electrónico *</label>
-        <input id="lead-email" type="email" placeholder="tu@correo.com" required style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(168,85,247,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'" autocomplete="email">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.4rem">
-        <label for="lead-interest" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase">Me interesa</label>
-        <select id="lead-interest" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s;cursor:pointer" onfocus="this.style.borderColor='rgba(168,85,247,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
-          <option value="entrada" style="background:#0d0514">Comprar entrada</option>
-          <option value="stand" style="background:#0d0514">Reservar Stand</option>
-          <option value="sponsor-diamante" style="background:#0d0514">Sponsorship Diamante</option>
-          <option value="sponsor-vip" style="background:#0d0514">Sponsorship VIP</option>
-          <option value="sponsor-general" style="background:#0d0514">Sponsorship General</option>
-          <option value="sponsor-aliado" style="background:#0d0514">Ser Aliado</option>
-          <option value="info" style="background:#0d0514">Más información</option>
-        </select>
-      </div>
-      <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:.4rem">
-        <label for="lead-empresa" style="font-size:.72rem;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.45);text-transform:uppercase">Empresa / Cargo (opcional)</label>
-        <input id="lead-empresa" type="text" placeholder="Tu empresa o cargo" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.8rem 1rem;color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='rgba(168,85,247,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.1)'">
-      </div>
-      <div style="grid-column:1/-1;display:flex;align-items:flex-start;gap:.6rem;margin-top:.2rem">
-        <input id="lead-consent" type="checkbox" required style="margin-top:2px;accent-color:#A855F7;cursor:pointer">
-        <label for="lead-consent" style="font-size:.75rem;color:rgba(255,255,255,.35);line-height:1.5;cursor:pointer">Autorizo el tratamiento de mis datos personales de acuerdo con la política de privacidad de Labs Summit 2026, conforme a la Ley 1581 de 2012.</label>
-      </div>
-      <div style="grid-column:1/-1;display:flex;gap:1rem;flex-wrap:wrap;margin-top:.5rem">
-        <button type="submit" class="btn-pri" style="flex:1;min-width:200px">Quiero mi lugar en Labs Summit →</button>
-        <button type="button" class="btn-sec" onclick="scrollTo('faq')" style="flex:1;min-width:160px">Ver preguntas frecuentes</button>
-      </div>
-      <div id="lead-success" style="grid-column:1/-1;display:none;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:12px;padding:1rem 1.5rem;text-align:center;color:#C9AEFF;font-size:.88rem;font-weight:600">
-        ✅ ¡Listo! Nos pondremos en contacto contigo muy pronto.
-      </div>
-    </form>
-
-  </div>
-
-</section>
 
 <style>
 @media(max-width:600px){
@@ -1634,7 +1590,7 @@
             </div>
           </div>
         </div>
-        <div class="ich2-caption">La experiencia más exclusiva del suroccidente</div>
+        <div class="ich2-caption">La experiencia más exclusiva del Valle Del Cauca</div>
         <div class="ich2-cupos-tag">50 – 60 cupos</div>
       </div>
     </div>
@@ -1647,13 +1603,15 @@
         <div class="ich3-sp-eyebrow">· Voces que inspiran ·</div>
         <div class="ich3-sp-title"><span style="color:#A855F7;position:relative;z-index:20">+</span>15 Speakers</div>
         <div class="ich3-sp-grid">
-          <div class="ich3-sp-item"><div class="ich3-sp-av">DR</div><div class="ich3-sp-name">David Rojas</div><div class="ich3-sp-role">Ecommerce</div></div>
           <div class="ich3-sp-item"><div class="ich3-sp-av ich3-sp-photo"><img src="/speakers/juan_david_carmona.jpg" alt="Juan David Carmona"></div><div class="ich3-sp-name">Juan David C.</div><div class="ich3-sp-role">Ponente</div></div>
-          <div class="ich3-sp-item"><div class="ich3-sp-av ich3-sp-photo"><img src="/speakers/sara_montoya.jpg" alt="Sara Montoya"></div><div class="ich3-sp-name">Sara Montoya</div><div class="ich3-sp-role">Ponente</div></div>
-          <div class="ich3-sp-item"><div class="ich3-sp-av">FV</div><div class="ich3-sp-name">Felipe Vargas</div><div class="ich3-sp-role">Ponente</div></div>
-          <div class="ich3-sp-item"><div class="ich3-sp-av">SS</div><div class="ich3-sp-name">Santiago S.</div><div class="ich3-sp-role">Ponente</div></div>
+          <div class="ich3-sp-item"><div class="ich3-sp-av ich3-sp-photo"><img src="/speakers/SaraMontoya.png" alt="Sara Montoya"></div><div class="ich3-sp-name">Sara M.</div><div class="ich3-sp-role">Ponente</div></div>
+          <div class="ich3-sp-item"><div class="ich3-sp-av ich3-sp-photo"><img src="/speakers/LauraAguirre.png" alt="Laura Aguirre"></div><div class="ich3-sp-name">Laura A.</div><div class="ich3-sp-role">Ponente</div></div>
+
           <div class="ich3-sp-item"><div class="ich3-sp-av">JA</div><div class="ich3-sp-name">Jose Aguirre</div><div class="ich3-sp-role">Ponente</div></div>
           <div class="ich3-sp-item"><div class="ich3-sp-av">LA</div><div class="ich3-sp-name">Laura Aguirre</div><div class="ich3-sp-role">Ponente</div></div>
+          <div class="ich3-sp-item"><div class="ich3-sp-av" style="border-style:dashed;opacity:.55">?</div><div class="ich3-sp-name" style="opacity:.45">Por revelar</div><div class="ich3-sp-role" style="opacity:.45">Próximamente</div></div>
+          <div class="ich3-sp-item"><div class="ich3-sp-av" style="border-style:dashed;opacity:.55">?</div><div class="ich3-sp-name" style="opacity:.45">Por revelar</div><div class="ich3-sp-role" style="opacity:.45">Próximamente</div></div>
+          <div class="ich3-sp-item"><div class="ich3-sp-av" style="border-style:dashed;opacity:.55">?</div><div class="ich3-sp-name" style="opacity:.45">Por revelar</div><div class="ich3-sp-role" style="opacity:.45">Próximamente</div></div>
           <div class="ich3-sp-item"><div class="ich3-sp-av" style="border-style:dashed;opacity:.55">?</div><div class="ich3-sp-name" style="opacity:.45">Por revelar</div><div class="ich3-sp-role" style="opacity:.45">Próximamente</div></div>
           <div class="ich3-sp-item"><div class="ich3-sp-av" style="border-style:dashed;opacity:.55">?</div><div class="ich3-sp-name" style="opacity:.45">+ Wild Cards</div><div class="ich3-sp-role" style="opacity:.45">Por revelar</div></div>
         </div>
@@ -2312,6 +2270,297 @@ function submitLead(e) {
 
   e.target.reset();
 }
+
+// ── Speaker card flip ──
+document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card) {
+  card.addEventListener('click', function() {
+    card.classList.toggle('flipped');
+  });
+});
+
+// ── Paquetes de patrocinio — modal ──
+var PT_DATA = {
+  oficial: {
+    name:'OFICIAL', color:'#A855F7', price:'$79M', iva:'+IVA',
+    tagline:'Stand 16M² · Exclusividad por categoría · 3 Diamante Black + 35 Generales',
+    tickets:'🎟️ 3 Diamante Black + 35 Generales',
+    sections:[
+      { title:'Stand & Espacio', items:[
+        'Stand 16 M² — ubicación estratégica',
+        'Zona de alimentos y espacios comerciales',
+        'Zona de aparcaderos (2 vehículos)',
+        'Escarapela Sponsor + boletería',
+        'Photo booth con branding (logo sponsor)',
+        'Gigantografía'
+      ]},
+      { title:'Visibilidad de Marca', items:[
+        'Logo dominante escenario principal y pabellón 2',
+        'Logo en pantallas durante el evento',
+        'Material publicitario (abanico)',
+        'Logo zona lounge y zona descenso',
+        'Bolsas + regalos oficiales del evento',
+        'Material impreso (a solicitud)',
+        'Logo web + brochure Ruta Gastronómica',
+        'Mención en tarima (6 veces)',
+        'Visualización en tarima (+50 voces)',
+        'Video comercial 45 seg en pantallas',
+        'Podcast post evento + acceso a speakers',
+        'Base de datos asistentes al evento',
+        'Ponencia en el evento (20 min)',
+        'Participación en noche de gala'
+      ]},
+      { title:'Comunicación & Alcance', items:[
+        'Mención en TODOS los anuncios y comunicaciones',
+        'Exclusividad por categoría',
+        'Publicaciones en redes sociales',
+        'Exposición previa y posterior al evento',
+        'Activaciones en comunidad post-evento',
+        'Interacción directa con +3.500 asistentes'
+      ]}
+    ]
+  },
+  gold: {
+    name:'GOLD', color:'#F59E0B', price:'$49M', iva:'+IVA',
+    tagline:'Stand 8M² · Ubicación estratégica · 4 Diamante + 30 Generales',
+    tickets:'🎟️ 4 Diamante + 30 Generales',
+    sections:[
+      { title:'Stand & Espacio', items:[
+        'Stand 8 M² — ubicación estratégica',
+        'Zona de parqueaderos, ingreso y boletería',
+        'Gigantografía',
+        'Branding en 2 zonas específicas'
+      ]},
+      { title:'Visibilidad de Marca', items:[
+        'Logo destacado en escenario principal',
+        'Logo en pantallas (2 pabellones)',
+        'Logo zona lounge y zona descenso',
+        'Bolsas + regalos oficiales del evento',
+        'Material impreso (a solicitud)',
+        'Logo web + brochure Ruta Gastronómica',
+        'Mención en tarima (3 veces)',
+        'Visualización en tarima (+30 voces)',
+        'Logo pantalla pabellón 2',
+        'Acceso a zonas con speakers',
+        'Base de datos asistentes al evento',
+        'Participación en noche de gala'
+      ]},
+      { title:'Comunicación & Alcance', items:[
+        'Mención en algunos anuncios y comunicaciones',
+        'Publicaciones en redes sociales',
+        'Exposición previa y posterior al evento',
+        'Interacción directa con +3.500 asistentes',
+        'Acceso a charla privada con speakers'
+      ]}
+    ]
+  },
+  silver: {
+    name:'SILVER', color:'#94A3B8', price:'$20M', iva:'+IVA',
+    tagline:'Stand 6M² · Zona parqueaderos · 5 VIP + 15 Generales',
+    tickets:'🎟️ 5 VIP + 15 Generales',
+    sections:[
+      { title:'Stand & Espacio', items:[
+        'Stand 6 M²',
+        'Zona de parqueaderos, ingreso y boletería',
+        'Gigantografía',
+        'Branding en 2 zonas específicas'
+      ]},
+      { title:'Visibilidad de Marca', items:[
+        'Logo destacado pantallas (salón principal)',
+        'Logo zona lounge y zona descenso',
+        'Bolsas del evento',
+        'Material impreso',
+        'Logo web + brochure Ruta Gastronómica',
+        'Acceso a zonas con speakers',
+        'Mención en tarima (3 veces)',
+        'Visualización en tarima (+30 voces)',
+        'Logo pantalla pabellón 2',
+        'Base de datos asistentes al evento',
+        'Participación en noche de gala'
+      ]},
+      { title:'Comunicación & Alcance', items:[
+        'Mención en algunos anuncios y comunicaciones',
+        'Publicaciones en redes sociales',
+        'Exposición previa y posterior al evento',
+        'Interacción directa con +3.500 asistentes'
+      ]}
+    ]
+  },
+  bronze: {
+    name:'BRONZE', color:'#D97706', price:'$10M', iva:'+IVA',
+    tagline:'Stand 4M² · Branding en 1 zona · 1 VIP + 5 Generales',
+    tickets:'🎟️ 1 VIP + 5 Generales',
+    sections:[
+      { title:'Stand & Espacio', items:[
+        'Stand 4 M²',
+        'Zona de parqueaderos, ingreso y boletería',
+        'Branding en 1 zona específica'
+      ]},
+      { title:'Visibilidad de Marca', items:[
+        'Logo en pantalla durante pausas',
+        'Logo zona lounge y zona descenso',
+        'Material impreso',
+        'Logo web + brochure Ruta Gastronómica'
+      ]},
+      { title:'Comunicación & Alcance', items:[
+        'Mención en algunos anuncios',
+        'Publicaciones en redes sociales',
+        'Interacción directa con +3.500 asistentes',
+        'Posibilidad de material promocional'
+      ]}
+    ]
+  }
+};
+
+function openPtModal(tier){
+  var d = PT_DATA[tier];
+  if(!d) return;
+  var html = '<div class="pt-modal-tier" style="color:'+d.color+'">'+d.name+'</div>'
+    +'<div class="pt-modal-price" id="pt-modal-title">'+d.price+' <span style="font-size:.9rem;font-weight:400;color:rgba(255,255,255,.4)">'+d.iva+'</span></div>'
+    +'<div class="pt-modal-tagline">'+d.tagline+'</div>';
+  d.sections.forEach(function(s){
+    html += '<div class="pt-modal-section-title" style="color:'+d.color+'">'+s.title+'</div><ul class="pt-modal-list">';
+    s.items.forEach(function(it){
+      html += '<li><span class="ck" style="color:'+d.color+'">✓</span>'+it+'</li>';
+    });
+    html += '</ul>';
+  });
+  html += '<div class="pt-modal-tickets" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)">'+d.tickets+'</div>';
+  document.getElementById('pt-modal-content').innerHTML = html;
+  var modal = document.getElementById('pt-modal');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePtModal(){
+  document.getElementById('pt-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closePtModal(); });
+
+/* ══ STAND CTA ══ */
+function startStand(){
+  document.getElementById('register').scrollIntoView({behavior:'smooth'});
+}
+
+/* ══ MODAL ALIADO — WIZARD ══ */
+var aliStep = 1;
+var aliAnswers = {1:'',2:'',3:'',4:''};
+
+function startAliado(){
+  restartAliado();
+  var m = document.getElementById('aliado-modal');
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function(){ m.classList.add('ali-open'); });
+}
+function closeAliado(){
+  var m = document.getElementById('aliado-modal');
+  m.classList.remove('ali-open');
+  setTimeout(function(){ m.style.display = 'none'; }, 300);
+  document.body.style.overflow = '';
+}
+function restartAliado(){
+  aliStep = 1;
+  aliAnswers = {1:'',2:'',3:'',4:''};
+  [1,2,3,4].forEach(function(n){
+    var s = document.getElementById('ali-s'+n);
+    if(s){ s.style.display = n===1?'block':'none'; }
+    document.querySelectorAll('[data-step="'+n+'"]').forEach(function(o){ o.classList.remove('selected'); });
+  });
+  var r = document.getElementById('ali-result');
+  if(r) r.style.display = 'none';
+  document.getElementById('ali-s1').style.display = 'block';
+  updateAliUI();
+}
+function selectOpt(btn){
+  var step = btn.dataset.step;
+  document.querySelectorAll('[data-step="'+step+'"]').forEach(function(o){ o.classList.remove('selected'); });
+  btn.classList.add('selected');
+  aliAnswers[step] = btn.dataset.val;
+  document.getElementById('ali-next').disabled = false;
+}
+function updateAliUI(){
+  var isResult = aliStep > 4;
+  var counter  = document.getElementById('ali-counter');
+  var nav      = document.getElementById('ali-nav');
+  var back     = document.getElementById('ali-back');
+  var next     = document.getElementById('ali-next');
+  var prog     = document.getElementById('ali-prog');
+
+  if(isResult){
+    counter.style.display = 'none';
+    nav.style.display = 'none';
+    prog.style.width = '100%';
+    return;
+  }
+  counter.style.display = '';
+  nav.style.display = '';
+  counter.textContent = 'Paso ' + aliStep + ' de 4';
+  prog.style.width = ((aliStep - 1) / 4 * 100) + '%';
+  back.style.visibility = aliStep > 1 ? 'visible' : 'hidden';
+  next.textContent = aliStep === 4 ? 'Ver recomendación →' : 'Siguiente →';
+  next.disabled = !aliAnswers[aliStep];
+}
+function aliNext(){
+  if(aliStep <= 4 && !aliAnswers[aliStep]) return;
+  document.getElementById(aliStep <= 4 ? 'ali-s'+aliStep : 'ali-result').style.display = 'none';
+  aliStep++;
+  if(aliStep <= 4){
+    document.getElementById('ali-s'+aliStep).style.display = 'block';
+    updateAliUI();
+  } else {
+    showAliResult();
+  }
+}
+function aliBack(){
+  if(aliStep <= 1) return;
+  document.getElementById('ali-s'+aliStep).style.display = 'none';
+  aliStep--;
+  document.getElementById('ali-s'+aliStep).style.display = 'block';
+  updateAliUI();
+  document.getElementById('ali-next').disabled = false;
+}
+function showAliResult(){
+  [1,2,3,4].forEach(function(n){ document.getElementById('ali-s'+n).style.display='none'; });
+  document.getElementById('ali-result').style.display = 'block';
+  updateAliUI();
+
+  var budget = aliAnswers[3];
+  var when   = aliAnswers[4];
+  var rec, urgency;
+
+  if(budget === 'Más de $50M'){
+    rec = '🏆 Con tu presupuesto, el paquete <strong>OFICIAL</strong> es tu mejor opción — stand 16M², exclusividad por categoría, ponencia en tarima y exposición total ante +3.500 asistentes.';
+  } else if(budget === 'Entre $20M y $50M'){
+    rec = '⭐ El paquete <strong>GOLD</strong> se adapta perfecto a tu presupuesto — stand 8M² en ubicación estratégica, logo en pantallas, base de datos de asistentes y noche de gala.';
+  } else if(budget === 'Entre $5M y $20M'){
+    rec = '✨ Con el paquete <strong>SILVER o BRONZE</strong> puedes estar presente con stand, visibilidad en pantallas y comunicación en redes — una excelente relación inversión/impacto.';
+  } else {
+    rec = '💡 Para explorar opciones dentro de tu presupuesto, nuestro equipo puede orientarte a la mejor alternativa disponible, incluyendo alianzas de intercambio o visibilidad básica.';
+  }
+
+  if(when === 'Esta semana'){
+    urgency = '⚡ Los cupos son limitados — te contactamos hoy mismo para asegurar tu espacio.';
+  } else if(when === 'Solo estoy explorando'){
+    urgency = '👀 Sin problema. Te enviamos el portafolio completo para que lo revises con calma.';
+  } else {
+    urgency = '📅 Perfecto, hay tiempo para coordinar los detalles. Te escribimos esta semana.';
+  }
+
+  document.getElementById('ali-result-msg').innerHTML =
+    '<p>'+rec+'</p><p class="ali-urgency">'+urgency+'</p>';
+
+  var msg = encodeURIComponent(
+    'Hola, me interesa ser aliado de Labs Summit 2026.\n' +
+    'Soy una '+aliAnswers[1]+'.\n' +
+    'Mi objetivo es: '+aliAnswers[2]+'.\n' +
+    'Mi presupuesto es: '+aliAnswers[3]+'.\n' +
+    'Puedo decidir: '+aliAnswers[4]+'.'
+  );
+  document.getElementById('ali-wa-btn').onclick = function(){
+    window.open('https://wa.me/57XXXXXXXXXX?text='+msg, '_blank');
+  };
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAliado(); });
 </script>
 </body>
 </html>

@@ -94,7 +94,7 @@ const observer = new IntersectionObserver(entries=>{
   });
 }, {threshold:0.12});
 
-document.querySelectorAll('.reveal,.sp-card,.video-card,.day-panel').forEach(el=>observer.observe(el));
+document.querySelectorAll('.reveal,.sp-card,.sp-mini,.video-card,.day-panel').forEach(el=>observer.observe(el));
 
 /* ─────────────────────────────────
    DAY TABS
@@ -191,45 +191,18 @@ function closeModal(){
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ─────────────────────────────────
-   AUDIO — Voz de José (autoplay al cargar)
+   AUDIO — Voz de José (solo al pulsar botón)
 ───────────────────────────────── */
 (function(){
   const audio = document.getElementById('jose-audio');
   const wave  = document.getElementById('jose-wave');
   if(!audio) return;
-
+  audio.volume = 0.85;
   function showWave(){ if(wave) wave.classList.add('playing'); }
   function hideWave(){ if(wave) wave.classList.remove('playing'); }
-
   audio.addEventListener('playing', showWave);
   audio.addEventListener('pause',   hideWave);
   audio.addEventListener('ended',   hideWave);
-
-  // Intento de autoplay al cargar
-  function tryPlay(){
-    audio.volume = 0.85;
-    audio.play().then(()=>{
-      showWave();
-      triggerAmbient();
-    }).catch(()=>{
-      // Bloqueado por política del navegador → reproducir en primer clic/toque
-      const unlock = ()=>{
-        audio.play().then(()=>{ showWave(); triggerAmbient(); }).catch(()=>{});
-        document.removeEventListener('click',   unlock);
-        document.removeEventListener('touchend', unlock);
-        document.removeEventListener('keydown',  unlock);
-      };
-      document.addEventListener('click',    unlock, {once:true});
-      document.addEventListener('touchend', unlock, {once:true});
-      document.addEventListener('keydown',  unlock, {once:true});
-    });
-  }
-
-  if(document.readyState === 'complete' || document.readyState === 'interactive'){
-    setTimeout(tryPlay, 400);
-  } else {
-    document.addEventListener('DOMContentLoaded', ()=> setTimeout(tryPlay, 400));
-  }
 })();
 
 /* ─────────────────────────────────
@@ -280,17 +253,23 @@ function startAmbient(){
 }
 
 function toggleAmbient(){
+  const audio = document.getElementById('jose-audio');
+  const wave  = document.getElementById('nav-wave');
+  const lbl   = document.getElementById('audio-label');
+
   if(!ambientCtx){
+    // Primera vez: iniciar ambient + reproducir voz
     triggerAmbient();
+    if(audio) audio.play().catch(()=>{});
     return;
   }
+
   ambientOn = !ambientOn;
-  const wave = document.getElementById('nav-wave');
-  const lbl  = document.getElementById('audio-label');
   if(ambientOn){
     wave.classList.remove('paused');
     lbl.textContent = 'Sonando';
-    // Play chime again
+    if(audio) audio.play().catch(()=>{});
+    // Chime de confirmación
     const notes = [523.25, 659.25, 783.99];
     notes.forEach((freq,i)=>{
       const osc  = ambientCtx.createOscillator();
@@ -305,6 +284,7 @@ function toggleAmbient(){
   } else {
     wave.classList.add('paused');
     lbl.textContent = 'Sonido';
+    if(audio) audio.pause();
   }
 }
 

@@ -1,0 +1,57 @@
+---
+title: GradientHeading
+description: A cool gradient heading component
+component: true
+links: {}
+---
+
+<ComponentPreview
+  name="gradient-heading-demo"
+  className="[&_.preview>[data-orientation=vertical]]:sm:max-w-[70%]"
+  description="All variations"
+/>
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">CLI</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```bash
+npx shadcn@latest add https://cult-ui.com/r/gradient-heading.json
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps>
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="gradient-heading" />
+
+<Step>Update the import paths to match your project setup.</Step>
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+```tsx
+export default function GradientHeadingExample() {
+  return (
+    <GradientHeading variant="default" size="lg" weight="bold">
+      Like and subscribe
+    </GradientHeading>
+  )
+}
+```

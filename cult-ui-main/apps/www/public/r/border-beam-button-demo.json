@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "border-beam-button-demo",
+  "type": "registry:component",
+  "registryDependencies": [
+    "border-beam-button"
+  ],
+  "files": [
+    {
+      "path": "registry/default/example/border-beam-button-demo.tsx",
+      "content": "\"use client\"\n\nimport { Sparkles } from \"lucide-react\"\n\nimport {\n  BorderBeamButton,\n  BorderBeamIconButton,\n} from \"@/registry/default/ui/border-beam-button\"\n\nexport default function BorderBeamButtonDemo() {\n  return (\n    <main className=\"flex min-h-screen flex-col items-center justify-center bg-background p-8\">\n      <div className=\"flex w-full max-w-3xl flex-col gap-10\">\n        <header className=\"space-y-2 text-center\">\n          <h2 className=\"font-semibold text-foreground text-xl tracking-tight\">\n            Border beam button\n          </h2>\n          <p className=\"text-pretty text-muted-foreground text-sm\">\n            <span className=\"text-foreground/90\">BorderBeamButton</span> uses{\" \"}\n            <span className=\"text-foreground/90\">beamSize=&quot;sm&quot;</span>{\" \"}\n            by default;{\" \"}\n            <span className=\"text-foreground/90\">BorderBeamIconButton</span>{\" \"}\n            defaults to icon sizing.{\" \"}\n            <span className=\"text-foreground/90\">className</span> styles the\n            button;{\" \"}\n            <span className=\"text-foreground/90\">borderBeamClassName</span>{\" \"}\n            styles the beam wrapper.\n          </p>\n        </header>\n\n        <section className=\"space-y-3\">\n          <h3 className=\"font-semibold text-foreground text-lg tracking-tight\">\n            Variants\n          </h3>\n          <div className=\"flex flex-wrap items-center gap-3\">\n            <BorderBeamButton type=\"button\" variant=\"outline\">\n              Outline\n            </BorderBeamButton>\n            <BorderBeamButton type=\"button\" variant=\"secondary\">\n              Secondary\n            </BorderBeamButton>\n            <BorderBeamIconButton\n              aria-label=\"Sparkles\"\n              title=\"Sparkles\"\n              type=\"button\"\n              variant=\"outline\"\n            >\n              <Sparkles aria-hidden className=\"size-3\" />\n            </BorderBeamIconButton>\n          </div>\n        </section>\n      </div>\n    </main>\n  )\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}
