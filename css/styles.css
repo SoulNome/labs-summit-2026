@@ -5,7 +5,7 @@
   --purple:#A855F7;--purple-md:#9333EA;--purple-dk:#6D28D9;
   --navy:#1a1040;--gray:#9890B8;--soft:#160830;
 }
-html{scroll-behavior:smooth;font-size:17px}
+html{scroll-behavior:smooth;font-size:19px}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--navy);overflow-x:hidden}
 
 /* ── PROGRESS BAR ── */
