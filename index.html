@@ -1549,7 +1549,7 @@
   <div class="foot-meta">© 2026 Labs Summit. Todos los derechos reservados.</div>
   <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(168,85,247,.2);display:flex;flex-direction:column;align-items:center;gap:.6rem">
     <span style="font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3)">Realizado por</span>
-    <img src="/speakers/technolabs-logo.png" alt="TechnoLabs" style="height:36px;object-fit:contain;opacity:.85;filter:brightness(0) invert(1)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <img src="/aliados/LOGO TECHNOLABS.png" alt="TechnoLabs" style="height:36px;object-fit:contain;opacity:.85;filter:brightness(0) invert(1)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
     <span style="display:none;font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.08em;color:#A855F7">TECHNOLABS</span>
   </div>
 </footer>
@@ -2656,7 +2656,7 @@ function showAliResult(){
   document.getElementById('ali-result-msg').innerHTML =
     '<p>'+rec+'</p><p class="ali-urgency">'+urgency+'</p>';
 
-  var msg = encodeURIComponent(h
+  var msg = encodeURIComponent(
     'Hola, me interesa ser aliado de Labs Summit 2026.\n' +
     'Soy una '+aliAnswers[1]+'.\n' +
     'Mi objetivo es: '+aliAnswers[2]+'.\n' +
@@ -2669,5 +2669,25 @@ function showAliResult(){
 }
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAliado(); });
 </script>
+
+<!-- ══ SPEAKER CARD FLIP ══ -->
+<script>
+(function(){
+  document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function(e){
+      card.classList.toggle('flipped');
+    });
+    var closeBtn = card.querySelector('.sp-back-close');
+    if(closeBtn){
+      closeBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        card.classList.remove('flipped');
+      });
+    }
+  });
+})();
+</script>
+
 </body>
 </html>
