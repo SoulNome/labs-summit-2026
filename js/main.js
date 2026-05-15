@@ -97,6 +97,23 @@ const observer = new IntersectionObserver(entries=>{
 document.querySelectorAll('.reveal,.sp-card,.sp-mini,.video-card,.day-panel').forEach(el=>observer.observe(el));
 
 /* ─────────────────────────────────
+   SPEAKER CARD FLIP
+───────────────────────────────── */
+document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(card=>{
+  card.addEventListener('click',()=>{
+    card.classList.toggle('flipped');
+  });
+  // Also close on back-close button
+  const closeBtn = card.querySelector('.sp-back-close');
+  if(closeBtn){
+    closeBtn.addEventListener('click',e=>{
+      e.stopPropagation();
+      card.classList.remove('flipped');
+    });
+  }
+});
+
+/* ─────────────────────────────────
    DAY TABS
 ───────────────────────────────── */
 function switchDay(n){
