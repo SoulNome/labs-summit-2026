@@ -1153,9 +1153,9 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .ranking-podium{flex-direction:column;align-items:center}
   .ticket-card{max-width:100%;transform:none!important}
   #journey-nav{display:none}
-  footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
-  /* Speakers: tablet */
-  .sp-featured-row{grid-template-columns:repeat(2,1fr);gap:1rem}
+  footer{padding:2rem 1.5rem;flex-direction:column;align-items:center;text-align:center}
+  /* Speakers: tablet — featured stays 3 cols, secondary goes 2 cols */
+  .sp-featured-row{grid-template-columns:repeat(3,1fr);gap:.8rem}
   .sp-secondary-grid{grid-template-columns:repeat(2,1fr)}
   .speakers-mini-grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
   /* Back-face text slightly smaller to fit the smaller card */
