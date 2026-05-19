@@ -481,6 +481,13 @@ section{padding:6rem 4rem;position:relative}
   aspect-ratio:2/3;
   font-size:.88em;
 }
+.sp-secondary-grid .sp-back{padding:.8rem;gap:.25rem}
+.sp-secondary-grid .sp-back-name{font-size:1.05rem}
+.sp-secondary-grid .sp-back-role{font-size:.72rem}
+.sp-secondary-grid .sp-back-bio{font-size:.72rem;-webkit-line-clamp:5}
+.sp-secondary-grid .sp-back-tag{font-size:.62rem;padding:.18rem .55rem}
+.sp-secondary-grid .sp-back-topics span{font-size:.62rem;padding:.15rem .45rem}
+.sp-secondary-grid .sp-back-close{font-size:.68rem;margin-top:auto}
 /* ── Category badge top-left ── */
 .sp-category{
   position:absolute;top:.9rem;left:.9rem;z-index:10;
@@ -919,7 +926,8 @@ section{padding:6rem 4rem;position:relative}
 footer{
   background:var(--navy);border-top:1px solid rgba(168,85,247,.12);
   padding:2.5rem 4rem;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:0;
 }
 .foot-brand{font-family:'Inter',sans-serif;font-size:1rem;font-weight:900;color:var(--white)}
 .foot-brand span{color:var(--purple)}
