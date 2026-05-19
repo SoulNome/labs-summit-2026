@@ -461,9 +461,35 @@ section{padding:6rem 4rem;position:relative}
 #speakers .s-title{color:#F0EAFF}
 
 .speakers-grid{
+  display:block;
+  margin-top:3rem;
+}
+/* ── Featured row: 3 grandes ── */
+.sp-featured-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:1.4rem;margin-top:3rem;
+  gap:1.4rem;
+  margin-bottom:1.2rem;
+}
+/* ── Secondary row: grid más compacto ── */
+.sp-secondary-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+}
+.sp-secondary-grid .sp-card{
+  aspect-ratio:2/3;
+  font-size:.88em;
+}
+/* ── Category badge top-left ── */
+.sp-category{
+  position:absolute;top:.9rem;left:.9rem;z-index:10;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(10px);
+  border:1px solid rgba(168,85,247,.4);border-radius:8px;
+  padding:.28rem .65rem;
+  font-size:.52rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.9);
+  display:flex;align-items:center;gap:.35rem;
 }
 
 /* Base card — perspective container */
@@ -1120,9 +1146,9 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .ticket-card{max-width:100%;transform:none!important}
   #journey-nav{display:none}
   footer{padding:2rem 1.5rem;flex-direction:column;text-align:center}
-  /* Speakers: 2 columns on tablet */
-  .speakers-grid{grid-template-columns:repeat(2,1fr);gap:1rem}
-  .speakers-grid .sp-card:last-child:nth-child(odd){grid-column:1/-1;justify-self:center;width:50%}
+  /* Speakers: tablet */
+  .sp-featured-row{grid-template-columns:repeat(2,1fr);gap:1rem}
+  .sp-secondary-grid{grid-template-columns:repeat(2,1fr)}
   .speakers-mini-grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
   /* Back-face text slightly smaller to fit the smaller card */
   .sp-back{padding:.9rem}
@@ -1141,9 +1167,9 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-orbit.o3{display:none}
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
-  /* Speakers: single column on small phones */
-  .speakers-grid{grid-template-columns:1fr}
-  .speakers-grid .sp-card:last-child:nth-child(odd){grid-column:auto;justify-self:auto;width:100%}
+  /* Speakers: mobile */
+  .sp-featured-row{grid-template-columns:1fr}
+  .sp-secondary-grid{grid-template-columns:repeat(2,1fr)}
   .speakers-mini-grid{grid-template-columns:1fr}
   .sp-mini{padding:.85rem 1rem}
 }
