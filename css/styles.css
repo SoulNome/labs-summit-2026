@@ -469,9 +469,13 @@ section{padding:6rem 4rem;position:relative}
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:1.4rem;
-  margin-bottom:1.2rem;
+  margin-bottom:2.8rem;
 }
 /* ── Secondary row: grid más compacto ── */
+.sp-secondary-label{
+  font-size:.52rem;font-weight:700;letter-spacing:.35em;color:rgba(168,85,247,.5);
+  text-transform:uppercase;text-align:center;margin-bottom:1.2rem;display:block;
+}
 .sp-secondary-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
