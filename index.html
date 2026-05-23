@@ -682,6 +682,7 @@
 
   <!-- Quote + Audio (autoplay) -->
   <audio id="jose-audio" src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Dise%C3%B1o%20sin%20t%C3%ADtulo(1).mp4" preload="none"></audio>
+  <audio id="imx-ambient" src="/audiopapkin-ambient-soundscapes-005-space-atmosphere-303244.mp3" preload="auto"></audio>
   <div class="hero-quote-area">
     <p class="hero-quote">
       La mejor forma de predecir el futuro<br>
@@ -959,8 +960,9 @@
   </div>
   <div class="speakers-grid" role="list">
 
-    <!-- ══ FILA DESTACADA — 3 grandes ══ -->
-    <div class="sp-featured-row">
+    <!-- ══ CARRUSEL 1 — izquierda ══ -->
+    <div class="sp-carousel-wrapper">
+    <div class="sp-carousel-track" id="sp-carousel-track-1">
 
       <!-- Juan David Carmona -->
       <div class="sp-card featured reveal" role="listitem">
@@ -968,6 +970,7 @@
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/Juan David Carmona.png" alt="Juan David Carmona">
             <div class="sp-gradient"></div><div class="sp-tint"></div>
+            <div class="sp-category">🛒 Ecommerce</div>
             <div class="sp-info">
               <div class="sp-name">Juan David Carmona</div>
               <div class="sp-subtitle">Cofundador · Grupo Effi</div>
@@ -983,11 +986,12 @@
       </div>
 
       <!-- Sara Montoya -->
-      <div class="sp-card featured reveal" style="transition-delay:.08s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/SaraMontoya.png" alt="Sara Montoya">
             <div class="sp-gradient"></div><div class="sp-tint"></div>
+            <div class="sp-category">📱 Marketing Digital</div>
             <div class="sp-info">
               <div class="sp-name">Sara Montoya</div>
               <div class="sp-subtitle">Cofundadora · Grupo Effi</div>
@@ -1003,11 +1007,12 @@
       </div>
 
       <!-- Jose Aguirre -->
-      <div class="sp-card featured reveal" style="transition-delay:.16s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/JoseAguirre.png" alt="Jose Aguirre">
             <div class="sp-gradient"></div><div class="sp-tint"></div>
+            <div class="sp-category">🚀 Emprendimiento</div>
             <div class="sp-info">
               <div class="sp-name">Jose Aguirre</div>
               <div class="sp-subtitle">Fundador · TechnoLabs</div>
@@ -1021,13 +1026,6 @@
           </div>
         </div>
       </div>
-
-    </div><!-- /sp-featured-row -->
-
-    <!-- ══ GRID SECUNDARIO ══ -->
-    <span class="sp-secondary-label">· Más ponentes confirmados ·</span>
-    <div class="sp-carousel-wrapper">
-    <div class="sp-carousel-track" id="sp-carousel-track">
 
       <!-- Laura Aguirre -->
       <div class="sp-card featured reveal" role="listitem">
@@ -1051,7 +1049,7 @@
       </div>
 
       <!-- Juan Camilo Silva -->
-      <div class="sp-card featured reveal" style="transition-delay:.08s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/juan-camilo-silva.png" alt="Juan Camilo Silva" style="object-position:center 18%">
@@ -1072,7 +1070,7 @@
       </div>
 
       <!-- Camila Rodríguez -->
-      <div class="sp-card featured reveal" style="transition-delay:.16s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/camilaa.png" alt="Camila Rodríguez">
@@ -1092,8 +1090,15 @@
         </div>
       </div>
 
+    </div><!-- /sp-carousel-track-1 -->
+    </div><!-- /sp-carousel-wrapper -->
+
+    <!-- ══ CARRUSEL 2 — derecha (reverso) ══ -->
+    <div class="sp-carousel-wrapper sp-carousel-wrapper-2">
+    <div class="sp-carousel-track sp-track-reverse" id="sp-carousel-track-2">
+
       <!-- Miguel Buitrago -->
-      <div class="sp-card featured reveal" style="transition-delay:.24s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/miguel.png" alt="Miguel Buitrago">
@@ -1114,7 +1119,7 @@
       </div>
 
       <!-- Juan Vargas -->
-      <div class="sp-card featured reveal" style="transition-delay:.32s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/juan vargass.png" alt="Juan Vargas">
@@ -1135,7 +1140,7 @@
       </div>
 
       <!-- Kenny Barrios -->
-      <div class="sp-card featured reveal" style="transition-delay:.40s" role="listitem">
+      <div class="sp-card featured reveal" role="listitem">
         <div class="sp-inner">
           <div class="sp-front">
             <img class="sp-bg" src="/speakers/kenny.JPG" alt="Kenny Barrios Jure" style="object-position:center top">
@@ -1155,44 +1160,44 @@
         </div>
       </div>
 
-    <!-- Mystery 1 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.48s" role="listitem">
-      <div class="sp-av-sil">🔒</div>
-      <div style="text-align:center;padding:0 1.5rem">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
-        <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Retail · Escala Nacional</div>
+      <!-- Mystery 1 -->
+      <div class="sp-card mystery-locked reveal" role="listitem">
+        <div class="sp-av-sil">🔒</div>
+        <div style="text-align:center;padding:0 1.5rem">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
+          <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Retail · Escala Nacional</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Mystery 2 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.40s" role="listitem">
-      <div class="sp-av-sil">🔒</div>
-      <div style="text-align:center;padding:0 1.5rem">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
-        <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Venture Capital · Tech</div>
+      <!-- Mystery 2 -->
+      <div class="sp-card mystery-locked reveal" role="listitem">
+        <div class="sp-av-sil">🔒</div>
+        <div style="text-align:center;padding:0 1.5rem">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
+          <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Venture Capital · Tech</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Mystery 3 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.48s" role="listitem">
-      <div class="sp-av-sil">🔒</div>
-      <div style="text-align:center;padding:0 1.5rem">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
-        <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Media &amp; Contenido · CO</div>
+      <!-- Mystery 3 -->
+      <div class="sp-card mystery-locked reveal" role="listitem">
+        <div class="sp-av-sil">🔒</div>
+        <div style="text-align:center;padding:0 1.5rem">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelado</div>
+          <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Media &amp; Contenido · CO</div>
+        </div>
       </div>
-    </div>
 
-    <!-- Mystery 4 -->
-    <div class="sp-card mystery-locked reveal" style="transition-delay:.56s" role="listitem">
-      <div class="sp-av-sil" style="border-color:rgba(232,121,249,.3)">🔒</div>
-      <div style="text-align:center;padding:0 1.5rem">
-        <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelada</div>
-        <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Emprendimiento · Valle del Cauca</div>
+      <!-- Mystery 4 -->
+      <div class="sp-card mystery-locked reveal" role="listitem">
+        <div class="sp-av-sil" style="border-color:rgba(232,121,249,.3)">🔒</div>
+        <div style="text-align:center;padding:0 1.5rem">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:.92rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:.4rem">No revelada</div>
+          <div style="font-size:.7rem;letter-spacing:.1em;color:rgba(168,85,247,.5);text-transform:uppercase">Emprendimiento · Valle del Cauca</div>
+        </div>
       </div>
-    </div>
 
-    </div><!-- /sp-carousel-track -->
-    </div><!-- /sp-carousel-wrapper -->
+    </div><!-- /sp-carousel-track-2 -->
+    </div><!-- /sp-carousel-wrapper-2 -->
 
   </div><!-- /speakers-grid -->
 
@@ -1214,21 +1219,20 @@
   <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
     <div style="text-align:center;margin-bottom:2.8rem">
       <span class="s-label">El Recinto</span>
-      <h2 class="s-title reveal" style="margin-bottom:.6rem">Así se ve el <span class="ac">escenario</span></h2>
+      <h2 class="s-title reveal" style="margin-bottom:.6rem">Así se ven las <span class="ac">Zonas de Stan</span></h2>
     </div>
     <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
       <img src="/map/collage.png" alt="Render del venue Labs Summit 2026" style="width:100%;display:block">
     </div>
   </div>
 
-  <!-- Punto de información / mapa 3D -->
+  <!-- Plano del recinto -->
   <div style="max-width:1100px;margin:3.5rem auto 0;padding:0 1.5rem">
     <div style="text-align:center;margin-bottom:2.8rem">
       <span class="s-label">Plano del evento</span>
-      <h2 class="s-title reveal" style="margin-bottom:.6rem">Punto de <span class="ac">Información</span></h2>
     </div>
     <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
-      <img src="/map/Punto%20de%20informacion.jpg(1).jpeg" alt="Plano del recinto Labs Summit 2026" style="width:100%;display:block">
+      <img src="/map/punto%20de%20informacionupdate.png" alt="Plano del recinto Labs Summit 2026" style="width:100%;display:block">
     </div>
   </div>
 
@@ -1842,6 +1846,13 @@ var IMX = {
     IMX.resetA0();
     IMX.startCanvas();
     IMX.seq0();
+    // Ambient audio: reproducir automáticamente al abrir
+    var amb = document.getElementById('imx-ambient');
+    if (amb) {
+      amb.currentTime = 0;
+      amb.play().catch(function(){});
+      amb.onended = function() { IMX._playJoseVoice(); };
+    }
   },
 
   close: function() {
@@ -1851,6 +1862,11 @@ var IMX = {
     clearTimeout(IMX._a0bTimer);
     clearTimeout(IMX._vtTimer);
     if (IMX.cvRaf) { cancelAnimationFrame(IMX.cvRaf); IMX.cvRaf = null; }
+    // Stop audio
+    var amb = document.getElementById('imx-ambient');
+    if (amb) { amb.pause(); amb.currentTime = 0; }
+    var jose = document.getElementById('jose-audio');
+    if (jose) { jose.pause(); jose.currentTime = 0; }
     // Stop all chapter videos
     document.querySelectorAll('.imx-sv').forEach(function(v) {
       v.pause(); v.currentTime = 0;
@@ -1910,6 +1926,10 @@ var IMX = {
     clearTimeout(IMX._a0bTimer);
     if (IMX.act === 0.5 || IMX.act === 1 || IMX.act === 2) return;
     IMX.act = 0.5;
+    // Transición de audio: para el ambient y arranca la voz de José
+    var amb = document.getElementById('imx-ambient');
+    if (amb) { amb.pause(); amb.currentTime = 0; }
+    IMX._playJoseVoice();
     document.getElementById('imx-pbar').style.width = '25%';
     var a0 = document.getElementById('imx-a0');
     a0.style.transition = 'opacity .38s'; a0.style.opacity = '0';
@@ -2095,12 +2115,25 @@ var IMX = {
     IMX.runTransition();
   },
 
+  /* ── Voz de José: helper para no repetir ── */
+  _playJoseVoice: function() {
+    var jose = document.getElementById('jose-audio');
+    if (jose && jose.paused) {
+      jose.currentTime = 0;
+      jose.play().catch(function(){});
+    }
+  },
+
   /* ── Go to Scroll Journey ── */
   goScroll: function() {
     clearTimeout(IMX._a0Timer);
     clearTimeout(IMX._a0bTimer);
     if (IMX.act === 'scroll') return;
     IMX.act = 'scroll';
+    // Transición de audio: fade out ambient → arrancar voz de José
+    var amb = document.getElementById('imx-ambient');
+    if (amb) { amb.pause(); amb.currentTime = 0; }
+    IMX._playJoseVoice();
     document.getElementById('imx-pbar').style.width = '55%';
     var cur = document.querySelector('#imx-overlay .imx-act.active');
     if (cur) { cur.style.transition = 'opacity .35s'; cur.style.opacity = '0'; }
@@ -2698,36 +2731,44 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
 <!-- ══ SPEAKER CARD FLIP + CAROUSEL ══ -->
 <script>
 (function(){
-  var track = document.getElementById('sp-carousel-track');
-
-  /* Duplicate carousel cards for seamless infinite loop */
-  if(track){
-    var originals = Array.from(track.children);
-    originals.forEach(function(c){
+  function initTrack(id){
+    var track = document.getElementById(id);
+    if(!track) return null;
+    Array.from(track.children).forEach(function(c){
       var clone = c.cloneNode(true);
       clone.setAttribute('aria-hidden','true');
       track.appendChild(clone);
     });
-    /* Pause animation on hover */
     var wrapper = track.parentElement;
     wrapper.addEventListener('mouseenter', function(){ track.classList.add('paused'); });
     wrapper.addEventListener('mouseleave', function(){
       if(!track.querySelector('.sp-card.flipped')) track.classList.remove('paused');
     });
+    return track;
   }
 
-  /* Flip all non-mystery speaker cards */
+  var tracks = [
+    initTrack('sp-carousel-track-1'),
+    initTrack('sp-carousel-track-2')
+  ].filter(Boolean);
+
+  function syncPause(){
+    tracks.forEach(function(t){
+      t.classList.toggle('paused', !!t.querySelector('.sp-card.flipped'));
+    });
+  }
+
   document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
     card.addEventListener('click', function(){
       card.classList.toggle('flipped');
-      if(track) track.classList.toggle('paused', !!track.querySelector('.sp-card.flipped'));
+      syncPause();
     });
     var btn = card.querySelector('.sp-back-close');
     if(btn){
       btn.addEventListener('click', function(e){
         e.stopPropagation();
         card.classList.remove('flipped');
-        if(track && !track.querySelector('.sp-card.flipped')) track.classList.remove('paused');
+        syncPause();
       });
     }
   });

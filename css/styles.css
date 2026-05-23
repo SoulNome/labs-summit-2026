@@ -466,47 +466,44 @@ section{padding:6rem 4rem;position:relative}
   display:block;
   margin-top:3rem;
 }
-/* ── Featured row: 3 grandes ── */
-.sp-featured-row{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.4rem;
-  margin-bottom:2.8rem;
-}
-/* ── Secondary row: grid más compacto ── */
-.sp-secondary-label{
-  font-size:.52rem;font-weight:700;letter-spacing:.35em;color:rgba(168,85,247,.5);
-  text-transform:uppercase;text-align:center;margin-bottom:1.2rem;display:block;
-}
-/* ── Secondary carousel ── */
+/* ── Carruseles de speakers ── */
 .sp-carousel-wrapper{
   overflow:hidden;position:relative;padding:.5rem 0;
+  margin-bottom:1.2rem;
 }
+.sp-carousel-wrapper:last-child{margin-bottom:0}
 .sp-carousel-wrapper::before,
 .sp-carousel-wrapper::after{
-  content:'';position:absolute;top:0;bottom:0;width:110px;z-index:10;pointer-events:none;
+  content:'';position:absolute;top:0;bottom:0;width:120px;z-index:10;pointer-events:none;
 }
 .sp-carousel-wrapper::before{left:0;background:linear-gradient(to right,#0d0514 60%,transparent 100%)}
 .sp-carousel-wrapper::after{right:0;background:linear-gradient(to left,#0d0514 60%,transparent 100%)}
 .sp-carousel-track{
-  display:flex;gap:1rem;
+  display:flex;gap:1.2rem;
   width:max-content;
-  animation:sp-scroll 32s linear infinite;
+  animation:sp-scroll 36s linear infinite;
+}
+.sp-track-reverse{
+  animation:sp-scroll-reverse 42s linear infinite;
 }
 .sp-carousel-track.paused{animation-play-state:paused}
 @keyframes sp-scroll{
   from{transform:translateX(0)}
   to{transform:translateX(-50%)}
 }
-.sp-carousel-track .sp-card{
-  flex-shrink:0;width:220px;
-  aspect-ratio:2/3;font-size:.88em;
+@keyframes sp-scroll-reverse{
+  from{transform:translateX(-50%)}
+  to{transform:translateX(0)}
 }
-.sp-carousel-track .sp-back{padding:.8rem}
-.sp-carousel-track .sp-back-name{font-size:1.05rem}
-.sp-carousel-track .sp-back-bio{font-size:.72rem;flex:1;overflow-y:auto}
-.sp-carousel-track .sp-back-topics span{font-size:.62rem;padding:.15rem .45rem}
-.sp-carousel-track .sp-back-close{font-size:.68rem;margin-top:auto}
+.sp-carousel-track .sp-card{
+  flex-shrink:0;width:300px;
+  aspect-ratio:3/4;
+}
+.sp-carousel-track .sp-back{padding:1rem}
+.sp-carousel-track .sp-back-name{font-size:1.1rem}
+.sp-carousel-track .sp-back-bio{font-size:.78rem;flex:1;overflow-y:auto}
+.sp-carousel-track .sp-back-topics span{font-size:.65rem;padding:.15rem .5rem}
+.sp-carousel-track .sp-back-close{font-size:.7rem;margin-top:auto}
 /* ── Category badge top-left ── */
 .sp-category{
   position:absolute;top:.9rem;left:.9rem;z-index:10;
@@ -534,16 +531,18 @@ section{padding:6rem 4rem;position:relative}
 .sp-inner{
   position:relative;width:100%;height:100%;
   border-radius:20px;
-}
-.sp-front,.sp-back{
-  position:absolute;inset:0;border-radius:20px;overflow:hidden;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform-style:preserve-3d;
   transition:transform .65s cubic-bezier(.23,1,.32,1);
 }
-.sp-front{transform:perspective(900px) rotateY(0deg)}
-.sp-card.flipped .sp-front{transform:perspective(900px) rotateY(180deg);pointer-events:none}
-.sp-back{transform:perspective(900px) rotateY(-180deg);pointer-events:none}
-.sp-card.flipped .sp-back{transform:perspective(900px) rotateY(0deg);pointer-events:auto}
+.sp-front,.sp-back{
+  position:absolute;inset:0;border-radius:20px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.sp-front{overflow:hidden}
+.sp-back{transform:rotateY(180deg);pointer-events:none}
+.sp-card.flipped .sp-inner{transform:rotateY(180deg)}
+.sp-card.flipped .sp-back{pointer-events:auto}
+.sp-card.flipped .sp-front{pointer-events:none}
 
 /* Back face */
 .sp-back{
@@ -657,19 +656,9 @@ section{padding:6rem 4rem;position:relative}
   font-size:.72rem;font-weight:500;letter-spacing:.04em;
   color:rgba(255,255,255,.55);line-height:1.3;
 }
-/* Featured row */
-.sp-featured-row .sp-info{
-  padding:1.5rem 1.3rem 1.3rem;
-}
-.sp-featured-row .sp-name{
-  font-size:clamp(1.05rem,1.8vw,1.35rem);
-}
-.sp-featured-row .sp-subtitle{
-  font-size:.78rem;
-}
 /* Carousel cards: subtitle smaller */
 .sp-carousel-track .sp-subtitle{
-  font-size:.62rem;
+  font-size:.65rem;
 }
 .sp-badge{
   display:inline-block;
@@ -1191,18 +1180,19 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .day-selector{grid-template-columns:1fr}
   .days-bg-num{font-size:12rem;opacity:.5}
   .stands-section{grid-template-columns:1fr}
-  .ranking-podium{grid-template-columns:repeat(2,1fr)}
-  .ticket-card{transform:none!important}
+  .ranking-podium{grid-template-columns:repeat(2,1fr);gap:1rem}
+  .ticket-card{transform:none!important;padding:1.6rem 1.3rem}
+  .tc-price{font-size:1.75rem}
+  .tc-price-next{font-size:.65rem}
   #journey-nav{display:none}
   footer{padding:2rem 1.5rem;flex-direction:column;align-items:center;text-align:center}
   /* Speakers: tablet */
-  .sp-featured-row{grid-template-columns:repeat(3,1fr);gap:.8rem}
-  .sp-carousel-track .sp-card{width:180px}
+  .sp-carousel-track .sp-card{width:240px}
+  .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:80px}
   .speakers-mini-grid{grid-template-columns:repeat(2,1fr);gap:.7rem}
-  /* Back-face text slightly smaller to fit the smaller card */
   .sp-back{padding:.9rem}
   .sp-back-name{font-size:.95rem}
-  .sp-back-bio{font-size:.7rem;-webkit-line-clamp:5}
+  .sp-back-bio{font-size:.7rem}
 }
 
 @media(max-width:480px){
@@ -1216,12 +1206,27 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-orbit.o3{display:none}
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
+  /* Tickets: mobile — 1 columna */
+  .ranking-podium{
+    grid-template-columns:1fr;
+    gap:.9rem;
+    max-width:420px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ticket-card{padding:1.4rem 1.2rem}
+  .tc-rank{font-size:1.6rem;margin-bottom:.35rem}
+  .tc-name{font-size:1.05rem}
+  .tc-days{font-size:.68rem;margin-bottom:.9rem}
+  .tc-price{font-size:1.65rem}
+  .tc-price-next{font-size:.62rem;padding:.25rem .7rem;text-align:center;line-height:1.35}
+  .tc-features li{font-size:.74rem}
+  .tc-etapa{font-size:.56rem}
+  .tc-hot{font-size:.52rem;padding:.18rem .55rem}
   /* Speakers: mobile */
-  .sp-featured-row{grid-template-columns:1fr;gap:.8rem}
-  .sp-featured-row .sp-card{aspect-ratio:4/5}
-  .sp-featured-row .sp-name{font-size:clamp(1.05rem,5vw,1.25rem)}
-  .sp-featured-row .sp-info{padding:1.2rem 1.1rem 1.1rem}
-  .sp-carousel-track .sp-card{width:150px}
+  .sp-carousel-track .sp-card{width:210px}
+  .sp-carousel-track{gap:.85rem}
+  .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:50px}
   .speakers-mini-grid{grid-template-columns:1fr}
   .sp-mini{padding:.85rem 1rem}
 }
