@@ -516,10 +516,9 @@ section{padding:6rem 4rem;position:relative}
   pointer-events:none;
 }
 
-/* Base card — perspective container */
+/* Base card */
 .sp-card{
   position:relative;aspect-ratio:3/4;border-radius:20px;
-  perspective:900px;
   opacity:0;transform:translateY(24px);
   transition:opacity .6s ease,transform .35s cubic-bezier(.23,1,.32,1),box-shadow .35s cubic-bezier(.23,1,.32,1);
   cursor:pointer;
@@ -527,22 +526,35 @@ section{padding:6rem 4rem;position:relative}
 .sp-card.vis{opacity:1;transform:translateY(0)}
 .sp-card:not(.mystery-locked):not(.flipped):hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(168,85,247,.35)}
 
-/* ── Card flip ── */
+/* ── Card flip (opacity-midpoint technique — no preserve-3d needed) ── */
 .sp-inner{
   position:relative;width:100%;height:100%;
   border-radius:20px;
-  transform-style:preserve-3d;
-  transition:transform .65s cubic-bezier(.23,1,.32,1);
 }
 .sp-front,.sp-back{
   position:absolute;inset:0;border-radius:20px;
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
 }
-.sp-front{overflow:hidden}
-.sp-back{transform:rotateY(180deg);pointer-events:none}
-.sp-card.flipped .sp-inner{transform:rotateY(180deg)}
-.sp-card.flipped .sp-back{pointer-events:auto}
-.sp-card.flipped .sp-front{pointer-events:none}
+.sp-front{
+  overflow:hidden;
+  transform:perspective(900px) rotateY(0deg);
+  opacity:1;
+  transition:transform .55s ease-in-out,opacity 0s .28s;
+}
+.sp-back{
+  transform:perspective(900px) rotateY(180deg);
+  opacity:0;pointer-events:none;
+  transition:transform .55s ease-in-out,opacity 0s .28s;
+}
+.sp-card.flipped .sp-front{
+  transform:perspective(900px) rotateY(-180deg);
+  opacity:0;pointer-events:none;
+  transition:transform .55s ease-in-out,opacity 0s .28s;
+}
+.sp-card.flipped .sp-back{
+  transform:perspective(900px) rotateY(0deg);
+  opacity:1;pointer-events:auto;
+  transition:transform .55s ease-in-out,opacity 0s;
+}
 
 /* Back face */
 .sp-back{
