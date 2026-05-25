@@ -476,8 +476,8 @@ section{padding:6rem 4rem;position:relative}
 .sp-carousel-wrapper::after{
   content:'';position:absolute;top:0;bottom:0;width:120px;z-index:10;pointer-events:none;
 }
-.sp-carousel-wrapper::before{left:0;background:linear-gradient(to right,#0d0514 60%,transparent 100%)}
-.sp-carousel-wrapper::after{right:0;background:linear-gradient(to left,#0d0514 60%,transparent 100%)}
+.sp-carousel-wrapper::before{left:0;background:linear-gradient(to right,#0d0514 30%,transparent 100%)}
+.sp-carousel-wrapper::after{right:0;background:linear-gradient(to left,#0d0514 30%,transparent 100%)}
 .sp-carousel-track{
   display:flex;gap:1.2rem;
   width:max-content;
@@ -604,7 +604,7 @@ section{padding:6rem 4rem;position:relative}
 /* Bottom gradient overlay */
 .sp-gradient{
   position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(5,0,20,.97) 0%,rgba(5,0,20,.55) 42%,transparent 68%);
+  background:linear-gradient(to top,rgba(5,0,20,1) 0%,rgba(5,0,20,.92) 28%,rgba(5,0,20,.6) 52%,transparent 75%);
   z-index:1;pointer-events:none;
 }
 
@@ -651,10 +651,12 @@ section{padding:6rem 4rem;position:relative}
   font-family:'Space Grotesk',sans-serif;
   font-size:clamp(.95rem,2vw,1.2rem);font-weight:700;color:#fff;
   line-height:1.2;
+  text-shadow:0 1px 10px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.7);
 }
 .sp-subtitle{
   font-size:.72rem;font-weight:500;letter-spacing:.04em;
-  color:rgba(255,255,255,.55);line-height:1.3;
+  color:rgba(255,255,255,.8);line-height:1.3;
+  text-shadow:0 1px 6px rgba(0,0,0,.9);
 }
 /* Carousel cards: subtitle smaller */
 .sp-carousel-track .sp-subtitle{
@@ -1206,6 +1208,7 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-orbit.o3{display:none}
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
+  section{padding:4rem 1rem}
   /* Tickets: mobile — 1 columna */
   .ranking-podium{
     grid-template-columns:1fr;
@@ -1224,9 +1227,9 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .tc-etapa{font-size:.56rem}
   .tc-hot{font-size:.52rem;padding:.18rem .55rem}
   /* Speakers: mobile */
-  .sp-carousel-track .sp-card{width:210px}
+  .sp-carousel-track .sp-card{width:min(270px,76vw)}
   .sp-carousel-track{gap:.85rem}
-  .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:50px}
+  .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:40px}
   .speakers-mini-grid{grid-template-columns:1fr}
   .sp-mini{padding:.85rem 1rem}
 }
@@ -1376,7 +1379,7 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   border-radius:100px;padding:.12rem .5rem;
 }
 
-.pt-left{display:flex;flex-direction:column;gap:.25rem}
+.pt-left{display:flex;flex-direction:column;gap:.25rem;flex:1;min-width:0}
 .pt-name{
   font-size:.72rem;font-weight:800;letter-spacing:.28em;
   text-transform:uppercase;display:flex;align-items:center;gap:.7rem;
@@ -1665,6 +1668,11 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .pt-arrow{width:38px;height:38px;font-size:1rem}
   .pt-stand-card{padding:1.3rem 1.2rem}
   .pt-stand-cta-btn{width:100%}
+  /* CTA cards (tickets/aliado/stand) — flecha dentro del botón */
+  .pt-cta{padding:1.3rem 1.4rem;gap:.9rem;min-height:auto}
+  .pt-cta .pt-name{font-size:1.05rem;letter-spacing:.05em}
+  .pt-cta .pt-desc{font-size:.8rem;margin-top:.3rem}
+  .pt-cta .pt-arrow{width:38px;height:38px;font-size:1rem;flex-shrink:0}
 }
 
 /* ── Aliados Oficiales grid ── */
