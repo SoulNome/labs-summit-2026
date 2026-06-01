@@ -2762,11 +2762,19 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
   function initTrack(id){
     var track = document.getElementById(id);
     if(!track) return null;
+    // Pausar antes de clonar para evitar flash en móvil
+    track.style.animationPlayState = 'paused';
     Array.from(track.children).forEach(function(c){
       var clone = c.cloneNode(true);
       clone.setAttribute('aria-hidden','true');
       track.appendChild(clone);
     });
+    // Reiniciar animación con el ancho correcto (doble tras clonar)
+    track.getBoundingClientRect();
+    track.style.animation = 'none';
+    track.getBoundingClientRect();
+    track.style.animation = '';
+    track.style.animationPlayState = '';
     var wrapper = track.parentElement;
     wrapper.addEventListener('mouseenter', function(){ track.classList.add('paused'); });
     wrapper.addEventListener('mouseleave', function(){

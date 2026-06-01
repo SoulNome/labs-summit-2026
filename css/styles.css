@@ -470,6 +470,9 @@ section{padding:6rem 4rem;position:relative}
 .sp-carousel-wrapper{
   overflow:hidden;position:relative;padding:.5rem 0;
   margin-bottom:1.2rem;
+  /* fuerza capa de composición — fix overflow:hidden en iOS Safari */
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
 }
 .sp-carousel-wrapper:last-child{margin-bottom:0}
 .sp-carousel-wrapper::before,
@@ -482,6 +485,7 @@ section{padding:6rem 4rem;position:relative}
   display:flex;gap:1.2rem;
   width:max-content;
   animation:sp-scroll 36s linear infinite;
+  will-change:transform;
 }
 .sp-track-reverse{
   animation:sp-scroll-reverse 42s linear infinite;
