@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Labs Summit 2026 — Informe de Cambios</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap');
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --purple:#A855F7;--purple-dk:#7C3AED;--purple-xdk:#4C1D95;
+    --navy:#0D0118;--navy2:#130A24;--card:#1C0B36;--card2:#200A40;
+    --white:#FFFFFF;--offwhite:#F0EAFF;--muted:#9B8CB5;
+    --green:#4ADE80;--red:#F87171;
+  }
+
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--navy);font-family:'Inter',sans-serif}
+
+  /* ── DECK ── */
+  #deck{position:relative;width:100%;height:100%}
+
+  .slide{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    padding:3.5rem 5rem;
+    opacity:0;pointer-events:none;
+    transform:translateX(60px);
+    transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;
+  }
+  .slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+  .slide.exit-left{opacity:0;transform:translateX(-60px)}
+
+  /* ── BG ORBS ── */
+  .orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0}
+  .orb1{width:50vw;height:50vw;background:rgba(124,58,237,.13);bottom:-20%;left:-10%}
+  .orb2{width:35vw;height:35vw;background:rgba(168,85,247,.08);top:-15%;right:-5%}
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar{
+    position:fixed;top:0;left:0;height:3px;
+    background:linear-gradient(90deg,var(--purple-dk),var(--purple));
+    transition:width .5s cubic-bezier(.4,0,.2,1);z-index:100;
+    box-shadow:0 0 12px rgba(168,85,247,.8);
+  }
+
+  /* ── SLIDE COUNTER ── */
+  #counter{
+    position:fixed;bottom:2rem;right:2rem;
+    font-family:'Space Grotesk',sans-serif;font-size:.75rem;
+    color:var(--muted);letter-spacing:.1em;z-index:100;
+  }
+  #counter span{color:var(--purple)}
+
+  /* ── NAV ARROWS ── */
+  .nav-btn{
+    position:fixed;top:50%;transform:translateY(-50%);
+    width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(168,85,247,.3);
+    background:rgba(168,85,247,.08);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;z-index:100;transition:all .25s;font-size:1.1rem;
+    backdrop-filter:blur(8px);
+  }
+  .nav-btn:hover{background:rgba(168,85,247,.25);border-color:var(--purple);color:var(--white)}
+  #btn-prev{left:1.2rem}
+  #btn-next{right:1.2rem}
+
+  /* ── SLIDE DOTS ── */
+  #dots{
+    position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+    display:flex;gap:.5rem;z-index:100;
+  }
+  .dot{
+    width:6px;height:6px;border-radius:50%;background:rgba(168,85,247,.25);
+    cursor:pointer;transition:all .3s;
+  }
+  .dot.active{background:var(--purple);width:20px;border-radius:3px;box-shadow:0 0 8px rgba(168,85,247,.7)}
+
+  /* ── HEADER BADGE ── */
+  .slide-badge{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+    color:var(--purple);margin-bottom:1rem;position:relative;z-index:1;
+  }
+  .slide-badge::before{content:'';width:20px;height:2px;background:var(--purple);display:inline-block}
+
+  /* ── TITLES ── */
+  .slide-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2rem,4vw,3.2rem);font-weight:700;
+    color:var(--white);line-height:1.1;
+    position:relative;z-index:1;margin-bottom:.6rem;
+  }
+  .slide-title .accent{
+    background:linear-gradient(135deg,var(--purple),#e879f9);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .slide-subtitle{font-size:.95rem;color:var(--muted);position:relative;z-index:1;margin-bottom:2rem}
+
+  /* ── CARDS ── */
+  .card{
+    background:var(--card);border:1px solid rgba(168,85,247,.18);
+    border-radius:16px;padding:1.4rem 1.6rem;
+    transition:all .3s;position:relative;overflow:hidden;
+  }
+  .card:hover{border-color:rgba(168,85,247,.5);transform:translateY(-3px);box-shadow:0 12px 40px rgba(168,85,247,.2)}
+  .card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--purple-dk),var(--purple));
+    opacity:0;transition:opacity .3s;
+  }
+  .card:hover::before{opacity:1}
+
+  /* ── GRIDS ── */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;position:relative;z-index:1}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;position:relative;z-index:1}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;position:relative;z-index:1}
+
+  /* ── KPI CARDS ── */
+  .kpi{
+    background:var(--card);border:1px solid rgba(168,85,247,.18);
+    border-radius:16px;padding:1.5rem;text-align:center;
+    transition:all .3s;cursor:default;
+  }
+  .kpi:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(168,85,247,.2);border-color:rgba(168,85,247,.5)}
+  .kpi-n{
+    font-family:'Space Grotesk',sans-serif;font-size:2.8rem;font-weight:900;
+    background:linear-gradient(135deg,var(--purple),#e879f9);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    line-height:1;
+  }
+  .kpi-label{font-size:.72rem;color:var(--muted);margin-top:.4rem;letter-spacing:.06em;line-height:1.4}
+
+  /* ── TAG PILL ── */
+  .tag{
+    display:inline-flex;align-items:center;gap:.3rem;
+    background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);
+    border-radius:100px;padding:.25rem .75rem;
+    font-size:.7rem;color:var(--purple);font-weight:600;
+  }
+
+  /* ── CHECK LIST ── */
+  .check-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;position:relative;z-index:1}
+  .check-list li{display:flex;align-items:flex-start;gap:.6rem;font-size:.82rem;color:var(--offwhite);line-height:1.45}
+  .check-list li::before{content:'✓';color:var(--purple);font-weight:700;flex-shrink:0;margin-top:.05rem}
+
+  /* ── TIMELINE ── */
+  .timeline{display:flex;gap:1.2rem;position:relative;z-index:1}
+  .tl-item{flex:1;background:var(--card);border:1px solid rgba(168,85,247,.18);border-radius:16px;padding:1.4rem;transition:all .3s;cursor:default}
+  .tl-item:hover{border-color:rgba(168,85,247,.5);transform:translateY(-4px)}
+  .tl-day{font-size:.6rem;font-weight:700;letter-spacing:.15em;color:var(--purple);text-transform:uppercase;margin-bottom:.3rem}
+  .tl-title{font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+  .tl-date{font-size:.68rem;color:var(--muted);margin-bottom:.8rem}
+  .tl-points{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+  .tl-points li{font-size:.72rem;color:var(--muted);display:flex;gap:.4rem;line-height:1.4}
+  .tl-points li::before{content:'→';color:var(--purple);flex-shrink:0}
+  .tl-badge{
+    display:inline-block;margin-top:.8rem;
+    background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);
+    border-radius:8px;padding:.2rem .6rem;
+    font-size:.62rem;color:#FCA5A5;
+  }
+
+  /* ── SPEAKER CHIPS ── */
+  .sp-grid{display:flex;flex-wrap:wrap;gap:.6rem;position:relative;z-index:1;margin-top:.5rem}
+  .sp-chip{
+    display:flex;align-items:center;gap:.5rem;
+    background:var(--card);border:1px solid rgba(168,85,247,.18);
+    border-radius:100px;padding:.35rem .8rem .35rem .35rem;
+    transition:all .25s;cursor:default;
+  }
+  .sp-chip:hover{border-color:var(--purple);background:rgba(168,85,247,.12)}
+  .sp-chip.new-sp{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.1)}
+  .sp-avatar{
+    width:28px;height:28px;border-radius:50%;
+    background:linear-gradient(135deg,var(--purple-dk),var(--purple));
+    display:flex;align-items:center;justify-content:center;
+    font-size:.65rem;font-weight:700;color:var(--white);flex-shrink:0;
+  }
+  .sp-chip-name{font-size:.72rem;font-weight:600;color:var(--offwhite)}
+  .sp-chip-role{font-size:.62rem;color:var(--muted)}
+
+  /* ── TICKET CARDS ── */
+  .ticket{
+    background:var(--card);border:1px solid rgba(168,85,247,.2);
+    border-radius:18px;padding:1.6rem;display:flex;flex-direction:column;
+    transition:all .35s;cursor:default;position:relative;overflow:hidden;
+  }
+  .ticket:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(168,85,247,.25)}
+  .ticket.featured{border-color:rgba(168,85,247,.55);background:linear-gradient(160deg,rgba(109,40,217,.2),rgba(168,85,247,.06))}
+  .ticket-tier{font-size:.6rem;font-weight:700;letter-spacing:.15em;color:var(--purple);text-transform:uppercase;margin-bottom:.5rem}
+  .ticket-name{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+  .ticket-price{font-size:1.8rem;font-weight:900;color:var(--purple);margin-bottom:.8rem;font-family:'Space Grotesk',sans-serif}
+  .ticket.featured .ticket-price{background:linear-gradient(135deg,#A855F7,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .ticket-feats{list-style:none;display:flex;flex-direction:column;gap:.4rem;flex:1}
+  .ticket-feats li{font-size:.72rem;color:var(--muted);display:flex;gap:.4rem;align-items:flex-start;line-height:1.4}
+  .ticket-feats li::before{content:'✓';color:var(--purple);font-weight:700;flex-shrink:0}
+  .ticket-highlight{
+    font-size:.68rem;color:var(--offwhite);opacity:.8;
+    margin-top:.3rem;font-style:italic;padding:.5rem .6rem;
+    background:rgba(168,85,247,.07);border-radius:8px;border-left:2px solid var(--purple);
+    line-height:1.4;
+  }
+  .ticket-crown{position:absolute;top:.8rem;right:.8rem;font-size:.8rem}
+
+  /* ── TECH CARDS ── */
+  .tech-card{
+    background:var(--card);border:1px solid rgba(168,85,247,.15);
+    border-radius:14px;padding:1.2rem;transition:all .3s;
+  }
+  .tech-card:hover{border-color:rgba(168,85,247,.45);transform:translateY(-3px)}
+  .tech-icon{font-size:1.5rem;margin-bottom:.5rem}
+  .tech-title{font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.4rem}
+  .tech-list{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+  .tech-list li{font-size:.7rem;color:var(--muted);display:flex;gap:.35rem;line-height:1.35}
+  .tech-list li::before{content:'·';color:var(--purple);font-weight:900}
+
+  /* ── STATUS ── */
+  .status-live{
+    display:inline-flex;align-items:center;gap:.5rem;
+    background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);
+    border-radius:100px;padding:.4rem 1rem;
+    font-size:.72rem;font-weight:700;color:var(--green);
+    margin-bottom:1.5rem;position:relative;z-index:1;
+  }
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-green 1.5s infinite}
+  @keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.4)}50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
+
+  /* ── STEP NUMBERS ── */
+  .step-n{
+    width:32px;height:32px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg,var(--purple-dk),var(--purple));
+    display:flex;align-items:center;justify-content:center;
+    font-size:.78rem;font-weight:700;color:var(--white);
+  }
+  .step-row{display:flex;align-items:flex-start;gap:.8rem;padding:.6rem 0}
+  .step-text{font-size:.82rem;color:var(--offwhite);line-height:1.45;padding-top:.35rem}
+
+  /* ── PORTADA ── */
+  #s0{justify-content:center}
+  .hero-title{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(2.8rem,6vw,5rem);font-weight:900;
+    color:var(--white);line-height:1;margin-bottom:1rem;
+    position:relative;z-index:1;
+  }
+  .hero-title .line2{
+    background:linear-gradient(135deg,#A855F7,#e879f9,#818cf8);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-sub{font-size:1rem;color:var(--muted);position:relative;z-index:1;margin-bottom:2rem}
+  .hero-tags{display:flex;gap:.6rem;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:2.5rem}
+  .hero-meta{display:flex;gap:2rem;position:relative;z-index:1}
+  .hero-meta-item{display:flex;flex-direction:column;gap:.2rem}
+  .hero-meta-n{font-family:'Space Grotesk',sans-serif;font-size:1.8rem;font-weight:700;color:var(--purple)}
+  .hero-meta-l{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+  /* ── LEGAL ── */
+  .legal-card{
+    background:var(--card);border:1px solid rgba(168,85,247,.18);
+    border-radius:14px;padding:1.2rem 1.4rem;transition:all .3s;
+  }
+  .legal-card:hover{border-color:rgba(168,85,247,.45);transform:translateY(-3px)}
+  .legal-title{font-size:.9rem;font-weight:700;color:var(--offwhite);margin-bottom:.3rem}
+  .legal-file{font-size:.7rem;color:var(--purple);margin-bottom:.4rem}
+  .legal-desc{font-size:.72rem;color:var(--muted);line-height:1.45}
+
+  /* ── PIXEL CARD ── */
+  .pixel-card{
+    background:linear-gradient(135deg,rgba(109,40,217,.15),rgba(168,85,247,.07));
+    border:1px solid rgba(168,85,247,.35);border-radius:14px;
+    padding:1.2rem 1.4rem;
+  }
+
+  /* ── ANIM DELAYS ── */
+  .slide.active .card,.slide.active .kpi,.slide.active .tl-item,
+  .slide.active .ticket,.slide.active .tech-card,.slide.active .sp-chip,
+  .slide.active .legal-card,.slide.active .step-row{
+    animation:fadeUp .5s both;
+  }
+  .slide.active .kpi:nth-child(1){animation-delay:.05s}
+  .slide.active .kpi:nth-child(2){animation-delay:.1s}
+  .slide.active .kpi:nth-child(3){animation-delay:.15s}
+  .slide.active .kpi:nth-child(4){animation-delay:.2s}
+  .slide.active .card:nth-child(1),.slide.active .tl-item:nth-child(1),.slide.active .ticket:nth-child(1),.slide.active .tech-card:nth-child(1){animation-delay:.06s}
+  .slide.active .card:nth-child(2),.slide.active .tl-item:nth-child(2),.slide.active .ticket:nth-child(2),.slide.active .tech-card:nth-child(2){animation-delay:.13s}
+  .slide.active .card:nth-child(3),.slide.active .tl-item:nth-child(3),.slide.active .ticket:nth-child(3),.slide.active .tech-card:nth-child(3){animation-delay:.2s}
+  .slide.active .card:nth-child(4),.slide.active .ticket:nth-child(4),.slide.active .tech-card:nth-child(4){animation-delay:.27s}
+  .slide.active .step-row:nth-child(1){animation-delay:.05s}
+  .slide.active .step-row:nth-child(2){animation-delay:.1s}
+  .slide.active .step-row:nth-child(3){animation-delay:.15s}
+  .slide.active .step-row:nth-child(4){animation-delay:.2s}
+  .slide.active .step-row:nth-child(5){animation-delay:.25s}
+  .slide.active .sp-chip{animation-delay:calc(var(--i,0) * .04s)}
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(18px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ── KEYBOARD HINT ── */
+  #hint{
+    position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+    font-size:.62rem;color:rgba(155,140,181,.35);letter-spacing:.08em;
+    animation:fadeHint 3s 2s both;z-index:100;
+  }
+  @keyframes fadeHint{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0;pointer-events:none}}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+<div id="hint">← → para navegar · Espacio para avanzar</div>
+
+<!-- NAV -->
+<button class="nav-btn" id="btn-prev">&#8592;</button>
+<button class="nav-btn" id="btn-next">&#8594;</button>
+<div id="dots"></div>
+<div id="counter"><span id="cur">1</span> / <span id="tot">8</span></div>
+
+<div id="deck">
+
+  <!-- ══ SLIDE 0 — PORTADA ══ -->
+  <div class="slide active" id="s0">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Tuluá Labs Summit · 2026</div>
+    <div class="hero-title">
+      Informe de<br>
+      <span class="line2">Cambios &amp; Mejoras</span>
+    </div>
+    <div class="hero-sub">Evolución del sitio web oficial · <strong style="color:var(--purple)">labssummit.com</strong></div>
+    <div class="hero-tags">
+      <span class="tag">🌐 labssummit.com</span>
+      <span class="tag">📅 Sep 11–13, 2026</span>
+      <span class="tag">📍 Tuluá, Valle del Cauca</span>
+      <span class="tag">⚙️ 40+ commits</span>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><div class="hero-meta-n">40+</div><div class="hero-meta-l">Commits</div></div>
+      <div class="hero-meta-item"><div class="hero-meta-n">11+</div><div class="hero-meta-l">Speakers</div></div>
+      <div class="hero-meta-item"><div class="hero-meta-n">3</div><div class="hero-meta-l">Días de evento</div></div>
+      <div class="hero-meta-item"><div class="hero-meta-n">4</div><div class="hero-meta-l">Niveles de ticket</div></div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 1 — RESUMEN ══ -->
+  <div class="slide" id="s1">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Resumen Ejecutivo</div>
+    <div class="slide-title">Qué se <span class="accent">construyó</span></div>
+    <div class="slide-subtitle">6 áreas de mejora · más de 40 iteraciones en producción</div>
+    <div class="grid-4" style="margin-bottom:1.2rem">
+      <div class="kpi"><div class="kpi-n">40+</div><div class="kpi-label">Commits en<br>repositorio Git</div></div>
+      <div class="kpi"><div class="kpi-n">11+</div><div class="kpi-label">Speakers<br>confirmados</div></div>
+      <div class="kpi"><div class="kpi-n">3</div><div class="kpi-label">Páginas legales<br>creadas</div></div>
+      <div class="kpi"><div class="kpi-n">4</div><div class="kpi-label">Niveles de<br>patrocinio</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><div style="font-size:1.1rem;margin-bottom:.4rem">🎤 Speakers</div><div style="font-size:.78rem;color:var(--muted)">11 ponentes con flip cards interactivas, carruseles y bio detallada</div></div>
+      <div class="card"><div style="font-size:1.1rem;margin-bottom:.4rem">🎟️ Tickets</div><div style="font-size:.78rem;color:var(--muted)">4 niveles diferenciados, Diamante Black con Mastermind exclusivo</div></div>
+      <div class="card"><div style="font-size:1.1rem;margin-bottom:.4rem">📅 Programa</div><div style="font-size:.78rem;color:var(--muted)">3 días estructurados con agenda, atmósfera y dress code</div></div>
+      <div class="card"><div style="font-size:1.1rem;margin-bottom:.4rem">⚙️ Técnico</div><div style="font-size:.78rem;color:var(--muted)">Responsive móvil, Meta Pixel, audio ambiental y páginas legales</div></div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 2 — SPEAKERS ══ -->
+  <div class="slide" id="s2">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Sección de Speakers</div>
+    <div class="slide-title"><span class="accent">11 ponentes</span> confirmados</div>
+    <div class="slide-subtitle">Flip cards interactivas · Carrusel móvil · Bio detallada en reverso</div>
+    <div class="sp-grid">
+      <div class="sp-chip" style="--i:0"><div class="sp-avatar">JD</div><div><div class="sp-chip-name">Juan David Carmona</div><div class="sp-chip-role">eCommerce</div></div></div>
+      <div class="sp-chip" style="--i:1"><div class="sp-avatar">SM</div><div><div class="sp-chip-name">Sara Montoya</div><div class="sp-chip-role">Negocios Digitales</div></div></div>
+      <div class="sp-chip" style="--i:2"><div class="sp-avatar">JA</div><div><div class="sp-chip-name">Jose Aguirre</div><div class="sp-chip-role">Tech & Startups</div></div></div>
+      <div class="sp-chip" style="--i:3"><div class="sp-avatar">LA</div><div><div class="sp-chip-name">Laura Aguirre</div><div class="sp-chip-role">Innovación</div></div></div>
+      <div class="sp-chip" style="--i:4"><div class="sp-avatar">JC</div><div><div class="sp-chip-name">Juan Camilo Silva</div><div class="sp-chip-role">IA & Estrategia</div></div></div>
+      <div class="sp-chip" style="--i:5"><div class="sp-avatar">CR</div><div><div class="sp-chip-name">Camila Rodríguez</div><div class="sp-chip-role">Marketing Digital</div></div></div>
+      <div class="sp-chip" style="--i:6"><div class="sp-avatar">MB</div><div><div class="sp-chip-name">Miguel Buitrago</div><div class="sp-chip-role">Desarrollo Web</div></div></div>
+      <div class="sp-chip" style="--i:7"><div class="sp-avatar">JV</div><div><div class="sp-chip-name">Juan Vargas</div><div class="sp-chip-role">Fintech</div></div></div>
+      <div class="sp-chip" style="--i:8"><div class="sp-avatar">KB</div><div><div class="sp-chip-name">Kenny Barrios Jure</div><div class="sp-chip-role">Venture Capital</div></div></div>
+      <div class="sp-chip" style="--i:9"><div class="sp-avatar">FA</div><div><div class="sp-chip-name">Faider Altamar</div><div class="sp-chip-role">CEO · SaaS · IA</div></div></div>
+      <div class="sp-chip new-sp" style="--i:10"><div class="sp-avatar" style="background:linear-gradient(135deg,#7C3AED,#e879f9)">MM</div><div><div class="sp-chip-name">Mike Munzvil 🆕</div><div class="sp-chip-role">IA · eCommerce</div></div></div>
+    </div>
+    <div style="display:flex;gap:1rem;margin-top:1.2rem;position:relative;z-index:1">
+      <div class="card" style="flex:1;padding:1rem">
+        <div style="font-size:.8rem;font-weight:700;color:var(--offwhite);margin-bottom:.3rem">🔄 Flip Cards</div>
+        <div style="font-size:.72rem;color:var(--muted)">Técnica perspective + opacity — compatible iOS Safari</div>
+      </div>
+      <div class="card" style="flex:1;padding:1rem">
+        <div style="font-size:.8rem;font-weight:700;color:var(--offwhite);margin-bottom:.3rem">🎠 2 Carruseles</div>
+        <div style="font-size:.72rem;color:var(--muted)">Loop infinito corregido para iOS y Android</div>
+      </div>
+      <div class="card" style="flex:1;padding:1rem">
+        <div style="font-size:.8rem;font-weight:700;color:var(--offwhite);margin-bottom:.3rem">🔒 Mystery Mode</div>
+        <div style="font-size:.72rem;color:var(--muted)">Speakers ocultos, revelados estratégicamente</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 3 — TICKETS ══ -->
+  <div class="slide" id="s3">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Sistema de Tickets</div>
+    <div class="slide-title">4 niveles de <span class="accent">experiencia</span></div>
+    <div class="slide-subtitle">Precios terminados en .000 · Diamante Black limitado a 50–60 personas</div>
+    <div class="grid-4" style="flex:1">
+      <div class="ticket">
+        <div class="ticket-tier">Acceso base</div>
+        <div class="ticket-name">General</div>
+        <div class="ticket-price">$129.000</div>
+        <ul class="ticket-feats">
+          <li>Día 2 — Conferencias</li>
+          <li>15+ speakers</li>
+          <li>Zona general</li>
+          <li>Kit de bienvenida</li>
+        </ul>
+      </div>
+      <div class="ticket">
+        <div class="ticket-tier">Experiencia VIP</div>
+        <div class="ticket-name">VIP</div>
+        <div class="ticket-price">$249.000</div>
+        <ul class="ticket-feats">
+          <li>Día 1 + Día 2</li>
+          <li>Zona VIP</li>
+          <li>Cóctel de apertura</li>
+          <li>Meet & Greet</li>
+        </ul>
+      </div>
+      <div class="ticket">
+        <div class="ticket-tier">Premium</div>
+        <div class="ticket-name">Diamante</div>
+        <div class="ticket-price">$497.000</div>
+        <ul class="ticket-feats">
+          <li>Día 1 + Día 2</li>
+          <li>Zona Diamante</li>
+          <li>Meet & Greet speakers</li>
+          <li>Directorio contactos</li>
+        </ul>
+      </div>
+      <div class="ticket featured">
+        <div class="ticket-crown">👑</div>
+        <div class="ticket-tier">Ultra exclusivo</div>
+        <div class="ticket-name">Diamante Black</div>
+        <div class="ticket-price">$1.499.000</div>
+        <ul class="ticket-feats">
+          <li>Los 3 días completos</li>
+          <li>50–60 cupos únicos</li>
+          <li>Mastermind Día 3</li>
+        </ul>
+        <div class="ticket-highlight">Mastermind exclusivo de implementación: trabaja junto a expertos en estrategias de crecimiento, IA y eCommerce.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 4 — PROGRAMA ══ -->
+  <div class="slide" id="s4">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Programa del Evento</div>
+    <div class="slide-title">3 días, 3 <span class="accent">experiencias</span></div>
+    <div class="slide-subtitle">Cada jornada con identidad, atmósfera y propuesta de valor únicas</div>
+    <div class="timeline" style="flex:1">
+      <div class="tl-item">
+        <div class="tl-day">Día 1 · 11 Sep</div>
+        <div class="tl-title">🌟 Noche de Gala</div>
+        <div class="tl-date">7:30 PM — Coliseo de Ferias</div>
+        <ul class="tl-points">
+          <li>Keynote inaugural</li>
+          <li>Vitrina de Sponsors</li>
+          <li>Cóctel VIP · Welcome drink</li>
+          <li>Cocktail attire / elegant chic</li>
+        </ul>
+        <div class="tl-badge">✂️ Ruta Gastronómica eliminada</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-day">Día 2 · 12 Sep</div>
+        <div class="tl-title">🎤 Conferencias</div>
+        <div class="tl-date">9:30 AM — Día completo</div>
+        <ul class="tl-points">
+          <li>15+ speakers nacionales e internacionales</li>
+          <li>Sesiones de IA y eCommerce</li>
+          <li>Q&amp;A en vivo</li>
+          <li>Zonas de networking</li>
+        </ul>
+      </div>
+      <div class="tl-item" style="border-color:rgba(168,85,247,.45);background:linear-gradient(160deg,rgba(109,40,217,.15),rgba(168,85,247,.05))">
+        <div class="tl-day">Día 3 · 13 Sep</div>
+        <div class="tl-title">👑 Mastermind</div>
+        <div class="tl-date">8:00 AM · Solo Diamante Black</div>
+        <ul class="tl-points">
+          <li>50–60 cupos exclusivos</li>
+          <li>3 metodologías clave</li>
+          <li>Mentoría grupal</li>
+          <li>Directorio de contactos</li>
+        </ul>
+        <span class="tag" style="margin-top:.6rem;font-size:.6rem">🔒 Ultra exclusivo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 5 — TÉCNICO ══ -->
+  <div class="slide" id="s5">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Mejoras Técnicas</div>
+    <div class="slide-title">Rendimiento y <span class="accent">experiencia</span></div>
+    <div class="slide-subtitle">Cambios de fondo que impactan directamente en conversión</div>
+    <div class="grid-4" style="flex:1">
+      <div class="tech-card">
+        <div class="tech-icon">📱</div>
+        <div class="tech-title">Responsive Móvil</div>
+        <ul class="tech-list">
+          <li>Carrusel iOS corregido</li>
+          <li>Flip cards universales</li>
+          <li>Tickets adaptados a 375px</li>
+          <li>Gradientes y sombras mobile</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🎠</div>
+        <div class="tech-title">Carrusel Speakers</div>
+        <ul class="tech-list">
+          <li>2 carruseles independientes</li>
+          <li>Loop infinito corregido</li>
+          <li>perspective + opacity</li>
+          <li>Compatible iOS / Android</li>
+        </ul>
+      </div>
+      <div class="tech-card pixel-card">
+        <div class="tech-icon">📊</div>
+        <div class="tech-title">Meta Pixel</div>
+        <ul class="tech-list">
+          <li>ID: 481397476029941</li>
+          <li>Remarketing habilitado</li>
+          <li>Audiencias personalizadas</li>
+          <li>Tracking de conversiones</li>
+        </ul>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🔊</div>
+        <div class="tech-title">Audio Ambiental</div>
+        <ul class="tech-list">
+          <li>Player en el header</li>
+          <li>Track IMX alta calidad</li>
+          <li>Toggle on/off</li>
+          <li>Experiencia sensorial</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 6 — LEGAL & SPONSORS ══ -->
+  <div class="slide" id="s6">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Legal & Patrocinadores</div>
+    <div class="slide-title">Estructura <span class="accent">profesional</span></div>
+    <div class="slide-subtitle">Cumplimiento legal colombiano + sistema de patrocinio de 4 niveles</div>
+    <div class="grid-2" style="flex:1">
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div style="font-size:.72rem;font-weight:700;color:var(--purple);letter-spacing:.1em;text-transform:uppercase">⚖️ Páginas Legales</div>
+        <div class="legal-card">
+          <div class="legal-title">Términos y Condiciones</div>
+          <div class="legal-file">📄 terminos.html</div>
+          <div class="legal-desc">Condiciones de compra, reembolsos y responsabilidades del organizador ante la ley colombiana.</div>
+        </div>
+        <div class="legal-card">
+          <div class="legal-title">Política de Privacidad</div>
+          <div class="legal-file">📄 politica.html</div>
+          <div class="legal-desc">Ley 1581 de 2012 — Habeas Data. Tratamiento de datos, finalidad y derechos del titular.</div>
+        </div>
+        <div class="legal-card" style="padding:.9rem 1rem">
+          <div style="font-size:.78rem;color:var(--muted)">❓ FAQ integrada — Preguntas frecuentes sobre tickets, programa y acceso al evento.</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div style="font-size:.72rem;font-weight:700;color:var(--purple);letter-spacing:.1em;text-transform:uppercase">🤝 Niveles de Patrocinio</div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem">
+          <div><div style="font-size:.85rem;font-weight:700;color:#CBD5E1">🥈 Platino</div><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">Stand 16M² · 3 Diamante Black + 35 Gen</div></div>
+        </div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem">
+          <div><div style="font-size:.85rem;font-weight:700;color:#FCD34D">🥇 Oro</div><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">Stand 9M² · 1 Diamante Black + 20 Gen</div></div>
+        </div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem">
+          <div><div style="font-size:.85rem;font-weight:700;color:#94A3B8">🥉 Plata</div><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">Stand 4M² · 1 Diamante + 10 Gen</div></div>
+        </div>
+        <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.2rem">
+          <div><div style="font-size:.85rem;font-weight:700;color:#CD7F32">🎖️ Bronce</div><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem">Visibilidad digital · 2 entradas Generales</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SLIDE 7 — CIERRE ══ -->
+  <div class="slide" id="s7">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="slide-badge">Estado Actual</div>
+    <div class="slide-title">Listo para el <span class="accent">Summit</span></div>
+    <div class="status-live"><span class="status-dot"></span> Sitio en producción — labssummit.com</div>
+    <div style="position:relative;z-index:1;max-width:640px">
+      <ul class="check-list">
+        <li>11+ speakers con fotos y flip cards</li>
+        <li>Tickets con 4 niveles diferenciados</li>
+        <li>Descripción completa del Mastermind</li>
+        <li>Programa 3 días estructurado</li>
+        <li>Día de Gala depurado</li>
+        <li>Responsive móvil completo (iOS + Android)</li>
+        <li>Meta Pixel activo para remarketing</li>
+        <li>Páginas legales publicadas</li>
+        <li>Sistema de patrocinadores 4 niveles</li>
+        <li>Audio ambiental integrado</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  slides.forEach((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n, dir = 1) {
+    if (n === current) return;
+    const prev = current;
+    current = Math.max(0, Math.min(total - 1, n));
+
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add(dir >= 0 ? 'exit-left' : '');
+    setTimeout(() => slides[prev].classList.remove('exit-left'), 500);
+
+    // reset animations by forcing reflow
+    slides[current].querySelectorAll('.card,.kpi,.tl-item,.ticket,.tech-card,.sp-chip,.legal-card,.step-row')
+      .forEach(el => { el.style.animation='none'; el.offsetHeight; el.style.animation='' });
+
+    slides[current].classList.add('active');
+
+    // update UI
+    document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===current));
+    document.getElementById('cur').textContent = current + 1;
+    document.getElementById('progress-bar').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1, 1));
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1, -1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); goTo(current + 1, 1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goTo(current - 1, -1); }
+  });
+
+  // Swipe support
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, {passive:true});
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 50) goTo(dx > 0 ? current + 1 : current - 1, dx > 0 ? 1 : -1);
+  });
+
+  // Init progress
+  document.getElementById('progress-bar').style.width = (1/total*100) + '%';
+  document.getElementById('tot').textContent = total;
+</script>
+</body>
+</html>

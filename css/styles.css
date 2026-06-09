@@ -406,8 +406,14 @@ section{padding:6rem 4rem;position:relative}
 }
 .tc-price span{font-size:1rem;font-weight:500;color:var(--gray)}
 .tc-features{list-style:none;text-align:left;margin:1rem 0;display:flex;flex-direction:column;gap:.5rem;flex:1}
-.tc-features li{font-size:.78rem;color:var(--gray);display:flex;gap:.5rem;align-items:center}
+.tc-features li{font-size:.78rem;color:var(--gray);display:flex;gap:.5rem;align-items:flex-start;line-height:1.4}
 .tc-features li::before{content:'✓';color:var(--purple);font-weight:700;flex-shrink:0}
+.tc-features li.has-desc{display:block}
+.tc-features li.has-desc::before{display:none}
+.tc-features li.has-desc .tc-feat-inner{display:flex;gap:.35rem;align-items:flex-start}
+.tc-features li.has-desc .tc-feat-check{color:var(--purple);font-weight:700;flex-shrink:0;font-size:.78rem}
+.tc-features li.has-desc .tc-feat-title{font-weight:600;font-size:.78rem;line-height:1.4}
+.tc-features li.has-desc .tc-feat-desc{display:block;font-size:.72rem;opacity:.75;line-height:1.45;margin-top:.3rem;padding-left:1.1rem}
 .tc-btn{
   width:100%;padding:.65rem;border-radius:100px;
   font-size:.8rem;font-weight:700;cursor:pointer;
@@ -1749,25 +1755,4 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   color:#6d28d9;
 }
 
-/* ── Price urgency design ── */
-.tc-price-wrap{
-  display:flex;flex-direction:column;align-items:center;gap:.4rem;
-  margin:.6rem 0;
-}
-.tc-price{
-  font-size:2.2rem;font-weight:900;color:var(--white);
-  letter-spacing:-.02em;line-height:1;
-}
-.tc-price-next{
-  font-size:.78rem;font-weight:600;
-  color:rgba(255,255,255,.9);
-  background:rgba(239,68,68,.22);
-  border:1px solid rgba(239,68,68,.55);
-  border-radius:20px;
-  padding:.35rem 1rem;
-  letter-spacing:.01em;
-}
-.tc-price-next strong{
-  color:#ff6b6b;
-  font-weight:800;
-}
+/* ── Price urgency d
