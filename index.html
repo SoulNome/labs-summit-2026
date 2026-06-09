@@ -811,7 +811,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
           <li><span class="ddl-icon">🌙</span><div><div class="ddl-text">7:30 PM — Apertura de puertas</div><div class="ddl-sub">Registro, acreditación y welcome drink</div></div></li>
           <li><span class="ddl-icon">🎤</span><div><div class="ddl-text">Keynote Inaugural</div><div class="ddl-sub">Discurso de apertura y presentación de aliados</div></div></li>
           <li><span class="ddl-icon">🤝</span><div><div class="ddl-text">Vitrina de Sponsors</div><div class="ddl-sub">Exposición y networking con marcas aliadas</div></div></li>
-          <li><span class="ddl-icon">🍽️</span><div><div class="ddl-text">Ruta Gastronómica — Stands</div><div class="ddl-sub">Experiencia culinaria incluida con tu acceso</div></div></li>
           <li><span class="ddl-icon">🍷</span><div><div class="ddl-text">Cóctel Oficial</div><div class="ddl-sub">Cierre de gala con networking VIP</div></div></li>
         </ul>
       </div>
@@ -821,7 +820,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <h4>Día de Gala</h4>
         <p>El evento que conecta al ecosistema tech de los mas grandes actores del sector privado y público. Una noche que marca el inicio de algo extraordinario.</p>
         <div class="day-atmo-pill"><span>👔</span> Cocktail attire / elgant chic</div>
-        <div class="day-atmo-pill" style="margin-top:.6rem"><span>🍽️</span> Ruta Gastronómica · Stands incluidos</div>
         <div class="day-atmo-pill" style="margin-top:.6rem"><span>🍷</span> Cóctel VIP · Welcome drink</div>
       </div>
     </div>
@@ -961,7 +959,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <ul class="tc-features">
         <li>Todo lo del Diamante</li>
         <li>Acceso completo 3 días</li>
-        <li>Mastermind Día 3 (exclusivo)</li>
+        <li>Mastermind Día 3 (exclusivo)<br><small style="font-weight:400;opacity:.8;font-size:.78em">Mastermind exclusivo de implementación: trabaja junto a expertos en estrategias reales de crecimiento, Inteligencia Artificial y eCommerce que podrás aplicar inmediatamente en tu negocio.</small></li>
         <li>Experiencia más exclusiva del evento</li>
       </ul>
       <button class="tc-btn" style="background:linear-gradient(135deg,#6d28d9,#A855F7);color:#fff;border-color:transparent;box-shadow:0 0 30px rgba(168,85,247,.4)">Registrarme →</button>
@@ -1194,6 +1192,27 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
             <div class="sp-back-name">Faider Altamar</div>
             <p class="sp-back-bio">Mentor en negocios digitales, Ecommerce, SaaS e IA. CEO de proyectos escalables y creador de comunidades de crecimiento.</p>
             <div class="sp-back-topics"><span>Ecommerce</span><span>SaaS</span><span>IA</span></div>
+            <div class="sp-back-close">↺ Toca para volver</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mike Munzvil -->
+      <div class="sp-card featured reveal" role="listitem">
+        <div class="sp-inner">
+          <div class="sp-front">
+            <img class="sp-bg" src="/speakers/mike-munzvil.png" alt="Mike Munzvil">
+            <div class="sp-gradient"></div><div class="sp-tint"></div>
+            <div class="sp-category">🚀 Negocios Digitales</div>
+            <div class="sp-info">
+              <div class="sp-name">Mike Munzvil</div>
+              <div class="sp-subtitle">Estrategia · IA · eCommerce</div>
+            </div>
+          </div>
+          <div class="sp-back">
+            <div class="sp-back-name">Mike Munzvil</div>
+            <p class="sp-back-bio">Referente en negocios digitales en Latinoamérica. Experto en estrategias de crecimiento, Inteligencia Artificial y eCommerce.</p>
+            <div class="sp-back-topics"><span>IA</span><span>eCommerce</span><span>Crecimiento</span></div>
             <div class="sp-back-close">↺ Toca para volver</div>
           </div>
         </div>
@@ -2776,40 +2795,4 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
     track.style.animation = '';
     track.style.animationPlayState = '';
     var wrapper = track.parentElement;
-    wrapper.addEventListener('mouseenter', function(){ track.classList.add('paused'); });
-    wrapper.addEventListener('mouseleave', function(){
-      if(!track.querySelector('.sp-card.flipped')) track.classList.remove('paused');
-    });
-    return track;
-  }
-
-  var tracks = [
-    initTrack('sp-carousel-track-1'),
-    initTrack('sp-carousel-track-2')
-  ].filter(Boolean);
-
-  function syncPause(){
-    tracks.forEach(function(t){
-      t.classList.toggle('paused', !!t.querySelector('.sp-card.flipped'));
-    });
-  }
-
-  document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
-    card.addEventListener('click', function(){
-      card.classList.toggle('flipped');
-      syncPause();
-    });
-    var btn = card.querySelector('.sp-back-close');
-    if(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        card.classList.remove('flipped');
-        syncPause();
-      });
-    }
-  });
-})();
-</script>
-
-</body>
-</html>
+    wrapper.
