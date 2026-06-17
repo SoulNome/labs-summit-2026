@@ -2812,4 +2812,66 @@ function showAliResult(){
     'Puedo decidir: '+aliAnswers[4]+'.'
   );
   document.getElementById('ali-wa-btn').onclick = function(){
-    window.open('https
+    window.open('https://wa.me/57XXXXXXXXXX?text='+msg, '_blank');
+  };
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAliado(); });
+</script>
+
+<!-- ══ SPEAKER CARD FLIP + CAROUSEL ══ -->
+<script>
+(function(){
+  function initTrack(id){
+    var track = document.getElementById(id);
+    if(!track) return null;
+    // Pausar antes de clonar para evitar flash en móvil
+    track.style.animationPlayState = 'paused';
+    Array.from(track.children).forEach(function(c){
+      var clone = c.cloneNode(true);
+      clone.setAttribute('aria-hidden','true');
+      track.appendChild(clone);
+    });
+    // Reiniciar animación con el ancho correcto (doble tras clonar)
+    track.getBoundingClientRect();
+    track.style.animation = 'none';
+    track.getBoundingClientRect();
+    track.style.animation = '';
+    track.style.animationPlayState = '';
+    var wrapper = track.parentElement;
+    wrapper.addEventListener('mouseenter', function(){ track.classList.add('paused'); });
+    wrapper.addEventListener('mouseleave', function(){
+      if(!track.querySelector('.sp-card.flipped')) track.classList.remove('paused');
+    });
+    return track;
+  }
+
+  var tracks = [
+    initTrack('sp-carousel-track-1'),
+    initTrack('sp-carousel-track-2')
+  ].filter(Boolean);
+
+  function syncPause(){
+    tracks.forEach(function(t){
+      t.classList.toggle('paused', !!t.querySelector('.sp-card.flipped'));
+    });
+  }
+
+  document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
+    card.addEventListener('click', function(){
+      card.classList.toggle('flipped');
+      syncPause();
+    });
+    var btn = card.querySelector('.sp-back-close');
+    if(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        card.classList.remove('flipped');
+        syncPause();
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
