@@ -384,6 +384,7 @@ section{padding:6rem 4rem;position:relative}
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,rgba(168,85,247,.04),transparent);
   opacity:0;transition:opacity .3s;
+  pointer-events:none;
 }
 .ticket-card:hover,.ticket-card.selected{
   border-color:var(--purple);
@@ -1771,6 +1772,4 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   color:rgba(255,255,255,.75);
   letter-spacing:.01em;
 }
-.tc-price-next strong{
-  color:#fff;
-  fo
+.tc-price-next stro
