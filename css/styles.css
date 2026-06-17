@@ -377,8 +377,9 @@ section{padding:6rem 4rem;position:relative}
   border:2px solid rgba(168,85,247,.12);
   text-align:center;cursor:pointer;
   transition:all .35s;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
+  display:flex;flex-direction:column;align-items:center;
 }
+.ticket-card>*:not(.tc-exclusive):not(.tc-hot){align-self:stretch}
 .ticket-card::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,rgba(168,85,247,.04),transparent);
@@ -1773,3 +1774,4 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   color:#fff;
   font-weight:700;
 }
+                                      
