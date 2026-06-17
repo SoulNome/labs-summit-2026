@@ -416,6 +416,7 @@ section{padding:6rem 4rem;position:relative}
 .tc-features li.has-desc .tc-feat-title{font-weight:600;font-size:.78rem;line-height:1.4}
 .tc-features li.has-desc .tc-feat-desc{display:block;font-size:.72rem;opacity:.75;line-height:1.45;margin-top:.3rem;padding-left:1.1rem}
 .tc-btn{
+  display:block;text-align:center;text-decoration:none;
   width:100%;padding:.65rem;border-radius:100px;
   font-size:.8rem;font-weight:700;cursor:pointer;
   border:2px solid var(--purple);color:var(--purple);
@@ -1772,7 +1773,4 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 }
 .tc-price-next strong{
   color:#fff;
-  font-weight:700;
-}
-
-/* ── Ticket card color variants
+  fo
