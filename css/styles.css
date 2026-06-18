@@ -1772,4 +1772,39 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   color:rgba(255,255,255,.75);
   letter-spacing:.01em;
 }
-.tc-price-next stro
+.tc-price-next strong{
+  color:#fff;
+  font-weight:700;
+}
+
+/* ── Ticket card color variants ── */
+/* Purple — General */
+.tc-purple{border-color:rgba(168,85,247,.45)!important}
+.tc-purple .tc-tier{color:rgba(168,85,247,.85)}
+.tc-purple .tc-features li::before{color:#A855F7}
+.tc-purple .tc-btn{background:var(--purple)!important;color:#fff!important;border-color:transparent!important}
+.tc-purple:hover,.tc-purple.selected{box-shadow:0 20px 50px rgba(168,85,247,.3)!important}
+
+/* Indigo — VIP */
+.tc-indigo{border-color:rgba(99,102,241,.5)!important;background:rgba(5,6,45,.85)!important}
+.tc-indigo .tc-etapa{color:rgba(165,180,252,.9);background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.3)}
+.tc-indigo .tc-tier{color:#A5B4FC}
+.tc-indigo .tc-features li::before{color:#818CF8}
+.tc-indigo .tc-btn{background:#4F46E5!important;color:#fff!important;border-color:transparent!important}
+.tc-indigo:hover,.tc-indigo.selected{border-color:rgba(99,102,241,.85)!important;box-shadow:0 20px 50px rgba(99,102,241,.28)!important}
+
+/* Teal — Diamante */
+.tc-teal{border-color:rgba(20,184,166,.5)!important;background:rgba(2,20,18,.85)!important}
+.tc-teal .tc-etapa{color:rgba(45,212,191,.9);background:rgba(20,184,166,.12);border-color:rgba(20,184,166,.3)}
+.tc-teal .tc-tier{color:#2DD4BF}
+.tc-teal .tc-features li::before{color:#2DD4BF}
+.tc-teal .tc-btn{background:#0F766E!important;color:#fff!important;border-color:transparent!important}
+.tc-teal:hover,.tc-teal.selected{border-color:rgba(20,184,166,.85)!important;box-shadow:0 20px 50px rgba(20,184,166,.25)!important}
+
+/* Gold — Diamante Black */
+.tc-gold{border-color:rgba(245,158,11,.55)!important;background:rgba(20,10,0,.88)!important}
+.tc-gold .tc-etapa{color:rgba(251,191,36,.9);background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)}
+.tc-gold .tc-tier{color:#FBBF24!important}
+.tc-gold .tc-features li::before{color:#FBBF24}
+.tc-gold .tc-btn{background:linear-gradient(135deg,#92400e,#d97706)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 0 25px rgba(245,158,11,.3)!important}
+.tc-gold:hover,.tc-gold.selected{border-color:rgba(245,158,11,.85)!important;box-shadow:0 20px 50px rgba(245,158,11,.22)!important}
