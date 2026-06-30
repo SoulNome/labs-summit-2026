@@ -1806,6 +1806,6 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 .tc-gold .tc-etapa{color:rgba(251,191,36,.9);background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3)}
 .tc-gold .tc-tier{color:#FBBF24!important}
 .tc-gold .tc-features li::before{color:#FBBF24}
-.tc-gold .tc-feat-check{color:#FBBF24}
+.tc-gold .tc-feat-check{color:#FBBF24!important}
 .tc-gold .tc-btn{background:linear-gradient(135deg,#92400e,#d97706)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 0 25px rgba(245,158,11,.3)!important}
 .tc-gold:hover,.tc-gold.selected{border-color:rgba(245,158,11,.85)!important;box-shadow:0 20px 50px rgba(245,158,11,.22)!important}
