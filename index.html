@@ -2807,6 +2807,7 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
     // Pausar antes de clonar para evitar flash en móvil
     track.style.animationPlayState = 'paused';
     Array.from(track.children).forEach(function(c){
+      c.classList.add('vis');
       var clone = c.cloneNode(true);
       clone.setAttribute('aria-hidden','true');
       clone.classList.add('vis');
