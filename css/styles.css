@@ -1179,6 +1179,51 @@ body{background:var(--bg)}
 /* Section divider glow line */
 section+section::before{content:'';display:block;position:absolute;top:0;left:5%;right:5%;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.18),transparent);pointer-events:none}
 
+/* ── TABLET — iPad portrait & landscape (769px – 1100px) ── */
+@media(min-width:769px) and (max-width:1100px){
+  /* Sección: menos padding lateral */
+  section{padding:5rem 2.5rem}
+  #hero{padding:7rem 2rem 4rem}
+
+  /* Nav: fuente más pequeña, menos gap */
+  nav{padding:1rem 2rem}
+  .nav-links{gap:1rem}
+  .nav-links a{font-size:.78rem}
+  .scd-right{display:none}
+
+  /* Hero */
+  .hero-title{font-size:clamp(3.5rem,9vw,8rem)}
+  .hero-summit{font-size:clamp(.9rem,2.8vw,2.2rem)}
+  .hero-year{font-size:clamp(2.2rem,5.5vw,5rem)}
+
+  /* ── TICKETS: 2 columnas en lugar de 4 ── */
+  .ranking-podium{
+    grid-template-columns:repeat(2,1fr);
+    gap:1.2rem;
+    max-width:700px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .ticket-card{padding:1.8rem 1.5rem}
+  .tc-price{font-size:1.9rem}
+  .tc-price-next{font-size:.63rem}
+  .tc-rank{font-size:1.8rem}
+  .tc-name{font-size:1.1rem}
+
+  /* Agenda: 1 columna en tablet portrait */
+  .day-panel.active{grid-template-columns:1fr;gap:1.5rem}
+  .day-selector{grid-template-columns:repeat(3,1fr)}
+
+  /* Stands */
+  .stands-section{grid-template-columns:1fr 1fr}
+
+  /* Speakers mini grid */
+  .speakers-mini-grid{grid-template-columns:repeat(3,1fr)}
+
+  /* Galería */
+  .cflow-wrap{height:380px;perspective:1000px}
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
   nav{padding:1rem 1.5rem;height:56px}
