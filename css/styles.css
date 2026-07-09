@@ -771,6 +771,11 @@ section{padding:6rem 4rem;position:relative}
   from{transform:translateX(0)}
   to{transform:translateX(-50%)}
 }
+@keyframes tickerScrollReverse{
+  from{transform:translateX(-50%)}
+  to{transform:translateX(0)}
+}
+.ticker-reverse .ticker-track{animation-name:tickerScrollReverse}
 
 /* Individual card — Apple glass + cult-ui minimal */
 .ticker-card{
