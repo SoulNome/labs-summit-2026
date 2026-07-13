@@ -700,19 +700,6 @@ section{padding:6rem 4rem;position:relative}
 .sp-card.featured .sp-tint{opacity:.55}
 .sp-card.featured:hover .sp-tint{opacity:.85}
 
-/* Cristóbal — fondo negro */
-.sp-gradient-black{
-  background:linear-gradient(to top,rgba(0,0,0,1) 0%,rgba(0,0,0,.9) 30%,rgba(0,0,0,.5) 58%,transparent 80%)!important;
-}
-.sp-tint-black{background:rgba(0,0,0,.32)!important}
-.sp-dark-card:not(.flipped):hover .sp-tint-black{opacity:.7!important}
-.sp-back-black{
-  background:linear-gradient(160deg,#0a0a0a 0%,#111 60%,#000 100%)!important;
-  border-color:rgba(255,255,255,.12)!important;
-}
-.sp-back-black .sp-back-topics span{
-  color:#e0e0e0;background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.18);
-}
 
 /* Mystery locked card */
 .sp-card.mystery-locked{
