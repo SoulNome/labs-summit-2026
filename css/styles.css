@@ -241,13 +241,14 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
   align-items:stretch;   /* las 3 tarjetas con la misma altura */
 }
 .hero-learn-item{
-  /* Grid interno: título arriba, descripción abajo — SIEMPRE apilados.
-     La fila 1 es auto y la 2 toma el resto, así los textos de las
-     3 tarjetas quedan alineados aunque tengan distinto largo. */
-  display:grid;
-  grid-template-rows:auto 1fr;
-  gap:.4rem;
-  padding:clamp(.95rem,1.3vw,1.15rem) clamp(1rem,1.4vw,1.2rem);
+  /* Columna centrada. El contenido se agrupa al centro como un bloque
+     compacto, así las 3 tarjetas se leen parejas aunque el texto
+     tenga distinto largo. */
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(1.1rem,1.5vw,1.35rem) clamp(1rem,1.4vw,1.25rem);
   text-align:center;
   background:rgba(168,85,247,.05);
   border:1px solid rgba(168,85,247,.18);
@@ -262,42 +263,46 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
   box-shadow:0 10px 28px rgba(168,85,247,.16);
 }
 .hero-learn-item .hl-title{
-  display:flex;align-items:center;justify-content:center;
+  display:block;
   font-family:'Inter',sans-serif;
-  font-size:clamp(.82rem,.95vw,.92rem);font-weight:800;
+  font-size:clamp(.84rem,.95vw,.94rem);font-weight:800;
   color:#F0EAFF;letter-spacing:-.01em;line-height:1.3;
-  /* Reserva 2 líneas: aunque un título sea corto y otro largo,
-     la línea divisoria queda a la misma altura en las 3 tarjetas */
-  min-height:2.6em;
-  text-align:center;
-  padding-bottom:.4rem;
-  border-bottom:1px solid rgba(168,85,247,.16);
+  margin:0;
 }
+/* Acento de ancho FIJO y centrado.
+   A diferencia de un border-bottom (que se estira al ancho de la tarjeta),
+   este mide siempre lo mismo en las 3 → alineación perfecta. */
+.hero-learn-item .hl-title::after{
+  content:'';display:block;
+  width:26px;height:2px;border-radius:2px;
+  margin:.6rem auto .55rem;
+  background:linear-gradient(90deg,rgba(168,85,247,.15),#A855F7,rgba(168,85,247,.15));
+  transition:width .32s cubic-bezier(.23,1,.32,1),opacity .32s;
+}
+.hero-learn-item:hover .hl-title::after{width:40px}
 .hero-learn-item .hl-desc{
   display:block;
-  font-size:clamp(.7rem,.8vw,.77rem);font-weight:500;
-  color:rgba(240,234,255,.55);line-height:1.45;
-  align-self:center;
+  font-size:clamp(.71rem,.8vw,.78rem);font-weight:500;
+  color:rgba(240,234,255,.55);line-height:1.5;
+  margin:0;
+  max-width:22ch;   /* evita líneas muy largas — mejor ritmo de lectura */
 }
 
 /* Tablet: 3 columnas más apretadas */
 @media(max-width:900px){
   .hero-learn-grid{gap:.55rem}
-  .hero-learn-item{padding:.85rem .8rem}
+  .hero-learn-item{padding:1rem .8rem}
+  .hero-learn-item .hl-title::after{margin:.5rem auto .45rem}
 }
-/* Móvil: 1 columna, apilado y centrado */
+/* Móvil: 1 columna, misma estructura pero más compacta */
 @media(max-width:640px){
   .hero-learn{margin-top:2rem;padding:0 .2rem}
   .hero-learn-label{font-size:.58rem;letter-spacing:.24em;margin-bottom:.9rem}
-  .hero-learn-grid{grid-template-columns:1fr;gap:.55rem}
-  .hero-learn-item{
-    grid-template-rows:auto auto;
-    padding:.9rem 1rem;
-    gap:.32rem;
-  }
-  /* En 1 columna no hace falta reservar 2 líneas */
-  .hero-learn-item .hl-title{font-size:.86rem;padding-bottom:.35rem;min-height:0}
-  .hero-learn-item .hl-desc{font-size:.74rem}
+  .hero-learn-grid{grid-template-columns:1fr;gap:.5rem}
+  .hero-learn-item{padding:.95rem 1rem}
+  .hero-learn-item .hl-title{font-size:.88rem}
+  .hero-learn-item .hl-title::after{width:22px;margin:.45rem auto .4rem}
+  .hero-learn-item .hl-desc{font-size:.76rem;max-width:none}
 }
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
