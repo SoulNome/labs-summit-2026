@@ -234,11 +234,14 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
   text-align:center;margin-bottom:1.1rem;
 }
 .hero-learn-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:clamp(.6rem,1vw,.9rem);
 }
 .hero-learn-item{
   display:flex;flex-direction:column;gap:.28rem;
-  padding:1rem 1.1rem;text-align:left;
+  padding:clamp(.85rem,1.2vw,1.05rem) clamp(.95rem,1.3vw,1.15rem);
+  text-align:left;
   background:rgba(168,85,247,.05);
   border:1px solid rgba(168,85,247,.16);
   border-radius:14px;
@@ -250,18 +253,18 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
   transform:translateY(-3px);
 }
 .hero-learn-item .hl-title{
-  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:800;
+  font-family:'Inter',sans-serif;
+  font-size:clamp(.8rem,.95vw,.9rem);font-weight:800;
   color:#F0EAFF;letter-spacing:-.01em;line-height:1.25;
 }
 .hero-learn-item .hl-desc{
-  font-size:.74rem;font-weight:500;color:rgba(240,234,255,.5);line-height:1.4;
+  font-size:clamp(.68rem,.8vw,.76rem);font-weight:500;
+  color:rgba(240,234,255,.5);line-height:1.4;
 }
 @media(max-width:768px){
-  .hero-learn{margin-top:2rem;padding:0 .5rem}
-  .hero-learn-grid{grid-template-columns:1fr;gap:.6rem}
-  .hero-learn-item{padding:.85rem 1rem;flex-direction:row;align-items:baseline;gap:.6rem;flex-wrap:wrap}
-  .hero-learn-item .hl-title{font-size:.84rem}
-  .hero-learn-item .hl-desc{font-size:.7rem}
+  .hero-learn{margin-top:2rem;padding:0 .3rem}
+  .hero-learn-grid{grid-template-columns:1fr;gap:.55rem}
+  .hero-learn-item{flex-direction:row;align-items:baseline;gap:.55rem;flex-wrap:wrap}
 }
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -469,18 +472,31 @@ section{padding:6rem 4rem;position:relative}
 #tickets{background:var(--bg2)}
 .ticket-intro{text-align:center;max-width:600px;margin:0 auto 3rem;color:var(--gray);font-size:.95rem;line-height:1.7}
 
+/* ══════════════════════════════════════════════════════
+   TICKETS — escala fluida
+   Una sola fuente de verdad. clamp() hace que todo crezca
+   y encoja suavemente con el ancho de pantalla, sin saltos
+   bruscos en los breakpoints.
+   ══════════════════════════════════════════════════════ */
 .ranking-podium{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:1.4rem;
-  margin-bottom:3rem;
+  /* auto-fit reacomoda solo: 4 → 3 → 2 → 1 columnas */
+  grid-template-columns:repeat(auto-fit,minmax(255px,1fr));
+  gap:clamp(.9rem,1.6vw,1.4rem);
+  margin:0 auto 3rem;
+  max-width:1240px;
+  align-items:stretch;
 }
 .ticket-card{
-  background:var(--white);border-radius:20px;padding:2rem 1.8rem;
+  background:var(--white);
+  border-radius:18px;
+  padding:clamp(1.3rem,2vw,1.9rem) clamp(1.1rem,1.7vw,1.6rem);
   border:2px solid rgba(168,85,247,.12);
   text-align:center;cursor:pointer;
-  transition:all .35s;position:relative;overflow:hidden;
+  position:relative;overflow:hidden;
   display:flex;flex-direction:column;align-items:center;
+  transition:border-color .35s,box-shadow .35s,
+             transform .35s cubic-bezier(.16,1,.3,1),background .35s;
 }
 .ticket-card>*:not(.tc-exclusive):not(.tc-hot){align-self:stretch}
 .ticket-card::before{
@@ -491,27 +507,56 @@ section{padding:6rem 4rem;position:relative}
 }
 .ticket-card:hover,.ticket-card.selected{
   border-color:var(--purple);
-  transform:translateY(-8px);
-  box-shadow:0 20px 50px rgba(168,85,247,.2);
+  transform:translateY(-6px);
+  box-shadow:0 20px 50px rgba(168,85,247,.22);
 }
 .ticket-card:hover::before,.ticket-card.selected::before{opacity:1}
 .ticket-card.featured{
   border-color:var(--purple);
   box-shadow:0 0 0 3px rgba(168,85,247,.35), 0 20px 50px rgba(168,85,247,.25);
 }
-.ticket-card.featured:hover{transform:translateY(-8px)}
-
-.tc-rank{font-size:2rem;margin-bottom:.5rem}
-.tc-tier{font-size:.62rem;font-weight:700;letter-spacing:.2em;color:var(--purple);text-transform:uppercase;margin-bottom:.4rem}
-.tc-name{font-family:'Inter',sans-serif;font-size:1.2rem;font-weight:800;color:var(--navy);margin-bottom:.3rem}
-.tc-days{font-size:.72rem;color:var(--gray);margin-bottom:1.2rem;font-weight:500}
-.tc-price{
-  font-family:'Inter',sans-serif;font-size:2rem;font-weight:900;color:var(--purple);
-  margin-bottom:.3rem;
+.ticket-card.featured:hover{transform:translateY(-6px)}
+/* En táctil el hover se queda "pegado" — lo desactivamos */
+@media(hover:none){
+  .ticket-card:hover{transform:none;box-shadow:none;border-color:rgba(168,85,247,.12)}
+  .ticket-card:hover::before{opacity:0}
 }
-.tc-price span{font-size:1rem;font-weight:500;color:var(--gray)}
-.tc-features{list-style:none;text-align:left;margin:1rem 0;display:flex;flex-direction:column;gap:.5rem;flex:1}
-.tc-features li{font-size:.78rem;color:var(--gray);display:flex;gap:.5rem;align-items:flex-start;line-height:1.4}
+
+.tc-rank{font-size:clamp(1.5rem,2vw,2rem);margin-bottom:.45rem}
+.tc-tier{
+  font-size:clamp(.55rem,.62vw,.62rem);font-weight:700;letter-spacing:.16em;
+  color:var(--purple);text-transform:uppercase;margin-bottom:.35rem;
+}
+.tc-name{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1rem,1.35vw,1.25rem);font-weight:800;
+  color:var(--navy);margin-bottom:.25rem;line-height:1.2;
+}
+/* «Hasta el 30 de julio» — es una nota, no un título */
+.tc-until{
+  font-size:clamp(.62rem,.72vw,.72rem);font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(240,234,255,.5);
+  margin:.15rem 0 .9rem;
+}
+.tc-days{
+  font-size:clamp(.64rem,.75vw,.74rem);color:var(--gray);
+  margin-bottom:.9rem;font-weight:500;
+}
+.tc-price{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1.6rem,2.4vw,2.15rem);
+  font-weight:900;color:var(--white);
+  letter-spacing:-.02em;line-height:1;
+  margin-bottom:.1rem;
+}
+.tc-price span{font-size:.5em;font-weight:500;color:var(--gray)}
+.tc-price-next{
+  font-size:clamp(.62rem,.75vw,.75rem);font-weight:500;
+  color:rgba(255,255,255,.72);letter-spacing:.01em;line-height:1.4;
+}
+.tc-features{list-style:none;text-align:left;margin:.9rem 0;display:flex;flex-direction:column;gap:.45rem;flex:1}
+.tc-features li{font-size:clamp(.72rem,.82vw,.8rem);color:var(--gray);display:flex;gap:.5rem;align-items:flex-start;line-height:1.45}
 .tc-features li::before{content:'✓';color:var(--purple);font-weight:700;flex-shrink:0}
 .tc-features li.has-desc{display:block}
 .tc-features li.has-desc::before{display:none}
@@ -1162,37 +1207,53 @@ footer{
 body{background:var(--bg)}
 
 /* Nav — glass */
-#navbar{position:fixed;top:0;left:0;right:0;height:62px;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(7,2,15,.88);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid rgba(168,85,247,.14)}
-.nav-brand{color:#F0EAFF}
-
-/* ── Nav links — pills legibles sobre fondo oscuro ── */
-.nav-links{gap:.4rem!important}
-.nav-links a{
-  color:rgba(240,234,255,.88)!important;
-  font-weight:600!important;
-  font-size:.8rem!important;
-  letter-spacing:.03em;
-  padding:.45rem .95rem;
-  border-radius:100px;
-  border:1px solid transparent;
-  position:relative;
-  transition:color .25s,background .25s,border-color .25s,transform .25s cubic-bezier(.23,1,.32,1);
+/* Grid de 3 columnas: los links quedan SIEMPRE centrados en la pantalla,
+   sin importar el ancho del logo o del botón de la derecha */
+#navbar{
+  position:fixed;top:0;left:0;right:0;height:62px;z-index:200;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 2rem;
+  background:rgba(7,2,15,.88);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(168,85,247,.14);
 }
-.nav-links a::after{
-  content:'';position:absolute;left:50%;bottom:.15rem;
-  width:0;height:2px;border-radius:2px;
-  background:linear-gradient(90deg,#A855F7,#E879F9);
-  transform:translateX(-50%);
-  transition:width .28s cubic-bezier(.23,1,.32,1);
+.nav-brand{color:#F0EAFF;justify-self:start}
+.nav-right{justify-self:end}
+
+/* ── Nav links — pills con contorno visible ── */
+.nav-links{
+  gap:.5rem!important;
+  justify-self:center;
+  margin:0;padding:0;
+  display:flex;align-items:center;
+}
+.nav-links a{
+  display:block;
+  color:rgba(240,234,255,.9)!important;
+  font-weight:600!important;
+  font-size:.78rem!important;
+  letter-spacing:.04em;
+  padding:.42rem 1.05rem;
+  border-radius:100px;
+  /* Contorno siempre visible */
+  border:1px solid rgba(168,85,247,.32);
+  background:rgba(168,85,247,.06);
+  position:relative;
+  white-space:nowrap;
+  transition:color .25s,background .25s,border-color .25s,
+             box-shadow .25s,transform .25s cubic-bezier(.23,1,.32,1);
 }
 .nav-links a:hover{
   color:#fff!important;
-  background:rgba(168,85,247,.14);
-  border-color:rgba(168,85,247,.42);
-  transform:translateY(-1px);
+  background:rgba(168,85,247,.2);
+  border-color:rgba(168,85,247,.75);
+  box-shadow:0 0 18px rgba(168,85,247,.3);
+  transform:translateY(-2px);
 }
-.nav-links a:hover::after{width:52%}
-.nav-links a:active{transform:translateY(0)}
+.nav-links a:active{transform:translateY(0);transition-duration:.08s}
+.nav-links a:focus-visible{outline:2px solid #E879F9;outline-offset:2px}
 
 /* Sticky bar stays dark (navy) — fine */
 
@@ -1355,34 +1416,17 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   section{padding:5rem 2.5rem}
   #hero{padding:7rem 2rem 4rem}
 
-  /* Nav: fuente más pequeña, menos gap */
-  nav{padding:1rem 2rem}
-  .nav-links{gap:.25rem!important}
-  .nav-links a{font-size:.74rem!important;padding:.4rem .7rem}
+  /* Nav: más compacto pero manteniendo el contorno */
+  #navbar{padding:0 1.4rem}
+  .nav-links{gap:.35rem!important}
+  .nav-links a{font-size:.72rem!important;padding:.38rem .75rem;letter-spacing:.02em}
   .scd-right{display:none}
 
   /* Hero */
   .hero-title{font-size:clamp(3.5rem,9vw,8rem)}
   .hero-summit{font-size:clamp(.9rem,2.8vw,2.2rem)}
   .hero-year{font-size:clamp(2.2rem,5.5vw,5rem)}
-  .hero-learn-grid{grid-template-columns:repeat(3,1fr);gap:.7rem}
-  .hero-learn-item{padding:.85rem .9rem}
-  .hero-learn-item .hl-title{font-size:.8rem}
-  .hero-learn-item .hl-desc{font-size:.68rem}
 
-  /* ── TICKETS: 2 columnas en lugar de 4 ── */
-  .ranking-podium{
-    grid-template-columns:repeat(2,1fr);
-    gap:1.2rem;
-    max-width:700px;
-    margin-left:auto;
-    margin-right:auto;
-  }
-  .ticket-card{padding:1.8rem 1.5rem}
-  .tc-price{font-size:1.9rem}
-  .tc-price-next{font-size:.63rem}
-  .tc-rank{font-size:1.8rem}
-  .tc-name{font-size:1.1rem}
 
   /* Agenda: 1 columna en tablet portrait */
   .day-panel.active{grid-template-columns:1fr;gap:1.5rem}
@@ -1400,7 +1444,8 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
-  nav{padding:1rem 1.5rem;height:56px}
+  /* Sin links: logo izquierda, CTA derecha */
+  #navbar{padding:0 1.2rem;height:56px;grid-template-columns:1fr auto}
   .nav-links{display:none}
   #sticky-cd{top:56px}
   .scd-right{display:none}
@@ -1426,12 +1471,9 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .day-selector{grid-template-columns:1fr}
   .days-bg-num{font-size:12rem;opacity:.5}
   .stands-section{grid-template-columns:1fr}
-  .ranking-podium{grid-template-columns:repeat(2,1fr);gap:1rem}
-  .ticket-card{transform:none!important;padding:1.6rem 1.3rem}
-  .tc-price{font-size:1.75rem}
-  .tc-price-next{font-size:.65rem}
+  .ticket-card{transform:none!important}
   /* Botón de compra: área táctil cómoda (min 44px) */
-  .tc-btn{padding:.85rem;font-size:.82rem;min-height:46px;display:flex;align-items:center;justify-content:center}
+  .tc-btn{padding:.85rem;min-height:46px;display:flex;align-items:center;justify-content:center}
   #journey-nav{display:none}
   footer{padding:2rem 1.5rem;flex-direction:column;align-items:center;text-align:center}
   /* Speakers: tablet */
@@ -1455,23 +1497,7 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
   section{padding:4rem 1rem}
-  /* Tickets: mobile — 1 columna */
-  .ranking-podium{
-    grid-template-columns:1fr;
-    gap:.9rem;
-    max-width:420px;
-    margin-left:auto;
-    margin-right:auto;
-  }
-  .ticket-card{padding:1.4rem 1.2rem}
-  .tc-rank{font-size:1.6rem;margin-bottom:.35rem}
-  .tc-name{font-size:1.05rem}
-  .tc-days{font-size:.68rem;margin-bottom:.9rem}
-  .tc-price{font-size:1.65rem}
-  .tc-price-next{font-size:.62rem;padding:.25rem .7rem;text-align:center;line-height:1.35}
-  .tc-features li{font-size:.74rem}
-  .tc-etapa{font-size:.56rem}
-  .tc-hot{font-size:.52rem;padding:.18rem .55rem}
+  .tc-price-next{text-align:center;line-height:1.35}
   /* Speakers: mobile */
   .sp-carousel-track .sp-card{width:min(270px,76vw)}
   .sp-carousel-track{gap:.85rem}
@@ -2059,23 +2085,13 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 }
 
 /* ── Price urgency design ── */
+/* NOTA: tipografía y tamaños viven en el bloque «TICKETS — escala fluida»
+   más abajo, para que no haya reglas duplicadas peleándose. */
 .tc-price-wrap{
-  display:flex;flex-direction:column;align-items:center;gap:.4rem;
-  margin:.6rem 0;
+  display:flex;flex-direction:column;align-items:center;gap:.35rem;
+  margin:.5rem 0 .2rem;
 }
-.tc-price{
-  font-size:2.2rem;font-weight:900;color:var(--white);
-  letter-spacing:-.02em;line-height:1;
-}
-.tc-price-next{
-  font-size:.78rem;font-weight:500;
-  color:rgba(255,255,255,.75);
-  letter-spacing:.01em;
-}
-.tc-price-next strong{
-  color:#fff;
-  font-weight:700;
-}
+.tc-price-next strong{color:#fff;font-weight:700}
 
 /* ── Ticket card color variants ── */
 /* Purple — General */
