@@ -680,10 +680,10 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 <!-- Journey nav dots -->
 <nav id="journey-nav" aria-label="Navegación de secciones">
   <div class="jn-dot active" data-section="hero"    data-label="Inicio"></div>
-  <div class="jn-dot"        data-section="days"    data-label="Días"></div>
   <div class="jn-dot"        data-section="tickets" data-label="Tickets"></div>
+  <div class="jn-dot"        data-section="days"    data-label="Días"></div>
   <div class="jn-dot"        data-section="speakers"data-label="Speakers"></div>
-  <div class="jn-dot"        data-section="venue"   data-label="Venue"></div>
+  <div class="jn-dot"        data-section="venue"   data-label="Ubicación"></div>
   <div class="jn-dot"        data-section="sponsors"data-label="Aliados"></div>
   <div class="jn-dot"        data-section="videos"   data-label="Videos"></div>
   <div class="jn-dot"        data-section="galeria"  data-label="Galería"></div>
@@ -694,14 +694,14 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 <nav id="navbar" role="navigation" aria-label="Menú principal">
   <div class="nav-brand">TULUÁ <span>LABS</span> SUMMIT</div>
   <ul class="nav-links">
-    <li><a href="#days">Días</a></li>
     <li><a href="#tickets">Tickets</a></li>
+    <li><a href="#days">Días</a></li>
     <li><a href="#speakers">Speakers</a></li>
     <!-- <li><a href="#videos">Videos</a></li> -->
     <li><a href="#faq">FAQ</a></li>
   </ul>
   <div class="nav-right">
-<button class="nav-cta" onclick="window.open('https://coccoa.xyz/labs-summit-2026-2/1','_blank')">Tickets</button>
+<button class="nav-cta" onclick="document.getElementById('tickets').scrollIntoView({behavior:'smooth'})">Tickets</button>
   </div>
 </nav>
 
@@ -722,30 +722,31 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   <audio id="imx-ambient" src="/audiopapkin-ambient-soundscapes-005-space-atmosphere-303244.mp3" preload="auto"></audio>
   <div class="hero-quote-area">
     <p class="hero-quote">
-      La mejor forma de predecir el futuro<br>
-      es <span class="hl">creándolo</span>
+      El evento presencial de transformación<br>
+      más grande del <span class="hl">Valle del Cauca</span>
     </p>
     <div class="jose-wave" id="jose-wave" aria-hidden="true">
       <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
   </div>
 
-  <div class="hero-meta" aria-label="Detalles del evento">
-    <div class="hero-meta-item"><span class="ico">🛒</span> Ecommerce Premium</div>
-    <div class="hero-meta-item"><span class="ico">👥</span> 500+ líderes</div>
-    <div class="hero-meta-item"><span class="ico">🎤</span> 15+ speakers</div>
-    <div class="hero-meta-item"><span class="ico">🗓️</span> 11 12 13 Sep · 3 días</div>
-  </div>
-
-  <!-- Refined countdown in hero -->
-  <div class="hero-cd-row" aria-label="Cuenta regresiva">
-    <div class="hcd-block"><span class="hcd-n" id="cd-days">--</span><span class="hcd-l">Días</span></div>
-    <span class="hcd-sep">:</span>
-    <div class="hcd-block"><span class="hcd-n" id="cd-hours">--</span><span class="hcd-l">Horas</span></div>
-    <span class="hcd-sep">:</span>
-    <div class="hcd-block"><span class="hcd-n" id="cd-mins">--</span><span class="hcd-l">Min</span></div>
-    <span class="hcd-sep">:</span>
-    <div class="hcd-block"><span class="hcd-n" id="cd-secs">--</span><span class="hcd-l">Seg</span></div>
+  <!-- Qué vas a aprender -->
+  <div class="hero-learn" aria-label="Qué vas a aprender">
+    <p class="hero-learn-label">Tres días para dominar</p>
+    <div class="hero-learn-grid">
+      <div class="hero-learn-item">
+        <span class="hl-title">Inteligencia Artificial</span>
+        <span class="hl-desc">Automatiza y escala tu negocio</span>
+      </div>
+      <div class="hero-learn-item">
+        <span class="hl-title">Comercio Digital</span>
+        <span class="hl-desc">Vende más con estrategias reales</span>
+      </div>
+      <div class="hero-learn-item">
+        <span class="hl-title">Networking de Alto Nivel</span>
+        <span class="hl-desc">Conecta con quienes ya lo lograron</span>
+      </div>
+    </div>
   </div>
 
   <!-- Experiencia inmersiva — Botón épico -->
@@ -772,6 +773,94 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   </div>
 </section>
 
+<!-- ══ TICKETS / RANKING ══ -->
+<section id="tickets">
+  <div style="text-align:center;max-width:700px;margin:0 auto">
+    <span class="s-label">Ranking de acceso</span>
+    <h2 class="s-title reveal">Elige tu <span class="ac">nivel</span></h2>
+    <p class="ticket-intro">Labs Summit no es un evento masivo — es una experiencia curada. Cada nivel de acceso está diseñado para conectarte con las personas y el conocimiento que necesitas para dar tu próximo salto.</p>
+  </div>
+
+  <div class="ranking-podium" role="list">
+    <!-- GENERAL (purple) -->
+    <div class="ticket-card tc-purple reveal" role="listitem" tabindex="0" aria-label="Ticket General">
+      <div class="tc-etapa">Etapa Creyentes</div>
+      <div class="tc-tier">Acceso · 3.500 cupos</div>
+      <div class="tc-name">General</div>
+      <div class="tc-days">Día 2 · Conferencias</div>
+      <div class="tc-price-wrap"><div class="tc-price">$129.000</div><div class="tc-price-next">↑ Sube a <strong>$149.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
+      <ul class="tc-features">
+        <li>Acceso Día 2 — Conferencias</li>
+        <li>15+ speakers nacionales e internacionales</li>
+        <li>Networking área general</li>
+      </ul>
+      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-general/20669" target="_blank" rel="noopener">Comprar ahora →</a>
+    </div>
+
+    <!-- VIP (indigo) -->
+    <div class="ticket-card tc-indigo reveal" role="listitem" tabindex="0" aria-label="Ticket VIP" style="transition-delay:.08s">
+      <div class="tc-etapa">Etapa Creyentes</div>
+      <div class="tc-tier">Acceso · 1.000 cupos</div>
+      <div class="tc-name">VIP</div>
+      <div class="tc-days">Día 2 · Conferencias</div>
+      <div class="tc-price-wrap"><div class="tc-price">$249.000</div><div class="tc-price-next">↑ Sube a <strong>$279.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
+      <ul class="tc-features">
+        <li>Acceso Día 2 — Conferencias</li>
+        <li>Zona preferencial — mejor ubicación</li>
+        <li>Networking premium</li>
+        <li>Kit de bienvenida</li>
+        <li>Snack incluido</li>
+      </ul>
+      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-entrada-vip/20669" target="_blank" rel="noopener">Comprar ahora →</a>
+    </div>
+
+    <!-- DIAMANTE (teal) -->
+    <div class="ticket-card tc-teal reveal" role="listitem" tabindex="0" aria-label="Ticket Diamante" style="transition-delay:.16s;position:relative;overflow:hidden">
+      <div class="tc-exclusive" style="background:linear-gradient(135deg,#0f766e,#2dd4bf)">Exclusivo</div>
+      <div class="tc-etapa">Etapa Creyentes</div>
+      <div class="tc-tier">Acceso · 300 cupos</div>
+      <div class="tc-name">Diamante</div>
+      <div class="tc-days">Día 2 · Conferencias</div>
+      <div class="tc-price-wrap"><div class="tc-price">$497.000</div><div class="tc-price-next">↑ Sube a <strong>$529.000</strong> si no compras ahora</div></div>
+      <div class="tc-name">Hasta el 30 de julio</div>
+      <ul class="tc-features">
+        <li>Todo lo del VIP</li>
+        <li>Acceso prioritario Día 2</li>
+        <li>Kit de bienvenida</li>
+        <li>Lunch matinal incluido</li>
+        <li>Snack incluido</li>
+        <li>Estación de café y agua ilimitados</li>
+        <li>Solo 300 cupos disponibles</li>
+      </ul>
+      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-diamante-dia-2/20669" target="_blank" rel="noopener">Comprar ahora →</a>
+    </div>
+
+    <!-- DIAMANTE BLACK (gold) -->
+    <div class="ticket-card tc-gold reveal" role="listitem" tabindex="0" aria-label="Ticket Diamante Black - máxima exclusividad" style="transition-delay:.24s;position:relative;overflow:hidden">
+      <div class="tc-exclusive" style="background:linear-gradient(135deg,#92400e,#d97706)">Ultra Exclusivo</div>
+      <div class="tc-tier">Máximo Acceso · 50–60 cupos</div>
+      <div class="tc-name" style="background:linear-gradient(135deg,#fbbf24,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Diamante Black</div>
+      <div class="tc-days">Día 1 + Día 2 + Día 3</div>
+      <div class="tc-price-wrap">
+        <div class="tc-price" style="background:linear-gradient(135deg,#fbbf24,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">$1.499.000</div>
+        <div class="tc-price-next">🔒 Cupos ultra limitados · 50–60 personas</div>
+      </div>
+      <div class="tc-name">Precio único · Sin etapas</div>
+      <ul class="tc-features">
+        <li>Todo lo del Diamante</li>
+        <li>Acceso completo 3 días</li>
+        <li>Kit de bienvenida</li>
+        <li class="has-desc"><div class="tc-feat-inner"><span class="tc-feat-check">✓</span><div><div class="tc-feat-title">Mastermind Día 3 (exclusivo)</div><div class="tc-feat-desc">Mastermind exclusivo de implementación: trabaja junto a expertos en estrategias reales de crecimiento, Inteligencia Artificial y eCommerce que podrás aplicar inmediatamente en tu negocio.</div></div></div></li>
+        <li>Experiencia más exclusiva del evento</li>
+      </ul>
+      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-diamante-black-dia-1--2/20669" target="_blank" rel="noopener">Comprar ahora →</a>
+    </div>
+  </div>
+
+</section>
+
 <!-- ══ DÍAS ══ -->
 <section id="days">
   <!-- Giant decorative bg number -->
@@ -784,7 +873,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 
   <!-- Day selector — 3 immersive cards -->
   <div class="day-selector" role="tablist">
-    <div class="day-sel-card active" role="tab" aria-selected="true" onclick="switchDay(1)">
+    <div class="day-sel-card active" data-day="1" role="tab" aria-selected="true" aria-controls="panel-1" onclick="switchDay(1)">
       <div class="dsc-name">Gala &amp; Sponsors</div>
       <div class="dsc-eyebrow">Día</div>
       <div class="dsc-num" style="font-size:7.2rem">01</div>
@@ -792,7 +881,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <span class="dsc-badge lock">🔒 Diamante Black</span>
       <div class="dsc-glow"></div>
     </div>
-    <div class="day-sel-card" role="tab" aria-selected="false" onclick="switchDay(2)">
+    <div class="day-sel-card" data-day="2" role="tab" aria-selected="false" aria-controls="panel-2" onclick="switchDay(2)">
       <div class="dsc-name">Conferencias</div>
       <div class="dsc-eyebrow">Día</div>
       <div class="dsc-num">02</div>
@@ -800,7 +889,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <span class="dsc-badge">Acceso Exploradores</span>
       <div class="dsc-glow"></div>
     </div>
-    <div class="day-sel-card" role="tab" aria-selected="false" onclick="switchDay(3)">
+    <div class="day-sel-card" data-day="3" role="tab" aria-selected="false" aria-controls="panel-3" onclick="switchDay(3)">
       <div class="dsc-name">Mastermind Exclusivo</div>
       <div class="dsc-eyebrow">Día</div>
       <div class="dsc-num">03</div>
@@ -838,7 +927,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <div class="day-atmo-tag">Noche de apertura</div>
         <h4>Día de Gala</h4>
         <p>El evento que conecta al ecosistema tech de los mas grandes actores del sector privado y público. Una noche que marca el inicio de algo extraordinario.</p>
-        <div class="day-atmo-pill"><span>👔</span> Cocktail attire / elgant chic</div>
+        <div class="day-atmo-pill"><span>👔</span> Cocktail attire / elegant chic</div>
         <div class="day-atmo-pill" style="margin-top:.6rem"><span>🍷</span> Cóctel VIP · Welcome drink</div>
       </div>
     </div>
@@ -895,94 +984,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       </div>
     </div>
   </div>
-</section>
-
-<!-- ══ TICKETS / RANKING ══ -->
-<section id="tickets">
-  <div style="text-align:center;max-width:700px;margin:0 auto">
-    <span class="s-label">Ranking de acceso</span>
-    <h2 class="s-title reveal">Elige tu <span class="ac">nivel</span></h2>
-    <p class="ticket-intro">Labs Summit no es un evento masivo — es una experiencia curada. Cada nivel de acceso está diseñado para conectarte con las personas y el conocimiento que necesitas para dar tu próximo salto.</p>
-  </div>
-
-  <div class="ranking-podium" role="list">
-    <!-- GENERAL (purple) -->
-    <div class="ticket-card tc-purple reveal" role="listitem" tabindex="0" aria-label="Ticket General">
-      <div class="tc-etapa">Etapa Creyentes</div>
-      <div class="tc-tier">Acceso · 3.500 cupos</div>
-      <div class="tc-name">General</div>
-      <div class="tc-days">Día 2 · Conferencias</div>
-      <div class="tc-price-wrap"><div class="tc-price">$129.000</div><div class="tc-price-next">↑ Sube a <strong>$149.000</strong> si no compras ahora</div></div>
-      <div class="tc-name">Hasta el 30 de julio</div>
-      <ul class="tc-features">
-        <li>Acceso Día 2 — Conferencias</li>
-        <li>15+ speakers nacionales e internacionales</li>
-        <li>Networking área general</li>
-      </ul>
-      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-2/1" target="_blank" rel="noopener">Comprar ahora →</a>
-    </div>
-
-    <!-- VIP (indigo) -->
-    <div class="ticket-card tc-indigo reveal" role="listitem" tabindex="0" aria-label="Ticket VIP" style="transition-delay:.08s">
-      <div class="tc-etapa">Etapa Creyentes</div>
-      <div class="tc-tier">Acceso · 1.000 cupos</div>
-      <div class="tc-name">VIP</div>
-      <div class="tc-days">Día 2 · Conferencias</div>
-      <div class="tc-price-wrap"><div class="tc-price">$249.000</div><div class="tc-price-next">↑ Sube a <strong>$279.000</strong> si no compras ahora</div></div>
-      <div class="tc-name">Hasta el 30 de julio</div>
-      <ul class="tc-features">
-        <li>Acceso Día 2 — Conferencias</li>
-        <li>Zona preferencial — mejor ubicación</li>
-        <li>Networking premium</li>
-        <li>Kit de bienvenida</li>
-        <li>Snack incluido</li>
-      </ul>
-      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-2/1" target="_blank" rel="noopener">Comprar ahora →</a>
-    </div>
-
-    <!-- DIAMANTE (teal) -->
-    <div class="ticket-card tc-teal reveal" role="listitem" tabindex="0" aria-label="Ticket Diamante" style="transition-delay:.16s;position:relative;overflow:hidden">
-      <div class="tc-exclusive" style="background:linear-gradient(135deg,#0f766e,#2dd4bf)">Exclusivo</div>
-      <div class="tc-etapa">Etapa Creyentes</div>
-      <div class="tc-tier">Acceso · 300 cupos</div>
-      <div class="tc-name">Diamante</div>
-      <div class="tc-days">Día 2 · Conferencias</div>
-      <div class="tc-price-wrap"><div class="tc-price">$497.000</div><div class="tc-price-next">↑ Sube a <strong>$529.000</strong> si no compras ahora</div></div>
-      <div class="tc-name">Hasta el 30 de julio</div>
-      <ul class="tc-features">
-        <li>Todo lo del VIP</li>
-        <li>Acceso prioritario Día 2</li>
-        <li>Kit de bienvenida</li>
-        <li>Lunch matinal incluido</li>
-        <li>Snack incluido</li>
-        <li>Estación de café y agua ilimitados</li>
-        <li>Solo 300 cupos disponibles</li>
-      </ul>
-      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-2/1" target="_blank" rel="noopener">Comprar ahora →</a>
-    </div>
-
-    <!-- DIAMANTE BLACK (gold) -->
-    <div class="ticket-card tc-gold reveal" role="listitem" tabindex="0" aria-label="Ticket Diamante Black - máxima exclusividad" style="transition-delay:.24s;position:relative;overflow:hidden">
-      <div class="tc-exclusive" style="background:linear-gradient(135deg,#92400e,#d97706)">Ultra Exclusivo</div>
-      <div class="tc-tier">Máximo Acceso · 50–60 cupos</div>
-      <div class="tc-name" style="background:linear-gradient(135deg,#fbbf24,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Diamante Black</div>
-      <div class="tc-days">Día 1 + Día 2 + Día 3</div>
-      <div class="tc-price-wrap">
-        <div class="tc-price" style="background:linear-gradient(135deg,#fbbf24,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">$1.499.000</div>
-        <div class="tc-price-next">🔒 Cupos ultra limitados · 50–60 personas</div>
-      </div>
-      <div class="tc-name">Precio único · Sin etapas</div>
-      <ul class="tc-features">
-        <li>Todo lo del Diamante</li>
-        <li>Acceso completo 3 días</li>
-        <li>Kit de bienvenida</li>
-        <li class="has-desc"><div class="tc-feat-inner"><span class="tc-feat-check">✓</span><div><div class="tc-feat-title">Mastermind Día 3 (exclusivo)</div><div class="tc-feat-desc">Mastermind exclusivo de implementación: trabaja junto a expertos en estrategias reales de crecimiento, Inteligencia Artificial y eCommerce que podrás aplicar inmediatamente en tu negocio.</div></div></div></li>
-        <li>Experiencia más exclusiva del evento</li>
-      </ul>
-      <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-2/1" target="_blank" rel="noopener">Comprar ahora →</a>
-    </div>
-  </div>
-
 </section>
 
 <!-- ══ SPEAKERS ══ -->
@@ -1421,14 +1422,52 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 
 <!-- ══ VENUE ══ -->
 <section id="venue" style="padding:4rem 0;background:#08041a">
-  <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
-    <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
-      <img src="/map/collage.png" alt="Render del venue Labs Summit 2026" style="width:100%;display:block">
+
+  <!-- ── RENDER DEL VENUE (oculto temporalmente — imágenes desactualizadas) ── -->
+  <div id="venue-render" style="display:none">
+    <div style="text-align:center;max-width:700px;margin:0 auto 2.5rem;padding:0 1.5rem">
+      <span class="s-label">El lugar</span>
+      <h2 class="s-title reveal">Así se vive <span class="ac">Labs Summit</span></h2>
+    </div>
+    <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
+      <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
+        <img src="/map/collage.png" alt="Render del venue Labs Summit 2026" style="width:100%;display:block">
+      </div>
+    </div>
+    <div style="max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem">
+      <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
+        <img src="/map/punto%20de%20informacionupdate.png" alt="Plano del recinto Labs Summit 2026" style="width:100%;display:block">
+      </div>
     </div>
   </div>
-  <div style="max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem">
-    <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
-      <img src="/map/punto%20de%20informacionupdate.png" alt="Plano del recinto Labs Summit 2026" style="width:100%;display:block">
+
+  <!-- ── UBICACIÓN — Google Maps ── -->
+  <div class="venue-loc">
+    <div style="text-align:center;max-width:700px;margin:0 auto 2rem">
+      <span class="s-label">Dónde nos vemos</span>
+      <h2 class="s-title reveal">Coliseo de Ferias <span class="ac">Manuel Victoria</span></h2>
+      <p class="venue-addr">Tuluá · Valle del Cauca · Colombia</p>
+    </div>
+
+    <div class="venue-map-wrap reveal">
+      <iframe
+        src="https://www.google.com/maps?q=Coliseo+de+Ferias+Manuel+Victoria,+Tulu%C3%A1,+Valle+del+Cauca,+Colombia&output=embed"
+        width="100%" height="420" style="border:0;display:block" allowfullscreen=""
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación del Coliseo de Ferias Manuel Victoria en Tuluá"></iframe>
+    </div>
+
+    <div class="venue-actions">
+      <a class="venue-btn primary"
+         href="https://www.google.com/maps/dir/?api=1&destination=Coliseo+de+Ferias+Manuel+Victoria,+Tulu%C3%A1,+Valle+del+Cauca,+Colombia"
+         target="_blank" rel="noopener">
+        <span>📍</span> Cómo llegar
+      </a>
+      <a class="venue-btn"
+         href="https://www.google.com/maps/search/?api=1&query=Coliseo+de+Ferias+Manuel+Victoria,+Tulu%C3%A1,+Valle+del+Cauca,+Colombia"
+         target="_blank" rel="noopener">
+        <span>🗺️</span> Ver en Google Maps
+      </a>
     </div>
   </div>
 </section>
@@ -3021,6 +3060,81 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
         syncPause();
       });
     }
+  });
+})();
+
+/* ── Días: acordeón en móvil / tabs en desktop ── */
+(function(){
+  var MQ = window.matchMedia('(max-width:768px)');
+  var selector = document.querySelector('.day-selector');
+  var panelsBox = document.querySelector('.day-panels');
+  if(!selector || !panelsBox) return;
+
+  var isAccordion = false;
+
+  function toAccordion(){
+    if(isAccordion) return;
+    selector.querySelectorAll('.day-sel-card').forEach(function(card){
+      var p = document.getElementById('panel-' + card.dataset.day);
+      if(p){
+        p.classList.add('as-accordion');
+        card.insertAdjacentElement('afterend', p);
+      }
+    });
+    document.body.classList.add('days-accordion');
+    isAccordion = true;
+  }
+
+  function toTabs(){
+    if(!isAccordion) return;
+    ['1','2','3'].forEach(function(n){
+      var p = document.getElementById('panel-' + n);
+      if(p){
+        p.classList.remove('as-accordion');
+        panelsBox.appendChild(p);
+      }
+    });
+    document.body.classList.remove('days-accordion');
+    isAccordion = false;
+  }
+
+  function sync(){ MQ.matches ? toAccordion() : toTabs(); }
+
+  sync();
+  if(MQ.addEventListener) MQ.addEventListener('change', sync);
+  else MQ.addListener(sync);
+
+  // En acordeón: volver a tocar la card activa la cierra
+  selector.addEventListener('click', function(e){
+    if(!isAccordion) return;
+    var card = e.target.closest('.day-sel-card');
+    if(!card) return;
+    // switchDay ya corrió por el onclick inline; si quedó activa y ya lo estaba, alternar
+    if(card.dataset.wasActive === 'yes'){
+      card.classList.remove('active');
+      var p = document.getElementById('panel-' + card.dataset.day);
+      if(p) p.classList.remove('active');
+    }
+    selector.querySelectorAll('.day-sel-card').forEach(function(c){
+      c.dataset.wasActive = c.classList.contains('active') ? 'yes' : 'no';
+    });
+  });
+})();
+
+/* ── Ripple en botones de compra ── */
+(function(){
+  document.querySelectorAll('.tc-btn').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      var rect = btn.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height);
+      var span = document.createElement('span');
+      span.className = 'tc-ripple';
+      span.style.width = span.style.height = size + 'px';
+      span.style.left = (e.clientX - rect.left - size/2) + 'px';
+      span.style.top  = (e.clientY - rect.top  - size/2) + 'px';
+      btn.appendChild(span);
+      setTimeout(function(){ span.remove(); }, 620);
+    });
   });
 })();
 </script>

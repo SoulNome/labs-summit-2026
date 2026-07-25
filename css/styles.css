@@ -223,6 +223,47 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
 .hero-meta-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:600;color:var(--gray)}
 .hero-meta-item .ico{font-size:1rem}
 
+/* ── Hero: qué vas a aprender ── */
+.hero-learn{
+  margin-top:2.4rem;max-width:860px;width:100%;
+  animation:fadeUp 1s ease .7s both;
+}
+.hero-learn-label{
+  font-size:.62rem;font-weight:700;letter-spacing:.3em;
+  color:rgba(168,85,247,.75);text-transform:uppercase;
+  text-align:center;margin-bottom:1.1rem;
+}
+.hero-learn-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;
+}
+.hero-learn-item{
+  display:flex;flex-direction:column;gap:.28rem;
+  padding:1rem 1.1rem;text-align:left;
+  background:rgba(168,85,247,.05);
+  border:1px solid rgba(168,85,247,.16);
+  border-radius:14px;
+  transition:background .3s,border-color .3s,transform .3s cubic-bezier(.23,1,.32,1);
+}
+.hero-learn-item:hover{
+  background:rgba(168,85,247,.1);
+  border-color:rgba(168,85,247,.4);
+  transform:translateY(-3px);
+}
+.hero-learn-item .hl-title{
+  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:800;
+  color:#F0EAFF;letter-spacing:-.01em;line-height:1.25;
+}
+.hero-learn-item .hl-desc{
+  font-size:.74rem;font-weight:500;color:rgba(240,234,255,.5);line-height:1.4;
+}
+@media(max-width:768px){
+  .hero-learn{margin-top:2rem;padding:0 .5rem}
+  .hero-learn-grid{grid-template-columns:1fr;gap:.6rem}
+  .hero-learn-item{padding:.85rem 1rem;flex-direction:row;align-items:baseline;gap:.6rem;flex-wrap:wrap}
+  .hero-learn-item .hl-title{font-size:.84rem}
+  .hero-learn-item .hl-desc{font-size:.7rem}
+}
+
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
@@ -305,6 +346,68 @@ section{padding:6rem 4rem;position:relative}
 .day-panel{display:none}
 .day-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;animation:dpSlide .55s cubic-bezier(.16,1,.3,1) both}
 @keyframes dpSlide{from{opacity:0;transform:translateX(32px) scale(.99)}to{opacity:1;transform:none}}
+
+/* ══ MODO ACORDEÓN (móvil) — panel se despliega bajo su card ══ */
+.day-panel.as-accordion{
+  display:block;
+  grid-template-columns:none!important;
+  max-height:0;opacity:0;overflow:hidden;
+  padding:0 1.2rem;
+  margin:0;
+  background:rgba(12,4,28,.6);
+  border:1px solid transparent;
+  border-radius:0 0 20px 20px;
+  border-top:none;
+  animation:none!important;
+  transition:max-height .5s cubic-bezier(.16,1,.3,1),
+             opacity .35s ease,
+             padding .4s ease,
+             margin .4s ease,
+             border-color .4s ease;
+}
+.day-panel.as-accordion.active{
+  display:block;
+  max-height:2600px;opacity:1;
+  padding:1.3rem 1.2rem 1.5rem;
+  margin:-14px 0 .7rem;
+  border-color:rgba(168,85,247,.28);
+  border-top:none;
+}
+/* Card activa se pega al panel abierto */
+.days-accordion .day-sel-card.active{
+  border-radius:20px 20px 0 0;
+  transform:none;
+  margin-bottom:0;
+  box-shadow:0 0 40px rgba(168,85,247,.14),inset 0 1px 0 rgba(168,85,247,.2);
+}
+.days-accordion .day-sel-card{transform:none!important;padding:1.3rem 1.3rem}
+.days-accordion .day-sel-card:hover{transform:none!important}
+/* Acordeón siempre en 1 columna, sin separación entre card y panel */
+.days-accordion .day-selector{
+  grid-template-columns:1fr!important;
+  gap:.7rem;
+  margin-top:2rem;
+}
+/* Indicador chevron */
+.days-accordion .day-sel-card::after{
+  content:'';position:absolute;right:1.4rem;top:1.7rem;
+  width:9px;height:9px;
+  border-right:2px solid rgba(168,85,247,.7);
+  border-bottom:2px solid rgba(168,85,247,.7);
+  transform:rotate(45deg);
+  transition:transform .38s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.days-accordion .day-sel-card.active::after{transform:rotate(-135deg)}
+/* Número gigante más discreto en acordeón */
+.days-accordion .dsc-num{font-size:2.6rem!important;margin-bottom:.35rem}
+.days-accordion .dsc-eyebrow{letter-spacing:.3em}
+/* Timeline y número decorativo estorban en móvil */
+.days-accordion .day-timeline{display:none}
+.days-accordion .days-bg-num{opacity:.18}
+/* Contenido interno del panel en acordeón */
+.day-panel.as-accordion .day-info{margin-bottom:1.1rem}
+.day-panel.as-accordion .day-atmo{margin-top:.9rem}
 
 .day-info h3{font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:1rem}
 .day-info p{color:var(--gray);line-height:1.75;font-size:.92rem;margin-bottom:1rem}
@@ -418,14 +521,48 @@ section{padding:6rem 4rem;position:relative}
 .tc-features li.has-desc .tc-feat-desc{display:block;font-size:.72rem;opacity:.75;line-height:1.45;margin-top:.3rem;padding-left:1.1rem}
 .tc-btn{
   display:block;text-align:center;text-decoration:none;
-  width:100%;padding:.65rem;border-radius:100px;
+  width:100%;padding:.72rem;border-radius:100px;
   font-size:.8rem;font-weight:700;cursor:pointer;
   border:2px solid var(--purple);color:var(--purple);
-  background:transparent;letter-spacing:.05em;transition:all .25s;
+  background:transparent;letter-spacing:.05em;
   margin-top:auto;
+  position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .28s,color .28s,border-color .28s,
+             transform .18s cubic-bezier(.34,1.56,.64,1),
+             box-shadow .28s;
 }
+/* Brillo que barre el botón al hover */
+.tc-btn::before{
+  content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:skewX(-20deg);transition:left .55s cubic-bezier(.23,1,.32,1);
+  pointer-events:none;
+}
+.tc-btn:hover::before{left:130%}
 .ticket-card.featured .tc-btn,.ticket-card.selected .tc-btn{background:var(--purple);color:#fff}
-.tc-btn:hover{background:var(--purple);color:#fff}
+.tc-btn:hover{
+  background:var(--purple);color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(168,85,247,.4);
+}
+/* Feedback al presionar — se hunde */
+.tc-btn:active{
+  transform:translateY(1px) scale(.97);
+  box-shadow:0 2px 8px rgba(168,85,247,.3);
+  transition-duration:.08s;
+}
+.tc-btn:focus-visible{
+  outline:2px solid #E879F9;outline-offset:3px;
+}
+/* Ripple al hacer click */
+.tc-btn .tc-ripple{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.5);
+  transform:scale(0);animation:tcRipple .6s ease-out;
+  pointer-events:none;
+}
+@keyframes tcRipple{to{transform:scale(4);opacity:0}}
 .tc-exclusive{
   position:absolute;top:1rem;right:-1.5rem;
   background:linear-gradient(135deg,var(--purple),var(--purple-dk));
@@ -1027,8 +1164,35 @@ body{background:var(--bg)}
 /* Nav — glass */
 #navbar{position:fixed;top:0;left:0;right:0;height:62px;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(7,2,15,.88);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid rgba(168,85,247,.14)}
 .nav-brand{color:#F0EAFF}
-.nav-links a{color:rgba(240,234,255,.42)}
-.nav-links a:hover{color:var(--purple)}
+
+/* ── Nav links — pills legibles sobre fondo oscuro ── */
+.nav-links{gap:.4rem!important}
+.nav-links a{
+  color:rgba(240,234,255,.88)!important;
+  font-weight:600!important;
+  font-size:.8rem!important;
+  letter-spacing:.03em;
+  padding:.45rem .95rem;
+  border-radius:100px;
+  border:1px solid transparent;
+  position:relative;
+  transition:color .25s,background .25s,border-color .25s,transform .25s cubic-bezier(.23,1,.32,1);
+}
+.nav-links a::after{
+  content:'';position:absolute;left:50%;bottom:.15rem;
+  width:0;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,#A855F7,#E879F9);
+  transform:translateX(-50%);
+  transition:width .28s cubic-bezier(.23,1,.32,1);
+}
+.nav-links a:hover{
+  color:#fff!important;
+  background:rgba(168,85,247,.14);
+  border-color:rgba(168,85,247,.42);
+  transform:translateY(-1px);
+}
+.nav-links a:hover::after{width:52%}
+.nav-links a:active{transform:translateY(0)}
 
 /* Sticky bar stays dark (navy) — fine */
 
@@ -1193,14 +1357,18 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 
   /* Nav: fuente más pequeña, menos gap */
   nav{padding:1rem 2rem}
-  .nav-links{gap:1rem}
-  .nav-links a{font-size:.78rem}
+  .nav-links{gap:.25rem!important}
+  .nav-links a{font-size:.74rem!important;padding:.4rem .7rem}
   .scd-right{display:none}
 
   /* Hero */
   .hero-title{font-size:clamp(3.5rem,9vw,8rem)}
   .hero-summit{font-size:clamp(.9rem,2.8vw,2.2rem)}
   .hero-year{font-size:clamp(2.2rem,5.5vw,5rem)}
+  .hero-learn-grid{grid-template-columns:repeat(3,1fr);gap:.7rem}
+  .hero-learn-item{padding:.85rem .9rem}
+  .hero-learn-item .hl-title{font-size:.8rem}
+  .hero-learn-item .hl-desc{font-size:.68rem}
 
   /* ── TICKETS: 2 columnas en lugar de 4 ── */
   .ranking-podium{
@@ -1262,6 +1430,8 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .ticket-card{transform:none!important;padding:1.6rem 1.3rem}
   .tc-price{font-size:1.75rem}
   .tc-price-next{font-size:.65rem}
+  /* Botón de compra: área táctil cómoda (min 44px) */
+  .tc-btn{padding:.85rem;font-size:.82rem;min-height:46px;display:flex;align-items:center;justify-content:center}
   #journey-nav{display:none}
   footer{padding:2rem 1.5rem;flex-direction:column;align-items:center;text-align:center}
   /* Speakers: tablet */
@@ -1308,6 +1478,25 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:40px}
   .speakers-mini-grid{grid-template-columns:1fr}
   .sp-mini{padding:.85rem 1rem}
+  /* Acordeón días: más compacto en pantallas chicas */
+  .days-accordion .day-sel-card{padding:1.1rem 1.1rem}
+  .days-accordion .dsc-num{font-size:2.2rem!important}
+  .days-accordion .dsc-name{font-size:.88rem}
+  .days-accordion .dsc-date{font-size:.58rem}
+  .day-panel.as-accordion.active{padding:1.1rem 1rem 1.3rem}
+  .day-panel.as-accordion .day-info h3{font-size:1.05rem;line-height:1.3}
+  .day-panel.as-accordion .day-info p{font-size:.82rem}
+  .day-panel.as-accordion .ddl-text{font-size:.8rem}
+  .day-panel.as-accordion .ddl-sub{font-size:.72rem}
+  .day-panel.as-accordion .method-title{font-size:.85rem}
+  .day-panel.as-accordion .method-desc{font-size:.75rem}
+}
+
+/* ── Respeta preferencia de movimiento reducido ── */
+@media(prefers-reduced-motion:reduce){
+  .tc-btn::before,.tc-ripple{display:none}
+  .day-panel.as-accordion{transition:opacity .2s ease}
+  .hero-learn-item,.venue-map-wrap,.venue-btn,.nav-links a{transition-duration:.01ms!important}
 }
 
 
@@ -1749,6 +1938,66 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .pt-cta .pt-name{font-size:1.05rem;letter-spacing:.05em}
   .pt-cta .pt-desc{font-size:.8rem;margin-top:.3rem}
   .pt-cta .pt-arrow{width:38px;height:38px;font-size:1rem;flex-shrink:0}
+}
+
+/* ══ VENUE — Ubicación / Google Maps ══ */
+.venue-loc{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+.venue-addr{
+  font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(240,234,255,.42);margin-top:.7rem;font-weight:600;
+}
+.venue-map-wrap{
+  border-radius:20px;overflow:hidden;
+  border:1px solid rgba(168,85,247,.22);
+  box-shadow:0 0 60px rgba(168,85,247,.1),0 24px 60px rgba(0,0,0,.5);
+  position:relative;
+  /* El mapa de Google viene claro — lo integramos al tema oscuro */
+  filter:grayscale(.35) contrast(1.05) brightness(.92);
+  transition:filter .45s ease,box-shadow .45s ease,transform .45s cubic-bezier(.16,1,.3,1);
+}
+.venue-map-wrap:hover{
+  filter:none;
+  box-shadow:0 0 80px rgba(168,85,247,.2),0 28px 70px rgba(0,0,0,.55);
+}
+.venue-map-wrap iframe{display:block;width:100%}
+.venue-actions{
+  display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;
+  margin-top:1.8rem;
+}
+.venue-btn{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.8rem 1.7rem;border-radius:100px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.82rem;font-weight:700;letter-spacing:.04em;
+  text-decoration:none;
+  color:#F0EAFF;
+  background:rgba(168,85,247,.08);
+  border:1.5px solid rgba(168,85,247,.3);
+  -webkit-tap-highlight-color:transparent;
+  transition:background .28s,border-color .28s,color .28s,
+             transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .28s;
+}
+.venue-btn:hover{
+  background:rgba(168,85,247,.18);
+  border-color:rgba(168,85,247,.65);
+  transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(168,85,247,.28);
+}
+.venue-btn:active{transform:translateY(1px) scale(.97);transition-duration:.08s}
+.venue-btn.primary{
+  background:linear-gradient(135deg,#A855F7,#6d28d9);
+  border-color:transparent;color:#fff;
+}
+.venue-btn.primary:hover{
+  box-shadow:0 10px 32px rgba(168,85,247,.5);
+  background:linear-gradient(135deg,#B96BFF,#7c3aed);
+}
+@media(max-width:768px){
+  .venue-map-wrap{border-radius:16px;filter:grayscale(.2) brightness(.95)}
+  .venue-map-wrap iframe{height:300px}
+  .venue-actions{flex-direction:column;gap:.6rem}
+  .venue-btn{width:100%;justify-content:center;padding:.9rem 1.4rem}
+  .venue-addr{font-size:.72rem;letter-spacing:.1em}
 }
 
 /* ── Aliados Oficiales grid ── */
