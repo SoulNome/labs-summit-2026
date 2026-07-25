@@ -225,46 +225,79 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
 
 /* ── Hero: qué vas a aprender ── */
 .hero-learn{
-  margin-top:2.4rem;max-width:860px;width:100%;
+  margin-top:2.4rem;
+  max-width:880px;width:100%;
   animation:fadeUp 1s ease .7s both;
 }
 .hero-learn-label{
   font-size:.62rem;font-weight:700;letter-spacing:.3em;
   color:rgba(168,85,247,.75);text-transform:uppercase;
-  text-align:center;margin-bottom:1.1rem;
+  text-align:center;margin-bottom:1.2rem;
 }
 .hero-learn-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
-  gap:clamp(.6rem,1vw,.9rem);
+  grid-template-columns:repeat(3,1fr);
+  gap:clamp(.65rem,1vw,.95rem);
+  align-items:stretch;   /* las 3 tarjetas con la misma altura */
 }
 .hero-learn-item{
-  display:flex;flex-direction:column;gap:.28rem;
-  padding:clamp(.85rem,1.2vw,1.05rem) clamp(.95rem,1.3vw,1.15rem);
-  text-align:left;
+  /* Grid interno: título arriba, descripción abajo — SIEMPRE apilados.
+     La fila 1 es auto y la 2 toma el resto, así los textos de las
+     3 tarjetas quedan alineados aunque tengan distinto largo. */
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:.4rem;
+  padding:clamp(.95rem,1.3vw,1.15rem) clamp(1rem,1.4vw,1.2rem);
+  text-align:center;
   background:rgba(168,85,247,.05);
-  border:1px solid rgba(168,85,247,.16);
+  border:1px solid rgba(168,85,247,.18);
   border-radius:14px;
-  transition:background .3s,border-color .3s,transform .3s cubic-bezier(.23,1,.32,1);
+  transition:background .3s,border-color .3s,
+             transform .3s cubic-bezier(.23,1,.32,1),box-shadow .3s;
 }
 .hero-learn-item:hover{
-  background:rgba(168,85,247,.1);
-  border-color:rgba(168,85,247,.4);
+  background:rgba(168,85,247,.11);
+  border-color:rgba(168,85,247,.45);
   transform:translateY(-3px);
+  box-shadow:0 10px 28px rgba(168,85,247,.16);
 }
 .hero-learn-item .hl-title{
+  display:flex;align-items:center;justify-content:center;
   font-family:'Inter',sans-serif;
-  font-size:clamp(.8rem,.95vw,.9rem);font-weight:800;
-  color:#F0EAFF;letter-spacing:-.01em;line-height:1.25;
+  font-size:clamp(.82rem,.95vw,.92rem);font-weight:800;
+  color:#F0EAFF;letter-spacing:-.01em;line-height:1.3;
+  /* Reserva 2 líneas: aunque un título sea corto y otro largo,
+     la línea divisoria queda a la misma altura en las 3 tarjetas */
+  min-height:2.6em;
+  text-align:center;
+  padding-bottom:.4rem;
+  border-bottom:1px solid rgba(168,85,247,.16);
 }
 .hero-learn-item .hl-desc{
-  font-size:clamp(.68rem,.8vw,.76rem);font-weight:500;
-  color:rgba(240,234,255,.5);line-height:1.4;
+  display:block;
+  font-size:clamp(.7rem,.8vw,.77rem);font-weight:500;
+  color:rgba(240,234,255,.55);line-height:1.45;
+  align-self:center;
 }
-@media(max-width:768px){
-  .hero-learn{margin-top:2rem;padding:0 .3rem}
+
+/* Tablet: 3 columnas más apretadas */
+@media(max-width:900px){
+  .hero-learn-grid{gap:.55rem}
+  .hero-learn-item{padding:.85rem .8rem}
+}
+/* Móvil: 1 columna, apilado y centrado */
+@media(max-width:640px){
+  .hero-learn{margin-top:2rem;padding:0 .2rem}
+  .hero-learn-label{font-size:.58rem;letter-spacing:.24em;margin-bottom:.9rem}
   .hero-learn-grid{grid-template-columns:1fr;gap:.55rem}
-  .hero-learn-item{flex-direction:row;align-items:baseline;gap:.55rem;flex-wrap:wrap}
+  .hero-learn-item{
+    grid-template-rows:auto auto;
+    padding:.9rem 1rem;
+    gap:.32rem;
+  }
+  /* En 1 columna no hace falta reservar 2 líneas */
+  .hero-learn-item .hl-title{font-size:.86rem;padding-bottom:.35rem;min-height:0}
+  .hero-learn-item .hl-desc{font-size:.74rem}
 }
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -289,9 +322,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
 .hcd-sep{font-family:'Inter',sans-serif;font-size:1rem;font-weight:900;color:rgba(168,85,247,.3)}
 
 /* ── SECTION BASE ── */
-section{padding:6rem 4rem;position:relative}
-.s-label{display:block;font-size:.68rem;font-weight:700;letter-spacing:.28em;color:var(--purple);text-transform:uppercase;margin-bottom:1rem}
-.s-title{font-family:'Inter',sans-serif;font-size:clamp(2rem,4.5vw,3.5rem);font-weight:800;line-height:1.1;color:var(--navy)}
+section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relative}
+.s-label{display:block;font-size:.66rem;font-weight:700;letter-spacing:.26em;color:var(--purple);text-transform:uppercase;margin-bottom:.9rem}
+/* 2.6vw en vez de 4.5vw: crece mucho más contenido en pantallas medianas */
+.s-title{font-family:'Inter',sans-serif;font-size:clamp(1.7rem,2.6vw,2.8rem);font-weight:800;line-height:1.15;color:var(--navy)}
 .s-title .ac{color:var(--purple)}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .reveal.vis{opacity:1;transform:translateY(0)}
@@ -412,10 +446,10 @@ section{padding:6rem 4rem;position:relative}
 .day-panel.as-accordion .day-info{margin-bottom:1.1rem}
 .day-panel.as-accordion .day-atmo{margin-top:.9rem}
 
-.day-info h3{font-size:1.3rem;font-weight:700;color:var(--navy);margin-bottom:1rem}
-.day-info p{color:var(--gray);line-height:1.75;font-size:.92rem;margin-bottom:1rem}
+.day-info h3{font-size:clamp(1.05rem,1.35vw,1.25rem);font-weight:700;color:var(--navy);margin-bottom:.85rem;line-height:1.3}
+.day-info p{color:var(--gray);line-height:1.65;font-size:clamp(.82rem,.92vw,.9rem);margin-bottom:.9rem}
 /* Right-side day atmosphere cards */
-.day-atmo{border-radius:24px;padding:2.2rem;position:relative;overflow:hidden;height:100%}
+.day-atmo{border-radius:20px;padding:clamp(1.3rem,2vw,1.9rem);position:relative;overflow:hidden;height:100%}
 .day-atmo-1{background:linear-gradient(145deg,rgba(30,8,62,.95) 0%,rgba(80,30,10,.6) 100%);border:1px solid rgba(251,191,36,.18)}
 .day-atmo-2{background:linear-gradient(145deg,rgba(8,20,62,.95) 0%,rgba(10,50,80,.6) 100%);border:1px solid rgba(56,189,248,.18)}
 .day-atmo-3{background:linear-gradient(145deg,rgba(20,4,60,.95) 0%,rgba(60,10,100,.7) 100%);border:1px solid rgba(168,85,247,.35)}
@@ -434,15 +468,16 @@ section{padding:6rem 4rem;position:relative}
 .day-atmo-1 .day-atmo-pill{background:rgba(251,191,36,.12);color:#FBB024;border:1px solid rgba(251,191,36,.25)}
 .day-atmo-2 .day-atmo-pill{background:rgba(56,189,248,.12);color:#38BDF8;border:1px solid rgba(56,189,248,.25)}
 .day-atmo-3 .day-atmo-pill{background:rgba(168,85,247,.15);color:#C9AEFF;border:1px solid rgba(168,85,247,.35)}
-.day-detail-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.day-detail-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
 .day-detail-list li{
-  display:flex;gap:.8rem;align-items:flex-start;
-  padding:.8rem 1rem;background:var(--soft);border-radius:10px;
-  border:1px solid rgba(168,85,247,.1);font-size:.85rem;
+  display:flex;gap:.7rem;align-items:flex-start;
+  padding:.7rem .9rem;background:var(--soft);border-radius:10px;
+  border:1px solid rgba(168,85,247,.1);
+  font-size:clamp(.78rem,.88vw,.85rem);
 }
-.ddl-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
-.ddl-text{color:var(--navy);font-weight:500}
-.ddl-sub{color:var(--gray);font-size:.75rem;margin-top:.1rem}
+.ddl-icon{font-size:.95rem;flex-shrink:0;margin-top:.05rem}
+.ddl-text{color:var(--navy);font-weight:500;font-size:clamp(.8rem,.9vw,.88rem);line-height:1.35}
+.ddl-sub{color:var(--gray);font-size:clamp(.72rem,.8vw,.78rem);margin-top:.15rem;line-height:1.4}
 
 .day3-methods{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem}
 .method-step{
@@ -480,12 +515,29 @@ section{padding:6rem 4rem;position:relative}
    ══════════════════════════════════════════════════════ */
 .ranking-podium{
   display:grid;
-  /* auto-fit reacomoda solo: 4 → 3 → 2 → 1 columnas */
-  grid-template-columns:repeat(auto-fit,minmax(255px,1fr));
-  gap:clamp(.9rem,1.6vw,1.4rem);
+  /* Columnas EXPLÍCITAS — nunca 3, porque dejaría una tarjeta huérfana.
+     Solo 4 (desktop), 2 (tablet) o 1 (móvil). Ver media queries abajo. */
+  grid-template-columns:repeat(4,1fr);
+  gap:clamp(.85rem,1.3vw,1.3rem);
   margin:0 auto 3rem;
-  max-width:1240px;
+  max-width:1200px;
   align-items:stretch;
+}
+/* 2 columnas — pares, sin huérfanas */
+@media(max-width:1150px){
+  .ranking-podium{
+    grid-template-columns:repeat(2,1fr);
+    max-width:720px;
+    gap:1rem;
+  }
+}
+/* 1 columna */
+@media(max-width:620px){
+  .ranking-podium{
+    grid-template-columns:1fr;
+    max-width:420px;
+    gap:.85rem;
+  }
 }
 .ticket-card{
   background:var(--white);
@@ -691,7 +743,8 @@ section{padding:6rem 4rem;position:relative}
   to{transform:translateX(0)}
 }
 .sp-carousel-track .sp-card{
-  flex-shrink:0;width:300px;
+  flex-shrink:0;
+  width:clamp(210px,17vw,268px);
   aspect-ratio:3/4;
 }
 .sp-carousel-track .sp-back{padding:1rem}
@@ -856,8 +909,8 @@ section{padding:6rem 4rem;position:relative}
 }
 .sp-name{
   font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(.95rem,2vw,1.2rem);font-weight:700;color:#fff;
-  line-height:1.2;
+  font-size:clamp(.9rem,1.1vw,1.05rem);font-weight:700;color:#fff;
+  line-height:1.25;
   text-shadow:0 1px 10px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.7);
 }
 .sp-subtitle{
@@ -1412,8 +1465,6 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 
 /* ── TABLET — iPad portrait & landscape (769px – 1100px) ── */
 @media(min-width:769px) and (max-width:1100px){
-  /* Sección: menos padding lateral */
-  section{padding:5rem 2.5rem}
   #hero{padding:7rem 2rem 4rem}
 
   /* Nav: más compacto pero manteniendo el contorno */
@@ -1452,7 +1503,6 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .scd-location{padding:0 .8rem;font-size:.6rem}
   .scd-blocks{padding:0 .5rem}
   .scd-unit{padding:0 .5rem}
-  section{padding:5rem 1.5rem}
   #hero{padding:8rem 1rem 4rem;overflow-x:hidden}
   .hero-title{font-size:clamp(2.8rem,11vw,11rem)}
   .hero-city{letter-spacing:.1em;font-size:.7rem;padding:0 .5rem;white-space:normal;word-break:break-word}
@@ -1496,7 +1546,6 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-orbit.o3{display:none}
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
-  section{padding:4rem 1rem}
   .tc-price-next{text-align:center;line-height:1.35}
   /* Speakers: mobile */
   .sp-carousel-track .sp-card{width:min(270px,76vw)}
