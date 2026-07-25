@@ -1,1 +1,29 @@
 superpowers/
+cult-ui-main/
+
+# Scripts viejos de push (solo se usa commit-y-push.bat)
+do-push.bat
+fix-and-push.bat
+push-comprar.bat
+push-final.bat
+push-silent.bat
+push-tickets-update.bat
+push-to-github.bat
+push-to-github.ps1
+run-git.bat
+push-result.txt
+
+# Archivos de prueba
+speakers/newtest.jpg
+speakers/newtest2.jpg
+speakers/test.txt
+
+# Carpetas fuente (los archivos ya estan copiados en aliados/ y patrocinadores/)
+Aliados estrategicos/
+
+# Documentos de trabajo, no van a la web
+*.docx
+*.pptx
+documents/
+Recursos_/
+How to use Claude/
