@@ -784,8 +784,10 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 }
 .sp-carousel-track .sp-card{
   flex-shrink:0;
-  width:clamp(210px,17vw,268px);
-  aspect-ratio:3/4;
+  width:clamp(225px,18vw,280px);
+  /* Un poco más alta que 3/4 para que la bio del reverso
+     entre completa sin apretar la tipografía */
+  aspect-ratio:3/4.2;
 }
 /* Los tamaños del reverso se definen una sola vez más abajo
    (bloque «Reverso de la card») con clamp — no duplicar aquí. */
@@ -865,18 +867,17 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 }
 .sp-back-role{font-size:.8rem;color:rgba(168,85,247,.8);letter-spacing:.02em;margin-top:.1rem;flex-shrink:0}
 
-/* Zona de scroll con degradado abajo que avisa que hay más texto */
+/* Con las bios ya parejas (~250-330 chars) la letra puede ser
+   legible sin que el texto se corte. El scroll queda de respaldo. */
 .sp-back-bio{
   font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(.68rem,.78vw,.76rem);
-  color:rgba(255,255,255,.72);
-  line-height:1.48;margin:0;
+  font-size:clamp(.76rem,.85vw,.83rem);
+  color:rgba(255,255,255,.75);
+  line-height:1.52;margin:0;
   flex:1;min-height:0;
   overflow-y:auto;overscroll-behavior:contain;
-  padding-right:.3rem;
+  padding-right:.35rem;
   scrollbar-width:thin;scrollbar-color:rgba(168,85,247,.4) transparent;
-  -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent 100%);
-          mask-image:linear-gradient(to bottom,#000 calc(100% - 18px),transparent 100%);
 }
 .sp-back-bio::-webkit-scrollbar{width:3px}
 .sp-back-bio::-webkit-scrollbar-track{background:transparent}
