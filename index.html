@@ -735,16 +735,19 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <p class="hero-learn-label">Tres días para dominar</p>
     <div class="hero-learn-grid">
       <div class="hero-learn-item">
-        <span class="hl-title">Inteligencia Artificial</span>
+        <span class="hl-num">01</span>
+        <span class="hl-title">Inteligencia Artificial &amp; Bots</span>
         <span class="hl-desc">Automatiza y escala tu negocio</span>
       </div>
       <div class="hero-learn-item">
-        <span class="hl-title">Comercio Digital</span>
+        <span class="hl-num">02</span>
+        <span class="hl-title">Comercio Digital &amp; Ecommerce</span>
         <span class="hl-desc">Vende más con estrategias reales</span>
       </div>
       <div class="hero-learn-item">
-        <span class="hl-title">Networking de Alto Nivel</span>
-        <span class="hl-desc">Conecta con quienes ya lo lograron</span>
+        <span class="hl-num">03</span>
+        <span class="hl-title">Meta Ads &amp; Mentalidad</span>
+        <span class="hl-desc">Negocios escalables y networking real</span>
       </div>
     </div>
   </div>
@@ -914,7 +917,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <div class="day-info">
         <h3>Noche de Gala · Sponsors, Networking &amp; Ecommerce</h3>
         <p>La apertura oficial. Una noche diseñada para que las conversaciones correctas sucedan entre las personas correctas. Líderes empresariales, sponsors estratégicos y los grandes actores del ecosistema regional, en un mismo lugar.</p>
-        <p><strong style="color:var(--purple)">Cocktail attire / elgant chic</strong> Networking curado. Acceso con ticket + acreditación.</p>
+        <p><strong style="color:var(--purple)">Cocktail attire / elegant chic</strong> Networking curado. Acceso con ticket + acreditación.</p>
         <ul class="day-detail-list">
           <li><span class="ddl-icon">🌙</span><div><div class="ddl-text">7:30 PM — Apertura de puertas</div><div class="ddl-sub">Registro, acreditación y welcome drink</div></div></li>
           <li><span class="ddl-icon">🎤</span><div><div class="ddl-text">Keynote Inaugural</div><div class="ddl-sub">Discurso de apertura y presentación de aliados</div></div></li>
@@ -980,7 +983,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <h4>Diamante Black · 50 cupos</h4>
         <p>El formato más intensivo y de mayor valor del evento. Un día diseñado para transformar cómo construyes, escales e innovas en el ecosistema.</p>
         <div class="day-atmo-pill"><span>🔒</span> Solo 50 cupos disponibles</div>
-        <button class="btn-pri" onclick="scrollTo('tickets')" style="margin-top:1.5rem;font-size:.78rem;width:100%">Ver Diamante Black →</button>
+        <a class="btn-pri" href="https://coccoa.xyz/labs-summit-2026-diamante-black-dia-1--2/1" target="_blank" rel="noopener" style="margin-top:1.5rem;font-size:.78rem;width:100%;display:block;text-align:center;text-decoration:none;box-sizing:border-box">Comprar Diamante Black →</a>
       </div>
     </div>
   </div>
@@ -1423,23 +1426,53 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 <!-- ══ VENUE ══ -->
 <section id="venue" style="padding:4rem 0;background:#08041a">
 
-  <!-- ── RENDER DEL VENUE (oculto temporalmente — imágenes desactualizadas) ── -->
-  <div id="venue-render" style="display:none">
-    <div style="text-align:center;max-width:700px;margin:0 auto 2.5rem;padding:0 1.5rem">
-      <span class="s-label">El lugar</span>
-      <h2 class="s-title reveal">Así se vive <span class="ac">Labs Summit</span></h2>
+  <!-- ── RENDER DEL VENUE — cómo se va a ver el evento ── -->
+  <div id="venue-render">
+    <div style="text-align:center;max-width:760px;margin:0 auto 2.2rem;padding:0 1.5rem">
+      <span class="s-label">Así se va a ver</span>
+      <h2 class="s-title reveal">Un vistazo a la <span class="ac">experiencia</span></h2>
+      <p class="venue-render-sub">Renders oficiales de los espacios que vas a vivir durante los tres días</p>
     </div>
-    <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem">
-      <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
-        <img src="/map/collage.png" alt="Render del venue Labs Summit 2026" style="width:100%;display:block">
-      </div>
-    </div>
-    <div style="max-width:1100px;margin:2.5rem auto 0;padding:0 1.5rem">
-      <div class="reveal" style="border-radius:20px;overflow:hidden;border:1px solid rgba(168,85,247,.18);box-shadow:0 0 60px rgba(168,85,247,.08)">
-        <img src="/map/punto%20de%20informacionupdate.png" alt="Plano del recinto Labs Summit 2026" style="width:100%;display:block">
-      </div>
+
+    <div class="render-grid">
+      <figure class="render-item reveal render-wide">
+        <img src="/map/render-1-noche-gala.jpg" alt="Render de la Noche de Gala" loading="lazy">
+        <figcaption><span class="rd-day">Día 1</span> Noche de Gala</figcaption>
+      </figure>
+
+      <figure class="render-item reveal" style="transition-delay:.06s">
+        <img src="/map/render-2-noche-gala.jpg" alt="Render del salón de gala" loading="lazy">
+        <figcaption><span class="rd-day">Día 1</span> Salón principal</figcaption>
+      </figure>
+
+      <figure class="render-item reveal" style="transition-delay:.12s">
+        <img src="/map/render-3-dia2-evento.jpg" alt="Render del auditorio principal" loading="lazy">
+        <figcaption><span class="rd-day">Día 2</span> Auditorio de conferencias</figcaption>
+      </figure>
+
+      <figure class="render-item reveal" style="transition-delay:.18s">
+        <img src="/map/render-4-dia2-stands.jpg" alt="Render de la zona de stands" loading="lazy">
+        <figcaption><span class="rd-day">Día 2</span> Zona de stands</figcaption>
+      </figure>
+
+      <figure class="render-item reveal" style="transition-delay:.24s">
+        <img src="/map/render-5-dia2-workshop.jpg" alt="Render de la zona de workshops" loading="lazy">
+        <figcaption><span class="rd-day">Día 2</span> Zona de workshops</figcaption>
+      </figure>
+
+      <figure class="render-item reveal" style="transition-delay:.30s">
+        <img src="/map/render-6-dia2-podcast.jpg" alt="Render del set de podcast" loading="lazy">
+        <figcaption><span class="rd-day">Día 2</span> Set de podcast</figcaption>
+      </figure>
+
+      <figure class="render-item reveal render-wide" style="transition-delay:.36s">
+        <img src="/map/render-7-dia3-mastermind.jpg" alt="Render del Mastermind" loading="lazy">
+        <figcaption><span class="rd-day">Día 3</span> Mastermind · Diamante Black</figcaption>
+      </figure>
     </div>
   </div>
+
+  <div style="max-width:600px;margin:3.5rem auto;height:1px;background:linear-gradient(90deg,transparent,rgba(168,85,247,.25),transparent)"></div>
 
   <!-- ── UBICACIÓN — Google Maps ── -->
   <div class="venue-loc">
@@ -1462,11 +1495,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
          href="https://www.google.com/maps/dir/?api=1&destination=Coliseo+de+Ferias+Manuel+Victoria,+Tulu%C3%A1,+Valle+del+Cauca,+Colombia"
          target="_blank" rel="noopener">
         <span>📍</span> Cómo llegar
-      </a>
-      <a class="venue-btn"
-         href="https://www.google.com/maps/search/?api=1&query=Coliseo+de+Ferias+Manuel+Victoria,+Tulu%C3%A1,+Valle+del+Cauca,+Colombia"
-         target="_blank" rel="noopener">
-        <span>🗺️</span> Ver en Google Maps
       </a>
     </div>
   </div>
@@ -1909,21 +1937,21 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <div class="a0b-eye">Día</div>
         <div class="a0b-num">01</div>
         <div class="a0b-name">Gala &amp; Sponsors</div>
-        <div class="a0b-date">18 Sep · 7:30 PM</div>
+        <div class="a0b-date">11 Sep · 7:30 PM</div>
       </div>
       <div class="a0b-sep" id="a0b-s1"></div>
       <div class="a0b-panel" id="a0b-p2">
         <div class="a0b-eye">Día</div>
         <div class="a0b-num">02</div>
         <div class="a0b-name">Conferencias</div>
-        <div class="a0b-date">19 Sep · 9:30 AM</div>
+        <div class="a0b-date">12 Sep · 9:30 AM</div>
       </div>
       <div class="a0b-sep" id="a0b-s2"></div>
       <div class="a0b-panel" id="a0b-p3">
         <div class="a0b-eye">Día</div>
         <div class="a0b-num">03</div>
         <div class="a0b-name">Mastermind Exclusivo</div>
-        <div class="a0b-date">20 Sep · 8:00 AM</div>
+        <div class="a0b-date">13 Sep · 8:00 AM</div>
       </div>
     </div>
     <button class="a0-enter" id="a0b-skip" onclick="IMX.goScroll()">Ver el evento →</button>

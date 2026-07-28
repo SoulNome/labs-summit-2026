@@ -224,9 +224,16 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
 .hero-meta-item .ico{font-size:1rem}
 
 /* ── Hero: qué vas a aprender ── */
+/* Contenedor con marco propio: deja claro que los 3 recuadros
+   son UN grupo y que pertenecen a esta sección, no al frame del hero */
 .hero-learn{
   margin-top:2.4rem;
   max-width:880px;width:100%;
+  padding:1.4rem clamp(1rem,2vw,1.6rem) clamp(1.2rem,1.8vw,1.5rem);
+  background:rgba(10,3,24,.55);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(168,85,247,.14);
+  border-radius:20px;
   animation:fadeUp 1s ease .7s both;
 }
 .hero-learn-label{
@@ -262,47 +269,57 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--nav
   transform:translateY(-3px);
   box-shadow:0 10px 28px rgba(168,85,247,.16);
 }
-.hero-learn-item .hl-title{
+/* Número: da orden y ritmo visual a los 3 recuadros */
+.hero-learn-item .hl-num{
   display:block;
   font-family:'Inter',sans-serif;
-  font-size:clamp(.84rem,.95vw,.94rem);font-weight:800;
+  font-size:.68rem;font-weight:900;letter-spacing:.12em;
+  color:rgba(168,85,247,.65);
+  margin-bottom:.5rem;
+}
+/* Fila fija de 2 líneas: los títulos quedan alineados entre sí
+   aunque uno sea más largo que otro */
+.hero-learn-item .hl-title{
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;
+  font-size:clamp(.82rem,.92vw,.9rem);font-weight:800;
   color:#F0EAFF;letter-spacing:-.01em;line-height:1.3;
+  min-height:2.6em;
   margin:0;
 }
-/* Acento de ancho FIJO y centrado.
-   A diferencia de un border-bottom (que se estira al ancho de la tarjeta),
-   este mide siempre lo mismo en las 3 → alineación perfecta. */
 .hero-learn-item .hl-title::after{
   content:'';display:block;
-  width:26px;height:2px;border-radius:2px;
-  margin:.6rem auto .55rem;
+  width:24px;height:2px;border-radius:2px;
   background:linear-gradient(90deg,rgba(168,85,247,.15),#A855F7,rgba(168,85,247,.15));
-  transition:width .32s cubic-bezier(.23,1,.32,1),opacity .32s;
+  position:absolute;left:50%;transform:translateX(-50%);
+  margin-top:3.4em;
+  transition:width .32s cubic-bezier(.23,1,.32,1);
 }
-.hero-learn-item:hover .hl-title::after{width:40px}
+.hero-learn-item{position:relative}
+.hero-learn-item:hover .hl-title::after{width:38px}
 .hero-learn-item .hl-desc{
-  display:block;
-  font-size:clamp(.71rem,.8vw,.78rem);font-weight:500;
+  display:flex;align-items:center;justify-content:center;
+  font-size:clamp(.71rem,.78vw,.76rem);font-weight:500;
   color:rgba(240,234,255,.55);line-height:1.5;
-  margin:0;
-  max-width:22ch;   /* evita líneas muy largas — mejor ritmo de lectura */
+  margin:.85rem 0 0;
+  min-height:2.9em;   /* misma altura en las 3 → base pareja */
 }
 
 /* Tablet: 3 columnas más apretadas */
 @media(max-width:900px){
   .hero-learn-grid{gap:.55rem}
   .hero-learn-item{padding:1rem .8rem}
-  .hero-learn-item .hl-title::after{margin:.5rem auto .45rem}
 }
-/* Móvil: 1 columna, misma estructura pero más compacta */
+/* Móvil: 1 columna. Sin alturas mínimas — cada tarjeta se ajusta a su texto */
 @media(max-width:640px){
-  .hero-learn{margin-top:2rem;padding:0 .2rem}
+  .hero-learn{margin-top:2rem;padding:1.1rem .9rem 1.2rem;border-radius:16px}
   .hero-learn-label{font-size:.58rem;letter-spacing:.24em;margin-bottom:.9rem}
   .hero-learn-grid{grid-template-columns:1fr;gap:.5rem}
-  .hero-learn-item{padding:.95rem 1rem}
-  .hero-learn-item .hl-title{font-size:.88rem}
-  .hero-learn-item .hl-title::after{width:22px;margin:.45rem auto .4rem}
-  .hero-learn-item .hl-desc{font-size:.76rem;max-width:none}
+  .hero-learn-item{padding:1rem 1rem 1.05rem}
+  .hero-learn-item .hl-num{font-size:.64rem;margin-bottom:.35rem}
+  .hero-learn-item .hl-title{font-size:.88rem;min-height:0}
+  .hero-learn-item .hl-title::after{margin-top:2.1em;width:22px}
+  .hero-learn-item .hl-desc{font-size:.76rem;min-height:0;margin-top:.75rem}
 }
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -634,14 +651,32 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
              transform .18s cubic-bezier(.34,1.56,.64,1),
              box-shadow .28s;
 }
-/* Brillo que barre el botón al hover */
+/* Brillo que barre el botón — corre SOLO cada 3.5s para llamar
+   la atención sin que el usuario tenga que interactuar */
 .tc-btn::before{
   content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
   background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
-  transform:skewX(-20deg);transition:left .55s cubic-bezier(.23,1,.32,1);
+  transform:skewX(-20deg);
   pointer-events:none;
+  animation:tcShine 3.5s ease-in-out infinite;
 }
-.tc-btn:hover::before{left:130%}
+@keyframes tcShine{
+  0%,72%{left:-120%}
+  92%,100%{left:130%}
+}
+.tc-btn:hover::before{animation:none;left:130%;transition:left .55s cubic-bezier(.23,1,.32,1)}
+
+/* Latido sutil del borde — invita a hacer click */
+.tc-btn{animation:tcPulse 2.6s ease-in-out infinite}
+@keyframes tcPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,0)}
+  50%{box-shadow:0 0 0 4px rgba(168,85,247,.13)}
+}
+.tc-btn:hover{animation:none}
+/* Escalonado: los 4 botones no laten a la vez, se ve más natural */
+.tc-indigo .tc-btn,.tc-indigo .tc-btn::before{animation-delay:.5s}
+.tc-teal   .tc-btn,.tc-teal   .tc-btn::before{animation-delay:1s}
+.tc-gold   .tc-btn,.tc-gold   .tc-btn::before{animation-delay:1.5s}
 .ticket-card.featured .tc-btn,.ticket-card.selected .tc-btn{background:var(--purple);color:#fff}
 .tc-btn:hover{
   background:var(--purple);color:#fff;
@@ -1575,6 +1610,8 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 /* ── Respeta preferencia de movimiento reducido ── */
 @media(prefers-reduced-motion:reduce){
   .tc-btn::before,.tc-ripple{display:none}
+  .tc-btn{animation:none!important}
+  .render-item,.render-item img{transition-duration:.01ms!important}
   .day-panel.as-accordion{transition:opacity .2s ease}
   .hero-learn-item,.venue-map-wrap,.venue-btn,.nav-links a{transition-duration:.01ms!important}
 }
@@ -2018,6 +2055,68 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .pt-cta .pt-name{font-size:1.05rem;letter-spacing:.05em}
   .pt-cta .pt-desc{font-size:.8rem;margin-top:.3rem}
   .pt-cta .pt-arrow{width:38px;height:38px;font-size:1rem;flex-shrink:0}
+}
+
+/* ══ VENUE — Renders del evento ══ */
+.venue-render-sub{
+  font-size:clamp(.8rem,.9vw,.9rem);color:rgba(240,234,255,.45);
+  margin-top:.7rem;line-height:1.55;
+}
+.render-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:clamp(.7rem,1.1vw,1rem);
+  max-width:1150px;margin:0 auto;padding:0 1.5rem;
+}
+/* Las tomas más panorámicas ocupan doble ancho */
+.render-wide{grid-column:span 2}
+.render-item{
+  position:relative;margin:0;
+  border-radius:16px;overflow:hidden;
+  border:1px solid rgba(168,85,247,.18);
+  background:rgba(12,4,28,.6);
+  aspect-ratio:16/10;
+  transition:border-color .35s,box-shadow .35s,
+             transform .35s cubic-bezier(.16,1,.3,1);
+}
+.render-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .55s cubic-bezier(.16,1,.3,1),filter .4s;
+  filter:saturate(.92);
+}
+.render-item:hover{
+  border-color:rgba(168,85,247,.5);
+  box-shadow:0 16px 44px rgba(168,85,247,.2);
+  transform:translateY(-4px);
+}
+.render-item:hover img{transform:scale(1.06);filter:saturate(1.05)}
+.render-item figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:1.6rem .95rem .8rem;
+  background:linear-gradient(to top,rgba(5,0,18,.95) 0%,rgba(5,0,18,.75) 45%,transparent 100%);
+  color:#F0EAFF;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(.76rem,.85vw,.84rem);font-weight:700;
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  line-height:1.3;
+}
+.render-item .rd-day{
+  font-size:.6rem;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;
+  color:#C9AEFF;background:rgba(168,85,247,.2);
+  border:1px solid rgba(168,85,247,.4);
+  border-radius:100px;padding:.15rem .55rem;
+  flex-shrink:0;
+}
+@media(max-width:900px){
+  .render-grid{grid-template-columns:repeat(2,1fr)}
+  .render-wide{grid-column:span 2}
+}
+@media(max-width:600px){
+  .render-grid{grid-template-columns:1fr;gap:.7rem;padding:0 1.1rem}
+  .render-wide{grid-column:span 1}
+  .render-item{aspect-ratio:16/11;border-radius:14px}
+  .render-item figcaption{font-size:.78rem;padding:1.4rem .85rem .75rem}
 }
 
 /* ══ VENUE — Ubicación / Google Maps ══ */
