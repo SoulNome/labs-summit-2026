@@ -638,59 +638,97 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 .tc-features li.has-desc .tc-feat-check{color:var(--purple);font-weight:700;flex-shrink:0;font-size:.78rem}
 .tc-features li.has-desc .tc-feat-title{font-weight:600;font-size:.78rem;line-height:1.4}
 .tc-features li.has-desc .tc-feat-desc{display:block;font-size:.72rem;opacity:.75;line-height:1.45;margin-top:.3rem;padding-left:1.1rem}
+/* ══════════════════════════════════════════════════════
+   BOTÓN COMPRAR — CTA con vida propia
+   Relleno sólido (no contorno) + respiración + destello
+   + flecha que empuja. Llama la atención sin tocarlo.
+   ══════════════════════════════════════════════════════ */
 .tc-btn{
-  display:block;text-align:center;text-decoration:none;
-  width:100%;padding:.72rem;border-radius:100px;
-  font-size:.8rem;font-weight:700;cursor:pointer;
-  border:2px solid var(--purple);color:var(--purple);
-  background:transparent;letter-spacing:.05em;
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+  text-align:center;text-decoration:none;
+  width:100%;padding:.85rem .9rem;border-radius:100px;
+  font-size:.84rem;font-weight:800;cursor:pointer;letter-spacing:.03em;
+  border:none;
+  color:#fff;
+  background:linear-gradient(135deg,#A855F7 0%,#7C3AED 50%,#A855F7 100%);
+  background-size:200% 100%;
   margin-top:auto;
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;isolation:isolate;
   -webkit-tap-highlight-color:transparent;
-  transition:background .28s,color .28s,border-color .28s,
-             transform .18s cubic-bezier(.34,1.56,.64,1),
-             box-shadow .28s;
+  animation:tcBreathe 2.4s ease-in-out infinite,
+            tcGradient 4s ease infinite;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1),
+             filter .25s;
 }
-/* Brillo que barre el botón — corre SOLO cada 3.5s para llamar
-   la atención sin que el usuario tenga que interactuar */
+/* 1 · Respiración: el resplandor late constante */
+@keyframes tcBreathe{
+  0%,100%{
+    box-shadow:0 4px 14px rgba(168,85,247,.35),
+               0 0 0 0 rgba(168,85,247,.45);
+    transform:scale(1);
+  }
+  50%{
+    box-shadow:0 8px 26px rgba(168,85,247,.55),
+               0 0 0 7px rgba(168,85,247,0);
+    transform:scale(1.022);
+  }
+}
+/* 2 · El degradado se desplaza — el color nunca queda quieto */
+@keyframes tcGradient{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+/* 3 · Destello que barre cada 3s */
 .tc-btn::before{
-  content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
+  content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);
   transform:skewX(-20deg);
-  pointer-events:none;
-  animation:tcShine 3.5s ease-in-out infinite;
+  pointer-events:none;z-index:1;
+  animation:tcShine 3s ease-in-out infinite;
 }
 @keyframes tcShine{
-  0%,72%{left:-120%}
-  92%,100%{left:130%}
+  0%,68%{left:-120%}
+  88%,100%{left:130%}
 }
-.tc-btn:hover::before{animation:none;left:130%;transition:left .55s cubic-bezier(.23,1,.32,1)}
+/* 4 · La flecha empuja hacia la derecha */
+.tc-btn .tc-arrow{
+  display:inline-block;
+  animation:tcNudge 1.6s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes tcNudge{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(4px)}
+}
 
-/* Latido sutil del borde — invita a hacer click */
-.tc-btn{animation:tcPulse 2.6s ease-in-out infinite}
-@keyframes tcPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,0)}
-  50%{box-shadow:0 0 0 4px rgba(168,85,247,.13)}
-}
-.tc-btn:hover{animation:none}
-/* Escalonado: los 4 botones no laten a la vez, se ve más natural */
-.tc-indigo .tc-btn,.tc-indigo .tc-btn::before{animation-delay:.5s}
-.tc-teal   .tc-btn,.tc-teal   .tc-btn::before{animation-delay:1s}
-.tc-gold   .tc-btn,.tc-gold   .tc-btn::before{animation-delay:1.5s}
-.ticket-card.featured .tc-btn,.ticket-card.selected .tc-btn{background:var(--purple);color:#fff}
+/* Escalonado: los 4 botones no laten a la vez */
+.tc-indigo .tc-btn{animation-delay:.35s,.35s}
+.tc-indigo .tc-btn::before{animation-delay:.35s}
+.tc-teal   .tc-btn{animation-delay:.7s,.7s}
+.tc-teal   .tc-btn::before{animation-delay:.7s}
+.tc-gold   .tc-btn{animation-delay:1.05s,1.05s}
+.tc-gold   .tc-btn::before{animation-delay:1.05s}
+
+/* Variantes por color de ticket */
+.tc-indigo .tc-btn{background:linear-gradient(135deg,#6366F1 0%,#4338CA 50%,#6366F1 100%);background-size:200% 100%}
+.tc-teal   .tc-btn{background:linear-gradient(135deg,#14B8A6 0%,#0F766E 50%,#14B8A6 100%);background-size:200% 100%}
+.tc-gold   .tc-btn{background:linear-gradient(135deg,#FBBF24 0%,#D97706 50%,#FBBF24 100%);background-size:200% 100%;color:#1a0a05}
+
+/* Hover: se detiene la animación y toma el control el usuario */
 .tc-btn:hover{
-  background:var(--purple);color:#fff;
-  transform:translateY(-2px);
-  box-shadow:0 8px 24px rgba(168,85,247,.4);
+  animation-play-state:paused;
+  transform:translateY(-3px) scale(1.03);
+  filter:brightness(1.12);
 }
-/* Feedback al presionar — se hunde */
+.tc-btn:hover::before{animation:none;left:130%;transition:left .5s cubic-bezier(.23,1,.32,1)}
+.tc-btn:hover .tc-arrow{animation:none;transform:translateX(5px);transition:transform .25s}
+/* Feedback al presionar */
 .tc-btn:active{
   transform:translateY(1px) scale(.97);
-  box-shadow:0 2px 8px rgba(168,85,247,.3);
   transition-duration:.08s;
 }
 .tc-btn:focus-visible{
-  outline:2px solid #E879F9;outline-offset:3px;
+  outline:3px solid #E879F9;outline-offset:3px;
 }
 /* Ripple al hacer click */
 .tc-btn .tc-ripple{
@@ -1039,9 +1077,13 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
   position:relative;overflow:hidden;width:100%;
   padding:.5rem 0;
 }
-/* Fade edges using exact section bg color */
+/* Fade edges using exact section bg color.
+   El ancho es proporcional: en pantallas chicas un fade de 200px
+   fijo taparía toda la banda y se vería negra. */
 .ticker-outer::before,.ticker-outer::after{
-  content:'';position:absolute;top:0;bottom:0;width:200px;z-index:2;pointer-events:none;
+  content:'';position:absolute;top:0;bottom:0;
+  width:clamp(28px,12vw,200px);
+  z-index:2;pointer-events:none;
 }
 .ticker-outer::before{
   left:0;
@@ -1099,11 +1141,53 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 .ticker-card img{
   width:130px;height:60px;
   object-fit:contain;display:block;flex-shrink:0;
-  opacity:.85;
+  opacity:.92;
   transition:opacity .3s ease;
   border-radius:4px;
 }
 .ticker-card:hover img{opacity:1}
+
+/* ── Patrocinadores / Aliados en móvil ──
+   Sin hover disponible, las tarjetas quedaban casi invisibles.
+   Aquí se sube el contraste para que se lean bien. */
+@media(max-width:768px){
+  .ticker-card{
+    padding:.75rem 1.1rem;
+    gap:.8rem;
+    border-color:rgba(168,85,247,.28);
+    background:linear-gradient(135deg,rgba(255,255,255,.09) 0%,rgba(168,85,247,.07) 100%);
+    box-shadow:
+      0 4px 18px rgba(0,0,0,.3),
+      inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .ticker-card img{
+    width:104px;height:50px;
+    opacity:1;                 /* logos a full brillo */
+    filter:brightness(1.1);
+  }
+  .ticker-brand{
+    color:rgba(255,255,255,.95);
+    font-size:.8rem;
+  }
+  .ticker-eyebrow{
+    font-size:.52rem;
+    color:rgba(200,160,255,.75);
+  }
+  .ticker-section{margin:2rem 0 2.2rem}
+  /* Fade mínimo — solo insinúa el corte, no oscurece */
+  .ticker-outer::before,.ticker-outer::after{width:24px}
+  /* Fondo de sección un punto más claro para que respire */
+  #sponsors{background:#120726}
+  .ticker-outer::before{background:linear-gradient(to right,#120726 0%,rgba(18,7,38,0) 100%)}
+  .ticker-outer::after{background:linear-gradient(to left,#120726 0%,rgba(18,7,38,0) 100%)}
+  .sponsors-note{
+    background:rgba(168,85,247,.14);
+    border-color:rgba(168,85,247,.35);
+    color:#D4B8FF;
+    font-size:.68rem;line-height:1.5;
+    text-align:center;
+  }
+}
 
 /* Purple dot accent */
 .ticker-dot{
@@ -1626,7 +1710,8 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
 /* ── Respeta preferencia de movimiento reducido ── */
 @media(prefers-reduced-motion:reduce){
   .tc-btn::before,.tc-ripple{display:none}
-  .tc-btn{animation:none!important}
+  .tc-btn,.tc-btn .tc-arrow{animation:none!important;transform:none!important}
+  .tc-btn{box-shadow:0 4px 14px rgba(168,85,247,.35)}
   .render-item,.render-item img{transition-duration:.01ms!important}
   .day-panel.as-accordion{transition:opacity .2s ease}
   .hero-learn-item,.venue-map-wrap,.venue-btn,.nav-links a{transition-duration:.01ms!important}
