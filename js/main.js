@@ -2,7 +2,7 @@
    COUNTDOWN TIMER (hero + sticky bar)
 ───────────────────────────────── */
 function updateCountdown(){
-  const target = new Date('2026-09-11T19:30:00-05:00').getTime();
+  const target = new Date('2026-10-28T19:30:00-05:00').getTime();
   const now    = new Date().getTime();
   const diff   = target - now;
   const zero   = ['00','00','00','00'];
@@ -304,7 +304,7 @@ const timeToast = document.getElementById('time-toast');
 const milestones = [
   {t:30,  msg:'🔥 ¡Casi te convencemos! Mira los tickets'},
   {t:90,  msg:'🚀 Los cupos High Ticket se agotan rápido'},
-  {t:180, msg:'⏰ Faltan '+Math.ceil((new Date('2026-09-11T19:30:00-05:00')-new Date())/(1000*60*60*24))+' días para el evento'},
+  {t:180, msg:'⏰ Faltan '+Math.ceil((new Date('2026-10-28T19:30:00-05:00')-new Date())/(1000*60*60*24))+' días para el evento'},
 ];
 let shownMilestones = new Set();
 const startTime = Date.now();
