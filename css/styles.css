@@ -1368,23 +1368,23 @@ body.sp-all-lock{overflow:hidden}
   transform:translateY(-3px);
 }
 
-/* ── Placa blanca para logos que la necesitan ──
-   Alcaldía, Quality Colombia y Giraldo del Valle están diseñados
-   para fondo claro: tienen texto negro y elementos grises que sobre
-   el fondo oscuro se pierden o se ven sucios. Aclararlos los dejaba
-   lavados, así que van sobre placa con su archivo original. */
-.ticker-card.tk-plate{
+/* ── Recuadro blanco ajustado al logo ──
+   Alcaldía, TiendaNube, Giraldo y Quality están diseñados para fondo
+   claro (texto negro, rellenos grises dentro del propio símbolo).
+   La tarjeta sigue siendo del mismo vidrio oscuro que las demás:
+   el blanco va SOLO detrás del logo, como una pastilla que lo abraza.
+   Así se respeta la marca sin romper el ritmo de la banda. */
+.ticker-card.tk-plate img{
   background:#fff;
-  border-color:rgba(255,255,255,.16);
-  padding:.85rem 1rem;
-  box-shadow:0 4px 18px rgba(0,0,0,.3);
+  padding:.5rem .7rem;
+  border-radius:10px;
+  box-sizing:border-box;
+  opacity:1;
+  box-shadow:0 2px 10px rgba(0,0,0,.28);
 }
-.ticker-card.tk-plate:hover{
-  background:#fff;
-  border-color:rgba(168,85,247,.6);
-  box-shadow:0 0 26px rgba(168,85,247,.3),0 8px 24px rgba(0,0,0,.35);
+.ticker-card.tk-plate:hover img{
+  box-shadow:0 4px 18px rgba(168,85,247,.35);
 }
-.ticker-card.tk-plate img{opacity:1}
 
 /* Logo — ocupa el máximo del área sin deformarse */
 .ticker-card img{
