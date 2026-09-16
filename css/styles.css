@@ -1385,6 +1385,11 @@ body.sp-all-lock{overflow:hidden}
 .ticker-card.tk-plate:hover img{
   box-shadow:0 4px 18px rgba(168,85,247,.35);
 }
+/* Quality y Giraldo traen mucho margen vacío en su archivo,
+   así que se veían pequeños. Se les reduce el aire para que
+   el logo ocupe más dentro de la pastilla. */
+.ticker-card.tk-big{padding:.5rem .6rem}
+.ticker-card.tk-big img{padding:.4rem .55rem}
 
 /* Logo — ocupa el máximo del área sin deformarse */
 .ticker-card img{
