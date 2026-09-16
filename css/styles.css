@@ -832,10 +832,9 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 }
 .sp-carousel-track .sp-card{
   flex-shrink:0;
-  width:clamp(225px,18vw,280px);
-  /* Un poco más alta que 3/4 para que la bio del reverso
-     entre completa sin apretar la tipografía */
-  aspect-ratio:3/4.2;
+  /* Formato póster: más grandes, con más presencia */
+  width:clamp(262px,22vw,338px);
+  aspect-ratio:3/4.1;
 }
 /* Los tamaños del reverso se definen una sola vez más abajo
    (bloque «Reverso de la card») con clamp — no duplicar aquí. */
@@ -1003,30 +1002,72 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 }
 
 /* Bottom info block */
+/* ══════════════════════════════════════════════════════
+   Ficha tipo póster — nombre grande alineado a la izquierda
+   con barra de acento morada. Identidad Labs Summit.
+   ══════════════════════════════════════════════════════ */
 .sp-info{
   position:absolute;bottom:0;left:0;right:0;
-  padding:1.6rem 1.2rem 1.3rem;z-index:3;
-  display:flex;flex-direction:column;gap:.3rem;
+  padding:2rem 1.1rem 1.15rem;z-index:3;
+  display:flex;flex-direction:column;gap:.34rem;
+  text-align:left;
 }
+/* Barra de acento vertical a la izquierda del nombre */
+.sp-info::before{
+  content:'';position:absolute;
+  left:1.1rem;bottom:1.15rem;
+  width:3px;height:calc(100% - 2.9rem);
+  max-height:62px;
+  border-radius:3px;
+  background:linear-gradient(180deg,#E879F9,#A855F7 55%,rgba(168,85,247,0));
+  transform-origin:bottom;
+  transform:scaleY(.45);opacity:.75;
+  transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .4s;
+}
+.sp-card:not(.flipped):hover .sp-info::before{transform:scaleY(1);opacity:1}
+.sp-info > *{padding-left:.75rem}
+
 .sp-logo-label{
   font-size:.82rem;font-weight:700;letter-spacing:.18em;
   color:rgba(255,255,255,.4);text-transform:uppercase;
 }
 .sp-name{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(.9rem,1.1vw,1.05rem);font-weight:700;color:#fff;
-  line-height:1.25;
-  text-shadow:0 1px 10px rgba(0,0,0,.9),0 0 24px rgba(0,0,0,.7);
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1.05rem,1.5vw,1.42rem);
+  font-weight:900;color:#fff;
+  line-height:1.02;
+  letter-spacing:-.028em;
+  text-transform:uppercase;
+  text-shadow:0 2px 14px rgba(0,0,0,.95),0 0 30px rgba(0,0,0,.65);
 }
 .sp-subtitle{
-  font-size:.72rem;font-weight:500;letter-spacing:.04em;
-  color:rgba(255,255,255,.8);line-height:1.3;
-  text-shadow:0 1px 6px rgba(0,0,0,.9);
+  font-size:clamp(.62rem,.72vw,.7rem);font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(201,174,255,.92);line-height:1.35;
+  text-shadow:0 1px 8px rgba(0,0,0,.95);
 }
-/* Carousel cards: subtitle smaller */
-.sp-carousel-track .sp-subtitle{
-  font-size:.65rem;
+
+/* Monograma de marca, esquina superior derecha.
+   Va por CSS para no tener que tocar las 21 fichas del HTML. */
+.sp-front::after{
+  content:'LS';
+  position:absolute;top:.85rem;right:.95rem;z-index:10;
+  font-family:'Inter',sans-serif;
+  font-size:.58rem;font-weight:900;letter-spacing:.12em;
+  color:rgba(255,255,255,.34);
+  padding:.2rem .42rem;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:5px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  background:rgba(0,0,0,.28);
+  pointer-events:none;
+  transition:color .35s,border-color .35s;
 }
+.sp-card:not(.flipped):hover .sp-front::after{
+  color:rgba(255,255,255,.85);
+  border-color:rgba(168,85,247,.6);
+}
+.mystery-locked .sp-front::after{display:none}
 .sp-badge{
   display:inline-block;
   font-size:.82rem;font-weight:700;letter-spacing:.07em;
@@ -1040,6 +1081,170 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 .sp-card.featured .sp-tint{opacity:.55}
 .sp-card.featured:hover .sp-tint{opacity:.85}
 
+
+/* ══════════════════════════════════════════════════════
+   VER TODOS LOS SPEAKERS — botón + modal con rejilla
+   ══════════════════════════════════════════════════════ */
+/* Pista bajo el carrusel */
+.sp-hint{
+  text-align:center;
+  margin:1.9rem auto 0;
+  font-size:clamp(.62rem,.72vw,.7rem);font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(201,174,255,.42);
+}
+
+.sp-all-cta{display:flex;justify-content:center;margin-top:1.7rem}
+.sp-all-btn{
+  display:inline-flex;align-items:center;gap:.85rem;
+  padding:1.15rem 2.6rem;border-radius:100px;
+  font-family:'Inter',sans-serif;
+  font-size:clamp(.82rem,1vw,.95rem);font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#fff;cursor:pointer;
+  background:linear-gradient(135deg,#A855F7 0%,#7C3AED 50%,#A855F7 100%);
+  background-size:200% 100%;
+  border:none;
+  position:relative;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+  box-shadow:0 8px 32px rgba(168,85,247,.42);
+  animation:spAllGlow 3.2s ease-in-out infinite;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1),filter .25s;
+}
+/* Respiración suave para que invite al clic */
+@keyframes spAllGlow{
+  0%,100%{box-shadow:0 8px 32px rgba(168,85,247,.42);background-position:0% 50%}
+  50%{box-shadow:0 12px 46px rgba(168,85,247,.68);background-position:100% 50%}
+}
+/* Destello que barre */
+.sp-all-btn::before{
+  content:'';position:absolute;top:0;left:-120%;width:55%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);
+  transform:skewX(-20deg);pointer-events:none;
+  animation:tcShine 3.2s ease-in-out infinite;
+}
+.sp-all-btn:hover{
+  animation-play-state:paused;
+  transform:translateY(-3px) scale(1.03);
+  filter:brightness(1.1);
+}
+.sp-all-btn:hover::before{animation:none;left:130%;transition:left .5s cubic-bezier(.23,1,.32,1)}
+.sp-all-btn:active{transform:translateY(1px) scale(.98);transition-duration:.08s}
+.sp-all-btn:focus-visible{outline:3px solid #E879F9;outline-offset:4px}
+.sp-all-arrow{
+  font-size:1.1em;line-height:1;
+  animation:tcNudge 1.6s ease-in-out infinite;
+}
+.sp-all-btn:hover .sp-all-arrow{animation:none;transform:translateX(5px);transition:transform .25s}
+/* Iconito de rejilla 3x2 */
+.sp-all-icon{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2px;
+  width:16px;height:11px;flex-shrink:0;
+}
+.sp-all-icon span{background:rgba(255,255,255,.85);border-radius:1px;transition:background .3s}
+.sp-all-btn:hover .sp-all-icon span{background:#fff}
+.sp-all-count{
+  font-size:.75rem;font-weight:900;letter-spacing:0;
+  padding:.2rem .55rem;border-radius:100px;
+  background:rgba(255,255,255,.22);color:#fff;
+  backdrop-filter:blur(4px);
+}
+
+/* ── Overlay ── */
+.sp-all-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(4,1,12,.88);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:clamp(.8rem,3vw,2.5rem);
+  overflow-y:auto;overscroll-behavior:contain;
+  opacity:0;transition:opacity .3s ease;
+}
+.sp-all-overlay[hidden]{display:none}
+.sp-all-overlay.open{opacity:1}
+
+.sp-all-panel{
+  width:100%;max-width:1180px;
+  background:linear-gradient(165deg,#140830 0%,#0c0420 55%,#07020f 100%);
+  border:1px solid rgba(168,85,247,.3);
+  border-radius:22px;
+  padding:clamp(1.2rem,2.4vw,2rem);
+  box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 70px rgba(168,85,247,.12);
+  transform:translateY(18px) scale(.985);
+  transition:transform .38s cubic-bezier(.16,1,.3,1);
+}
+.sp-all-overlay.open .sp-all-panel{transform:none}
+
+.sp-all-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:1rem;margin-bottom:.3rem;
+}
+.sp-all-title{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(1.3rem,2.2vw,2rem);font-weight:800;
+  color:#F0EAFF;line-height:1.15;margin:0;
+}
+.sp-all-title .ac{color:var(--purple)}
+.sp-all-hint{
+  font-size:.74rem;color:rgba(240,234,255,.4);
+  margin:.2rem 0 1.4rem;letter-spacing:.02em;
+}
+.sp-all-close{
+  flex-shrink:0;
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.05rem;color:#F0EAFF;cursor:pointer;
+  background:rgba(168,85,247,.14);
+  border:1px solid rgba(168,85,247,.35);
+  -webkit-tap-highlight-color:transparent;
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.sp-all-close:hover{
+  background:rgba(168,85,247,.32);
+  border-color:rgba(168,85,247,.75);
+  transform:rotate(90deg);
+}
+.sp-all-close:focus-visible{outline:3px solid #E879F9;outline-offset:2px}
+
+/* ── Rejilla ── */
+.sp-all-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(216px,1fr));
+  gap:clamp(.65rem,1.2vw,1rem);
+}
+/* Las tarjetas reutilizan el diseño del carrusel, pero aquí
+   ocupan el ancho de su celda en vez de un ancho fijo. */
+.sp-all-grid .sp-card{
+  width:100%;
+  aspect-ratio:3/4.1;
+  opacity:1;transform:none;   /* visibles de entrada, sin esperar scroll */
+}
+.sp-all-grid .sp-card:not(.mystery-locked):not(.flipped):hover{
+  transform:translateY(-5px);
+}
+
+@media(max-width:768px){
+  .sp-all-cta{margin-top:1.4rem}
+  .sp-all-panel{border-radius:18px}
+  .sp-all-grid{grid-template-columns:repeat(2,1fr);gap:.55rem}
+  .sp-all-hint{font-size:.7rem;margin-bottom:1.1rem}
+  /* En la rejilla el nombre debe achicarse: las celdas son estrechas */
+  .sp-all-grid .sp-name{font-size:.88rem}
+  .sp-all-grid .sp-subtitle{font-size:.56rem;letter-spacing:.05em}
+  .sp-all-grid .sp-category{font-size:.46rem;padding:.22rem .5rem;top:.6rem;left:.6rem}
+  .sp-all-grid .sp-front::after{font-size:.5rem;top:.6rem;right:.6rem}
+  .sp-all-grid .sp-info{padding:1.5rem .75rem .85rem}
+  .sp-all-grid .sp-info::before{left:.75rem;bottom:.85rem}
+  .sp-all-grid .sp-info > *{padding-left:.6rem}
+}
+/* Bloquea el scroll del fondo con el modal abierto */
+body.sp-all-lock{overflow:hidden}
+
+@media(prefers-reduced-motion:reduce){
+  .sp-all-overlay,.sp-all-panel,.sp-all-close,.sp-all-btn{transition-duration:.01ms!important}
+  .sp-all-btn,.sp-all-arrow{animation:none!important}
+  .sp-all-btn::before{display:none}
+}
 
 /* Mystery locked card */
 .sp-card.mystery-locked{
@@ -1663,12 +1868,18 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .imx-btn-inner{padding:1.2rem 2rem}
   .imx-btn-label{font-size:.75rem}
   .tc-price-next{text-align:center;line-height:1.35}
-  /* Speakers: mobile — cards un poco más altas para que
-     las biografías largas quepan sin scroll */
-  .sp-carousel-track .sp-card{width:min(280px,78vw);aspect-ratio:3/4.25}
+  /* Speakers: mobile — formato póster, cards protagonistas */
+  .sp-carousel-track .sp-card{width:min(300px,82vw);aspect-ratio:3/4.2}
   .sp-back-bio{font-size:.75rem;line-height:1.5}
   .sp-back-name{font-size:1.02rem}
+  .sp-name{font-size:1.28rem}
+  .sp-subtitle{font-size:.66rem}
   .sp-carousel-track{gap:.85rem}
+  .sp-hint{font-size:.58rem;letter-spacing:.16em;margin-top:1.5rem;padding:0 1rem;line-height:1.6}
+  .sp-all-btn{
+    padding:1rem 1.6rem;font-size:.76rem;letter-spacing:.1em;
+    gap:.6rem;width:calc(100% - 2rem);max-width:380px;justify-content:center;
+  }
   .sp-carousel-wrapper::before,.sp-carousel-wrapper::after{width:40px}
   .speakers-mini-grid{grid-template-columns:1fr}
   .sp-mini{padding:.85rem 1rem}

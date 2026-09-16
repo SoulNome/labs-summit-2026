@@ -1460,6 +1460,22 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 
   </div><!-- /speakers-grid -->
 
+  <!-- Pista de interacción -->
+  <p class="sp-hint">Se mueve solo · pasa el cursor para pausar · toca una ficha para su perfil</p>
+
+  <!-- Botón: ver todos los speakers -->
+  <div class="sp-all-cta">
+    <button class="sp-all-btn" id="sp-open-all" type="button" aria-haspopup="dialog">
+      <span class="sp-all-icon" aria-hidden="true">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </span>
+      <span>Ver todos los speakers</span>
+      <span class="sp-all-count" id="sp-all-count"></span>
+      <span class="sp-all-arrow" aria-hidden="true">→</span>
+    </button>
+  </div>
+
   <!-- Mystery notification -->
   <div id="mystery-toast" style="
     display:none;position:fixed;top:5.5rem;left:50%;transform:translateX(-50%);
@@ -1470,6 +1486,21 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     animation:fadeIn .3s ease;
   "></div>
 </section>
+
+<!-- ══ MODAL: TODOS LOS SPEAKERS ══ -->
+<div class="sp-all-overlay" id="sp-all-overlay" role="dialog" aria-modal="true" aria-labelledby="sp-all-title" hidden>
+  <div class="sp-all-panel" role="document">
+    <header class="sp-all-head">
+      <div>
+        <span class="s-label" style="margin-bottom:.35rem">Voces que inspiran</span>
+        <h2 class="sp-all-title" id="sp-all-title">Todos los <span class="ac">Speakers</span></h2>
+      </div>
+      <button class="sp-all-close" id="sp-all-close" type="button" aria-label="Cerrar">✕</button>
+    </header>
+    <p class="sp-all-hint">Toca cualquier tarjeta para leer su perfil</p>
+    <div class="sp-all-grid" id="sp-all-grid"></div>
+  </div>
+</div>
 
 <!-- ══ VENUE ══ -->
 <section id="venue" style="padding:4rem 0;background:#08041a">
@@ -1515,9 +1546,15 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <span class="rdh-badge">Acceso general</span>
       </div>
       <div class="render-grid">
-        <figure class="render-item reveal">
-          <img src="/map/render-3-dia2-evento.jpg" alt="Render del auditorio de conferencias" loading="lazy">
+        <figure class="render-item render-feat reveal render-wide">
+          <img src="/map/render-8-dia2-auditorio.jpg" alt="Render del auditorio de conferencias" loading="lazy">
+          <span class="rd-star">★ Destacado</span>
           <figcaption>Auditorio de conferencias</figcaption>
+        </figure>
+
+        <figure class="render-item reveal" style="transition-delay:.06s">
+          <img src="/map/render-3-dia2-evento.jpg" alt="Render de la zona fotográfica" loading="lazy">
+          <figcaption>Zona fotográfica</figcaption>
         </figure>
 
         <figure class="render-item render-feat reveal render-wide" style="transition-delay:.06s">
@@ -1537,12 +1574,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
           <figcaption>Set de podcast</figcaption>
         </figure>
 
-        <figure class="render-item reveal render-wide" style="transition-delay:.24s">
-          <img src="/map/render-8-dia2-auditorio.jpg" alt="Render del auditorio principal" loading="lazy">
-          <figcaption>Auditorio principal</figcaption>
-        </figure>
-
-        <figure class="render-item reveal" style="transition-delay:.30s">
+        <figure class="render-item reveal" style="transition-delay:.24s">
           <img src="/map/render-9-dia2-taquillas.jpg" alt="Render de las taquillas" loading="lazy">
           <figcaption>Taquillas &amp; acreditación</figcaption>
         </figure>
@@ -3141,6 +3173,92 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
         syncPause();
       });
     }
+  });
+})();
+
+/* ── Ver todos los speakers: modal con rejilla ──
+   La rejilla se arma clonando las tarjetas que ya existen en los
+   carruseles, así al agregar un speaker nuevo aparece solo aquí. */
+(function(){
+  var overlay = document.getElementById('sp-all-overlay');
+  var grid    = document.getElementById('sp-all-grid');
+  var openBtn = document.getElementById('sp-open-all');
+  var closeBtn= document.getElementById('sp-all-close');
+  var countEl = document.getElementById('sp-all-count');
+  if(!overlay || !grid || !openBtn) return;
+
+  var lastFocus = null;
+  var construida = false;
+
+  function construir(){
+    if(construida) return;
+    // Solo las originales: el carrusel duplica cada tarjeta con aria-hidden
+    var originales = document.querySelectorAll(
+      '.sp-carousel-track > .sp-card:not([aria-hidden="true"])'
+    );
+    originales.forEach(function(card){
+      var c = card.cloneNode(true);
+      c.classList.remove('flipped');
+      c.classList.add('vis');
+      c.removeAttribute('style');          // quita los transition-delay del reveal
+      grid.appendChild(c);
+    });
+
+    // Voltear al tocar
+    grid.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
+      card.addEventListener('click', function(){
+        card.classList.toggle('flipped');
+      });
+      var volver = card.querySelector('.sp-back-close');
+      if(volver){
+        volver.addEventListener('click', function(e){
+          e.stopPropagation();
+          card.classList.remove('flipped');
+        });
+      }
+    });
+    construida = true;
+  }
+
+  // Contador en el botón
+  function contar(){
+    var n = document.querySelectorAll(
+      '.sp-carousel-track > .sp-card:not([aria-hidden="true"]):not(.mystery-locked)'
+    ).length;
+    if(countEl && n) countEl.textContent = n;
+  }
+  contar();
+
+  function abrir(){
+    lastFocus = document.activeElement;
+    construir();
+    overlay.hidden = false;
+    document.body.classList.add('sp-all-lock');
+    requestAnimationFrame(function(){ overlay.classList.add('open'); });
+    closeBtn.focus();
+  }
+
+  function cerrar(){
+    overlay.classList.remove('open');
+    document.body.classList.remove('sp-all-lock');
+    setTimeout(function(){
+      overlay.hidden = true;
+      // Dejar las tarjetas sin voltear para la próxima apertura
+      grid.querySelectorAll('.sp-card.flipped').forEach(function(c){
+        c.classList.remove('flipped');
+      });
+    }, 300);
+    if(lastFocus) lastFocus.focus();
+  }
+
+  openBtn.addEventListener('click', abrir);
+  closeBtn.addEventListener('click', cerrar);
+  // Clic fuera del panel cierra
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) cerrar();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && !overlay.hidden) cerrar();
   });
 })();
 
