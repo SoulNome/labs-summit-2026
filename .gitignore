@@ -13,6 +13,11 @@ push-to-github.ps1
 run-git.bat
 push-result.txt
 
+# Respaldo de imagenes antes de optimizar (no va a la web)
+_originales/
+optimizar-imagenes.bat
+optimizar-imagenes.ps1
+
 # Archivos de prueba
 speakers/newtest.jpg
 speakers/newtest2.jpg
