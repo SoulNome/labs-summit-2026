@@ -1539,7 +1539,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <span></span><span></span><span></span>
       </span>
       <span>Ver todos los speakers</span>
-      <span class="sp-all-count" id="sp-all-count"></span>
       <span class="sp-all-arrow" aria-hidden="true">→</span>
     </button>
   </div>
@@ -3252,7 +3251,6 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
   var grid    = document.getElementById('sp-all-grid');
   var openBtn = document.getElementById('sp-open-all');
   var closeBtn= document.getElementById('sp-all-close');
-  var countEl = document.getElementById('sp-all-count');
   if(!overlay || !grid || !openBtn) return;
 
   var lastFocus = null;
@@ -3287,15 +3285,6 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
     });
     construida = true;
   }
-
-  // Contador en el botón
-  function contar(){
-    var n = document.querySelectorAll(
-      '.sp-carousel-track > .sp-card:not([aria-hidden="true"]):not(.mystery-locked)'
-    ).length;
-    if(countEl && n) countEl.textContent = n;
-  }
-  contar();
 
   function abrir(){
     lastFocus = document.activeElement;
