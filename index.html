@@ -49,8 +49,29 @@
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  margin-top:2.8rem;
-  animation:fadeUp 1s ease .85s both;
+}
+
+/* ── Ubicación: debajo de las entradas ──
+   Contenedor a todo el ancho que recorta los anillos y órbitas
+   (llegan a ~500px) para que no generen scroll horizontal en móvil. */
+.imx-tickets-cta{
+  display:flex;flex-direction:column;align-items:center;
+  overflow:hidden;
+  margin:0 auto;
+  padding:clamp(1rem,1.6vw,1.5rem) 0 clamp(4.5rem,7vw,6rem);
+  text-align:center;
+}
+.imx-tickets-lead{
+  font-size:clamp(.66rem,.8vw,.74rem);font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(201,174,255,.55);
+  margin:0 0 clamp(4rem,6vw,5.2rem);   /* deja espacio a las órbitas */
+  line-height:1.7;
+}
+.imx-tickets-lead span{color:#F0EAFF;display:inline-block}
+@media(max-width:640px){
+  .imx-tickets-lead{letter-spacing:.14em;padding:0 1.2rem;margin-bottom:3.6rem}
+  .imx-tickets-lead span{display:block;margin-top:.2rem}
 }
 
 /* Anillos de pulso que se expanden al infinito */
@@ -759,29 +780,6 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       </div>
     </div>
   </div>
-
-  <!-- Experiencia inmersiva — Botón épico -->
-  <div class="imx-hero-wrap" id="imx-hero-wrap">
-    <!-- Anillos de pulso -->
-    <div class="imx-pulse-ring r1"></div>
-    <div class="imx-pulse-ring r2"></div>
-    <div class="imx-pulse-ring r3"></div>
-    <!-- Órbitas con puntos luminosos -->
-    <div class="imx-orbit o1"><div class="imx-orb-dot"></div></div>
-    <div class="imx-orbit o2"><div class="imx-orb-dot"></div></div>
-    <div class="imx-orbit o3"><div class="imx-orb-dot"></div></div>
-    <!-- Botón principal -->
-    <button class="imx-trigger" id="imx-main-btn" onclick="IMX.open()" aria-label="Abrir experiencia inmersiva">
-      <div class="imx-btn-inner">
-        <div class="imx-btn-shimmer"></div>
-        <div class="imx-btn-icon-wrap">
-          <span class="imx-diamond" style="font-size:1.8rem">▶</span>
-        </div>
-        <span class="imx-btn-label">EXPLORAR LA EXPERIENCIA</span>
-        <span class="imx-btn-sub">Sumérgete &nbsp;·&nbsp; <span style="font-size:1.35em;font-weight:800;letter-spacing:.1em;color:#fff">28 · 29 · 30</span> &nbsp;Oct 2026</span>
-      </div>
-    </button>
-  </div>
 </section>
 
 <!-- ══ TICKETS / RANKING ══ -->
@@ -867,6 +865,32 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <li>Experiencia más exclusiva del evento</li>
       </ul>
       <a class="tc-btn" href="https://coccoa.xyz/labs-summit-2026-diamante-black-dia-1--2/20669" target="_blank" rel="noopener">Comprar ahora <span class="tc-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- Experiencia inmersiva — debajo de las entradas -->
+  <div class="imx-tickets-cta reveal">
+    <p class="imx-tickets-lead">¿Aún no te decides? <span>Vive el evento antes de vivirlo</span></p>
+    <div class="imx-hero-wrap" id="imx-hero-wrap">
+      <!-- Anillos de pulso -->
+      <div class="imx-pulse-ring r1"></div>
+      <div class="imx-pulse-ring r2"></div>
+      <div class="imx-pulse-ring r3"></div>
+      <!-- Órbitas con puntos luminosos -->
+      <div class="imx-orbit o1"><div class="imx-orb-dot"></div></div>
+      <div class="imx-orbit o2"><div class="imx-orb-dot"></div></div>
+      <div class="imx-orbit o3"><div class="imx-orb-dot"></div></div>
+      <!-- Botón principal -->
+      <button class="imx-trigger" id="imx-main-btn" onclick="IMX.open()" aria-label="Abrir experiencia inmersiva">
+        <div class="imx-btn-inner">
+          <div class="imx-btn-shimmer"></div>
+          <div class="imx-btn-icon-wrap">
+            <span class="imx-diamond" style="font-size:1.8rem">▶</span>
+          </div>
+          <span class="imx-btn-label">EXPLORAR LA EXPERIENCIA</span>
+          <span class="imx-btn-sub">Sumérgete &nbsp;·&nbsp; <span style="font-size:1.35em;font-weight:800;letter-spacing:.1em;color:#fff">28 · 29 · 30</span> &nbsp;Oct 2026</span>
+        </div>
+      </button>
     </div>
   </div>
 
