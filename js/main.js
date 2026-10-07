@@ -379,7 +379,7 @@ heroEl.addEventListener('mousemove', e=>{
 const mysteryHints = [
   '🔥 Pista: Es referente latinoamericano en IA. ¡Sigue nuestras redes!',
   '⚡ Pista: Ha hablado en +20 países. Solo en High Ticket.',
-  '🌎 Este invitado cambiará la perspectiva del ecosistema. Anuncio: 1 Sep.',
+  '🌎 Este invitado cambiará la perspectiva del ecosistema. ¡Muy pronto!',
 ];
 let mysteryIdx = 0;
 function showMysteryHint(card){

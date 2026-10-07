@@ -2260,16 +2260,16 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <div class="ich6-aurora-orb o2"></div>
       <div class="imx-ch-content">
         <div class="ich6-stamp">
-          <span class="ich6-line l1">11</span>
+          <span class="ich6-line l1">28</span>
           <span class="ich6-sep">·</span>
-          <span class="ich6-line l2">12</span>
+          <span class="ich6-line l2">29</span>
           <span class="ich6-sep">·</span>
-          <span class="ich6-line l3">13</span>
+          <span class="ich6-line l3">30</span>
           <div class="ich6-sub">OCTUBRE 2026</div>
           <div class="ich6-loc">TULUÁ · COLOMBIA</div>
         </div>
         <div class="ich6-btns">
-          <button class="ich6-btn-pri" onclick="IMX.close();setTimeout(function(){document.getElementById('register').scrollIntoView({behavior:'smooth'})},400)">
+          <button class="ich6-btn-pri" onclick="IMX.close();setTimeout(function(){var t=document.getElementById('tickets');if(t)t.scrollIntoView({behavior:'smooth'})},400)">
             Asegurar mi lugar →
           </button>
           <button class="ich6-btn-sec" onclick="IMX.close()">
@@ -3055,15 +3055,12 @@ function openPtModal(tier){
   document.body.style.overflow = 'hidden';
 }
 function closePtModal(){
-  document.getElementById('pt-modal').classList.remove('open');
+  var modal = document.getElementById('pt-modal');
+  if(!modal) return;   // el modal de paquetes ya no está en la página
+  modal.classList.remove('open');
   document.body.style.overflow = '';
 }
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closePtModal(); });
-
-/* ══ STAND CTA ══ */
-function startStand(){
-  document.getElementById('register').scrollIntoView({behavior:'smooth'});
-}
 
 /* ══ MODAL ALIADO — WIZARD ══ */
 var aliStep = 1;
