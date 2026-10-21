@@ -3,16 +3,17 @@
    - archivos del mapa: se sirven desde el celular (rápido y sin datos)
    - evento.js (agenda): primero internet, y si no hay, la última versión guardada
    Al cambiar archivos del mapa, subir VERSION para que todos reciban lo nuevo. */
-var VERSION = 'mapa-v4';
+var VERSION = 'mapa-v5';
 var BASE = [
   '/mapa/',
-  '/mapa/mapa.css?v=4',
+  '/mapa/mapa.css?v=5',
   '/mapa/vendor/three.min.js?v=147',
   '/mapa/vendor/OrbitControls.min.js?v=147',
-  '/mapa/evento.js?v=4',
-  '/mapa/escena.js?v=4',
-  '/mapa/interiores.js?v=4',
-  '/mapa/app.js?v=4'
+  '/mapa/vendor/postpro.min.js?v=147',
+  '/mapa/evento.js?v=5',
+  '/mapa/escena.js?v=5',
+  '/mapa/interiores.js?v=5',
+  '/mapa/app.js?v=5'
 ];
 var FOTOS = ['auditorio', 'expositores', 'marcas', 'podcast', 'workshops', 'foto', 'cafe', 'taquillas'].map(function (n) { return '/mapa/img/' + n + '.jpg'; });
 
@@ -67,10 +68,10 @@ self.addEventListener('fetch', function (e) {
     e.respondWith(
       conTiempo(fetch(req), 4000).then(function (r) {
         var copia = r.clone();
-        if (r.ok) caches.open(VERSION).then(function (c) { c.put('/mapa/evento.js?v=4', copia); });
+        if (r.ok) caches.open(VERSION).then(function (c) { c.put('/mapa/evento.js?v=5', copia); });
         return r;
       }).catch(function () {
-        return caches.match('/mapa/evento.js?v=4').then(function (r) { return r || caches.match(req, { ignoreSearch: true }); });
+        return caches.match('/mapa/evento.js?v=5').then(function (r) { return r || caches.match(req, { ignoreSearch: true }); });
       })
     );
     return;

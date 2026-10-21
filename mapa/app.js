@@ -11,12 +11,18 @@
   var DEV = params.has('dev');
   var REDUCIDO = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var TACTIL = window.matchMedia && matchMedia('(pointer: coarse)').matches;
-  var LIGERO = (function () {
-    if (params.has('ligero')) return true;
-    if (params.has('completo')) return false;
-    var mem = navigator.deviceMemory || 4, nucleos = navigator.hardwareConcurrency || 4;
-    return mem <= 2 || nucleos <= 4;
+  // Calidad gráfica. Los iPhone no informan memoria y reportan pocos núcleos,
+  // así que solo se baja la calidad en equipos que de verdad son limitados;
+  // si aun así el teléfono va lento, la resolución se ajusta sola (ver vigilar()).
+  var CALIDAD = (function () {
+    if (params.has('ligero')) return 'baja';
+    if (params.has('completo')) return 'alta';
+    var mem = navigator.deviceMemory, nucleos = navigator.hardwareConcurrency;
+    if ((mem && mem <= 2) || (nucleos && nucleos <= 2)) return 'baja';
+    if (mem && mem <= 4 && nucleos && nucleos <= 4) return 'media';
+    return 'alta';
   })();
+  var LIGERO = CALIDAD === 'baja';
 
   function $(s) { return document.querySelector(s); }
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
@@ -578,15 +584,58 @@
   function crearMapa(opcionesMapa) {
     var THREE = window.THREE;
     var lienzo = $('#lienzo');
-    var renderer = new THREE.WebGLRenderer({ antialias: !LIGERO, powerPreference: 'default' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, LIGERO ? 1 : 2));
+    var renderer = new THREE.WebGLRenderer({ antialias: !LIGERO, powerPreference: LIGERO ? 'default' : 'high-performance' });
+    // nitidez: en celulares de buena pantalla se dibuja casi a la resolución real
+    var PR_MAX = Math.min(window.devicePixelRatio || 1, CALIDAD === 'alta' ? 2.5 : CALIDAD === 'media' ? 2 : 1.25);
+    var pr = PR_MAX;
+    renderer.setPixelRatio(pr);
+    // sombras reales de edificios, gente y árboles: se calculan una sola vez (la maqueta no se mueve)
+    var SOMBRAS = !LIGERO;
+    if (SOMBRAS) { renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false; }
     lienzo.appendChild(renderer.domElement);
     renderer.domElement.setAttribute('aria-hidden', 'true');
 
     var colores = {};
     Object.keys(tipos).forEach(function (k) { colores[k] = tipos[k].color; });
-    var M = window.LSEscena.construir(THREE, { ligero: LIGERO, colores: colores });
+    var M = window.LSEscena.construir(THREE, {
+      ligero: LIGERO, calidad: CALIDAD, colores: colores, sombras: SOMBRAS,
+      aniso: renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 4
+    });
     var escena = M.escena, zonas = M.zonas, L = M.limites;
+    if (SOMBRAS) renderer.shadowMap.needsUpdate = true;
+
+    // brillo de neón real (bloom) con antialias multimuestra: el «look» de las luces del evento
+    var composer = null, pasoRender = null, pasoBrillo = null;
+    if (!LIGERO && THREE.EffectComposer && THREE.UnrealBloomPass) {
+      try {
+        var rtBrillo = new THREE.WebGLRenderTarget(2, 2, { samples: renderer.capabilities.isWebGL2 ? 4 : 0 });
+        composer = new THREE.EffectComposer(renderer, rtBrillo);
+        pasoRender = new THREE.RenderPass(escena, null);
+        composer.addPass(pasoRender);
+        pasoBrillo = new THREE.UnrealBloomPass(new THREE.Vector2(256, 256), 0.5, 0.4, 0.78);
+        composer.addPass(pasoBrillo);
+      } catch (errBrillo) { composer = null; }
+    }
+    function dibujar(sc, cam) {
+      if (composer) {
+        pasoRender.scene = sc; pasoRender.camera = cam;
+        pasoBrillo.strength = sc === escena ? 0.5 : 0.42;
+        composer.render();
+      } else renderer.render(sc, cam);
+    }
+    // si el teléfono no da abasto, baja un poco la resolución (y como último recurso el brillo)
+    var muestras = [], ultimoCuadro = 0;
+    function vigilar(t) {
+      var d = t - ultimoCuadro; ultimoCuadro = t;
+      if (d <= 0 || d > 200) return;
+      muestras.push(d);
+      if (muestras.length < 45) return;
+      var prom = muestras.reduce(function (a, b) { return a + b; }, 0) / muestras.length;
+      muestras = [];
+      if (prom < 40) return;
+      if (pr > 1.25) { pr = Math.max(1.25, pr - 0.5); renderer.setPixelRatio(pr); medir(); }
+      else if (pasoBrillo && pasoBrillo.enabled) pasoBrillo.enabled = false;
+    }
 
     var MITAD = 100;
     var camara = new THREE.OrthographicCamera(-MITAD, MITAD, MITAD, -MITAD, 1, 2000);
@@ -620,6 +669,7 @@
       var asp = ancho / alto;
       camara.left = -MITAD * asp; camara.right = MITAD * asp; camara.top = MITAD; camara.bottom = -MITAD;
       renderer.setSize(ancho, alto, false);
+      if (composer) { composer.setPixelRatio(pr); composer.setSize(ancho, alto); }
       renderer.domElement.style.width = ancho + 'px';
       renderer.domElement.style.height = alto + 'px';
       camara.updateProjectionMatrix();
@@ -699,7 +749,8 @@
         var animando = !!interior.animar && (ahoraMs < interior.animarHasta || interior.ctrl.autoRotate || interior.moviendo);
         if (animando) interior.animar(ahoraMs / 1000);
         var movI = interior.intro ? false : interior.ctrl.update();
-        renderer.render(interior.escena, interior.cam);
+        dibujar(interior.escena, interior.cam);
+        vigilar(ahoraMs);
         if (activas || movI || interior.moviendo || interior.ctrl.autoRotate || animando) pedir();
         return;
       }
@@ -714,7 +765,8 @@
       }
       var movio = controles.update();
       limitar();
-      renderer.render(escena, camara);
+      dibujar(escena, camara);
+      vigilar(ahoraMs);
       ubicarEtiquetas();
       if (camara.zoom !== ultimoZoom) {
         ultimoZoom = camara.zoom;
@@ -1052,7 +1104,7 @@
       app.classList.add('transicion');
       setTimeout(function () {
         var I;
-        try { I = window.LSInteriores.crear(THREE, id, { ligero: LIGERO, vivo: extra && extra.vivo }); }
+        try { I = window.LSInteriores.crear(THREE, id, { ligero: LIGERO, calidad: CALIDAD, vivo: extra && extra.vivo }); }
         catch (err) { if (window.console) console.error(err); app.classList.remove('transicion'); return; }
         liberarInterior();
         var cam = new THREE.PerspectiveCamera(45, ancho / alto, 0.1, 500);
@@ -1139,7 +1191,7 @@
       var zFin = camara.zoom;
       camara.zoom = zFin * 0.8; camara.updateProjectionMatrix();
       animar(1700, function (k) { camara.zoom = zFin * (0.8 + 0.2 * k); camara.updateProjectionMatrix(); });
-      setTimeout(function () { app.classList.remove('intro'); medirEtiquetas(); pedir(); }, 150 + ordenIntro.length * 85 + 450);
+      setTimeout(function () { app.classList.remove('intro'); medirEtiquetas(); if (SOMBRAS) renderer.shadowMap.needsUpdate = true; pedir(); }, 150 + ordenIntro.length * 85 + 450);
     }
     pedir();
 

@@ -96,9 +96,10 @@
   }
 
   /* ---------- piso horneado en una textura (estilo del plano oficial) ---------- */
-  function texturaSuelo(ligero, extras) {
+  function texturaSuelo(calidad, extras) {
     extras = extras || { sombras: [], faroles: [] };
-    var W = ligero ? 1024 : 2048, H = ligero ? 640 : 1256;
+    // resolución del piso según el equipo: en «alta» las líneas y textos del plano se ven nítidos de cerca
+    var W = calidad === 'alta' ? 3584 : calidad === 'media' ? 2048 : 1024, H = Math.round(W * (SUELO.z1 - SUELO.z0) / (SUELO.x1 - SUELO.x0));
     var c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d');
     var sx = W / (SUELO.x1 - SUELO.x0), sz = H / (SUELO.z1 - SUELO.z0);
@@ -225,7 +226,9 @@
     x.restore();
 
     var t = new T.CanvasTexture(c);
-    t.anisotropy = 4;
+    t.anisotropy = extras.aniso || 4;
+    t.generateMipmaps = true;
+    t.minFilter = T.LinearMipmapLinearFilter;
     return t;
   }
 
@@ -500,6 +503,7 @@
     BLANCO = new T.Color(0xffffff);
     Zona.matToque = new T.MeshBasicMaterial();
     var ligero = !!(opciones && opciones.ligero);
+    var calidad = (opciones && opciones.calidad) || (ligero ? 'baja' : 'media');
     var colores = (opciones && opciones.colores) || {};
     function col(tipo, def) { return colores[tipo] || def; }
     var C = {
@@ -780,7 +784,7 @@
     var sombras = ['auditorio', 'expositores', 'kits', 'workshops', 'banos', 'banos2', 'taquillas', 'speakers', 'bebidas'].map(function (k) { return zonas[k].huella; });
     var suelo = new T.Mesh(
       new T.PlaneGeometry(SUELO.x1 - SUELO.x0, SUELO.z1 - SUELO.z0),
-      new T.MeshBasicMaterial({ map: texturaSuelo(ligero, { sombras: sombras, faroles: FAROLES }) })
+      new T.MeshBasicMaterial({ map: texturaSuelo(calidad, { sombras: sombras, faroles: FAROLES, aniso: opciones && opciones.aniso }) })
     );
     suelo.rotation.x = -Math.PI / 2;
     suelo.position.set((SUELO.x0 + SUELO.x1) / 2, 0, (SUELO.z0 + SUELO.z1) / 2);
@@ -852,6 +856,32 @@
                    [-40, -36, 3], [-12, -56, 3], [96, 40, 3.5], [120, -40, 4], [140, -55, 3.5], [100, 10, 3.5]];
     for (i = 0; i < sueltos.length; i++) bosque.arbol(sueltos[i][0], sueltos[i][1], sueltos[i][2], sueltos[i][2] * 2.2);
     bosque.terminar(escena, ligero);
+
+    /* ---- sombras reales del sol (se calculan una vez; ver app.js) ---- */
+    if (opciones && opciones.sombras) {
+      var cx = VISTA.centro[0], cz = VISTA.centro[1];
+      sol.position.set(cx + 55, 130, cz + 70);
+      sol.target.position.set(cx, 0, cz);
+      escena.add(sol.target);
+      sol.castShadow = true;
+      sol.shadow.mapSize.set(calidad === 'alta' ? 3072 : 2048, calidad === 'alta' ? 3072 : 2048);
+      var sc = sol.shadow.camera;
+      sc.left = -100; sc.right = 100; sc.top = 85; sc.bottom = -85; sc.near = 20; sc.far = 400;
+      sol.shadow.bias = -0.0008;
+      sol.shadow.normalBias = 0.05;
+      sol.shadow.radius = 2.5;
+      sol.intensity = 0.75;
+      var receptor = new T.Mesh(new T.PlaneGeometry(SUELO.x1 - SUELO.x0, SUELO.z1 - SUELO.z0), new T.ShadowMaterial({ opacity: 0.45, color: 0x02010A }));
+      receptor.rotation.x = -Math.PI / 2;
+      receptor.position.set((SUELO.x0 + SUELO.x1) / 2, 0.035, (SUELO.z0 + SUELO.z1) / 2);
+      receptor.receiveShadow = true;
+      receptor.renderOrder = 1;
+      escena.add(receptor);
+      escena.traverse(function (o) {
+        if (!o.isMesh || o === receptor || !o.material || o.material.transparent || o.material.isMeshBasicMaterial) return;
+        o.castShadow = true;
+      });
+    }
 
     return {
       escena: escena,
