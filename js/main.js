@@ -403,24 +403,43 @@ document.querySelectorAll('.video-card').forEach(card=>{
 });
 
 /* ─────────────────────────────────
-   MURO DE PATROCINADORES: luz neón que sigue el cursor
-   (solo con mouse; en celular las tarjetas tienen su propio destello en CSS)
+   BANDA DE PATROCINADORES: luz neón que sigue el cursor
+   (solo con mouse; la banda se detiene mientras el cursor está encima)
 ───────────────────────────────── */
 (function(){
-  const muro = document.querySelector('.muro');
-  if(!muro || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-  const fichas = Array.from(muro.querySelectorAll('.logo-tile'));
-  let x = 0, y = 0, pendiente = false;
-  function pintar(){
-    pendiente = false;
-    fichas.forEach(f=>{
-      const r = f.getBoundingClientRect();
-      f.style.setProperty('--mx', (x - r.left) + 'px');
-      f.style.setProperty('--my', (y - r.top) + 'px');
-    });
-  }
-  muro.addEventListener('pointermove', e=>{
-    x = e.clientX; y = e.clientY;
-    if(!pendiente){ pendiente = true; requestAnimationFrame(pintar); }
-  }, {passive:true});
+  if(!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  document.querySelectorAll('.luz').forEach(zona=>{
+    const fichas = Array.from(zona.querySelectorAll('.logo-tile'));
+    let x = 0, y = 0, pendiente = false;
+    function pintar(){
+      pendiente = false;
+      const ancho = window.innerWidth;
+      fichas.forEach(f=>{
+        const r = f.getBoundingClientRect();
+        if(r.right < 0 || r.left > ancho) return;   // solo las que se ven
+        f.style.setProperty('--mx', (x - r.left) + 'px');
+        f.style.setProperty('--my', (y - r.top) + 'px');
+      });
+    }
+    zona.addEventListener('pointermove', e=>{
+      x = e.clientX; y = e.clientY;
+      if(!pendiente){ pendiente = true; requestAnimationFrame(pintar); }
+    }, {passive:true});
+  });
+})();
+
+/* ─────────────────────────────────
+   LOGOS DE PATROCINADORES Y ALIADOS: se piden un poco antes de llegar
+   a la sección, así ninguno aparece tarde cuando entra a la banda
+───────────────────────────────── */
+(function(){
+  const sec = document.getElementById('sponsors');
+  if(!sec || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entradas=>{
+    if(entradas.some(e=>e.isIntersecting)){
+      sec.querySelectorAll('.logo-tile img[loading="lazy"]').forEach(i=>{ i.loading = 'eager'; });
+      io.disconnect();
+    }
+  }, {rootMargin:'800px 0px'});
+  io.observe(sec);
 })();

@@ -1169,7 +1169,7 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 
 /* ── SPONSORS ── */
 #sponsors{background:var(--bg2);isolation:isolate}
-/* Luz violeta de fondo, muy suave: le da profundidad al muro sin competir con los logos */
+/* Luz violeta de fondo, muy suave: le da profundidad a las bandas sin competir con los logos */
 #sponsors::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
@@ -1195,7 +1195,7 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
   background:rgba(232,121,249,.7);transform:translateY(-50%);
 }
 
-/* Ritmo vertical de la sección: encabezado → muro → separador → encabezado → bandas */
+/* Ritmo vertical de la sección: encabezado → banda → separador → encabezado → bandas */
 .sponsors-head{
   text-align:center;
   margin:clamp(3rem,5vw,4.5rem) auto 0;
@@ -1209,8 +1209,8 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 .sponsors-grid{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:2rem}
 
 /* ── Tarjeta de logo ──
-   El muro y las bandas usan la MISMA geometría (19:10 y caja interna 15%/10%),
-   así el tamaño óptico --w de cada logo vale igual en los dos lugares.
+   Todas las bandas usan la MISMA geometría (19:10 y caja interna 15%/10%),
+   así el tamaño óptico --w de cada logo vale igual sin importar el ancho de la tarjeta.
    Los logos con fondo propio (Alcaldía, Univalle, Tiendanube, UCEVA, Giraldo,
    Quality, Pintón, Dropi, Bold) traen su pastilla ya horneada en el archivo. */
 .logo-tile{
@@ -1241,21 +1241,12 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
   .logo-tile.placa:hover img{filter:drop-shadow(0 6px 16px rgba(168,85,247,.45))}
 }
 
-/* ── PATROCINADORES: muro fijo ── */
-.muro{
-  --cols:5;--gap:clamp(.7rem,1.3vw,1.1rem);
-  list-style:none;margin:clamp(2rem,3.5vw,2.8rem) auto 0;padding:0;max-width:1180px;
-  display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap);
-}
-.muro-item{flex:0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols))}
-/* Entrada escalonada (main.js pone .vis al llegar a la sección) */
-.muro.reveal{opacity:1;transform:none}
-.muro:not(.vis) .muro-item{opacity:0}
-.muro.vis .muro-item{animation:muroEntra .8s cubic-bezier(.16,1,.3,1) backwards;animation-delay:calc(var(--i,0) * 60ms)}
-@keyframes muroEntra{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
-/* Con mouse: borde de neón y luz que siguen el cursor por todo el muro */
+/* ── PATROCINADORES: banda en movimiento, tarjetas más grandes que las de aliados ── */
+.ticker-pat .ticker-card{width:clamp(200px,17vw,262px)}
+.ticker-pat .ticker-track{padding:.8rem 0}
+/* Con mouse: la banda se detiene y un borde de neón + luz siguen el cursor (main.js pone --mx/--my) */
 @media (hover:hover) and (pointer:fine){
-  .muro .logo-tile::before{
+  .luz .logo-tile::before{
     content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
     background:radial-gradient(220px circle at var(--mx,-300px) var(--my,-300px),rgba(232,121,249,.95),rgba(168,85,247,.55) 35%,transparent 70%);
     -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
@@ -1264,25 +1255,13 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
     mask-composite:exclude;
     opacity:0;transition:opacity .4s ease;
   }
-  .muro .logo-tile::after{
+  .luz .logo-tile::after{
     content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
     background:radial-gradient(300px circle at var(--mx,-300px) var(--my,-300px),rgba(168,85,247,.14),transparent 65%);
     opacity:0;transition:opacity .4s ease;
   }
-  .muro:hover .logo-tile::before,.muro:hover .logo-tile::after{opacity:1}
+  .luz:hover .logo-tile::before,.luz:hover .logo-tile::after{opacity:1}
 }
-/* En celular (sin mouse): un destello suave recorre las tarjetas, una tras otra */
-@media (hover:none){
-  .muro .logo-tile{overflow:hidden}
-  .muro .logo-tile::after{
-    content:'';position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.09) 50%,transparent 62%);
-    transform:translateX(-120%);
-    animation:muroBrillo 7s cubic-bezier(.4,0,.2,1) infinite;
-    animation-delay:calc(var(--i,0) * .3s + 1.5s);
-  }
-}
-@keyframes muroBrillo{0%{transform:translateX(-120%)}24%,100%{transform:translateX(120%)}}
 
 /* Invitación a patrocinar */
 .muro-cta{
@@ -1313,6 +1292,9 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 /* Los bordes se desvanecen con máscara (no con un color encima), así combina con la luz de fondo */
 .ticker-outer{
   position:relative;overflow:hidden;width:100%;
+  /* aire arriba y abajo (compensado con margen negativo) para que el brillo
+     de la tarjeta al pasar el mouse no se vea cortado */
+  padding:20px 0;margin:-20px 0;
   -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
   mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
 }
@@ -1331,17 +1313,13 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
 
 @media(prefers-reduced-motion:reduce){
   .ticker-track{animation:none}
-  .muro.vis .muro-item{animation:none}
-  .muro .logo-tile::after{animation:none;display:none}
 }
 
-/* ── Tablet ── */
-@media(max-width:900px){
-  .muro{--cols:4}
-}
 /* ── Celular ── */
 @media(max-width:768px){
   .ticker-card{width:158px;margin-right:.7rem}
+  .ticker-pat .ticker-card{width:184px}
+  .ticker-pat .ticker-track{padding:.6rem 0}
   .ticker-track{padding:.4rem 0}
   .ticker-section{margin:1.8rem calc(50% - 50vw) .5rem}
   .sponsors-head{margin-top:2.6rem}
@@ -1363,7 +1341,6 @@ section{padding:clamp(3.5rem,5vw,5.5rem) clamp(1.2rem,3.5vw,4rem);position:relat
   .logo-tile{border-radius:14px}
 }
 @media(max-width:560px){
-  .muro{--cols:2;--gap:.6rem}
   .muro-cta{font-size:.7rem;padding:.65rem 1rem}
 }
 

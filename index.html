@@ -39,7 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css?v=20261020"/>
+<link rel="stylesheet" href="css/styles.css?v=20261020c"/>
 <style>
 /* ══ EXPERIENCIA INMERSIVA — BOTÓN ÉPICO ══ */
 
@@ -1694,25 +1694,53 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   </div>
 
   <!-- ── PATROCINADORES OFICIALES ──
-       Muro fijo: los patrocinadores se ven todos a la vez (no hay que esperar a que pasen).
+       Banda en movimiento con tarjetas más grandes que las de aliados. El grupo va 3 veces
+       (las copias con aria-hidden) para que el bucle no deje huecos. Al pasar el mouse se
+       detiene y una luz neón sigue el cursor.
        Logos en /logos/ (WebP + PNG de respaldo). --w es el tamaño óptico de cada logo,
        calculado para que ninguno se vea más grande o más pequeño que los demás. -->
   <div class="sponsors-head">
     <span class="s-label">Los que hacen posible Labs Summit</span>
     <h2 class="s-title reveal">Patrocinadores <span class="ac">Oficiales</span></h2>
   </div>
-  <ul class="muro reveal" aria-label="Patrocinadores oficiales">
-    <li class="muro-item logo-tile" style="--i:0"><span class="lg"><picture><source type="image/webp" srcset="/logos/technolabs.webp"><img src="/logos/technolabs.png" alt="Technolabs" width="298" height="230" loading="lazy" decoding="async" style="--w:52.8%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:1"><span class="lg"><picture><source type="image/webp" srcset="/logos/camara-comercio-tulua.webp"><img src="/logos/camara-comercio-tulua.png" alt="Cámara de Comercio de Tuluá" width="230" height="230" loading="lazy" decoding="async" style="--w:46.1%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:2"><span class="lg"><picture><source type="image/webp" srcset="/logos/master-commerce.webp"><img src="/logos/master-commerce.png" alt="Master Commerce" width="520" height="210" loading="lazy" decoding="async" style="--w:87.7%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:3"><span class="lg"><picture><source type="image/webp" srcset="/logos/seenmcom.webp"><img src="/logos/seenmcom.png" alt="Seenmcom" width="520" height="78" loading="lazy" decoding="async" style="--w:100%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:4"><span class="lg"><picture><source type="image/webp" srcset="/logos/unmerco.webp"><img src="/logos/unmerco.png" alt="Unmerco" width="509" height="230" loading="lazy" decoding="async" style="--w:71.0%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:5"><span class="lg"><picture><source type="image/webp" srcset="/logos/central-transporte-tulua.webp"><img src="/logos/central-transporte-tulua.png" alt="Central de Transportes de Tuluá" width="520" height="211" loading="lazy" decoding="async" style="--w:84.7%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:6"><span class="lg"><picture><source type="image/webp" srcset="/logos/dya-academy.webp"><img src="/logos/dya-academy.png" alt="D&amp;A Academy" width="306" height="230" loading="lazy" decoding="async" style="--w:61.3%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:7"><span class="lg"><picture><source type="image/webp" srcset="/logos/padi.webp"><img src="/logos/padi.png" alt="PADI" width="520" height="135" loading="lazy" decoding="async" style="--w:83.3%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:8"><span class="lg"><picture><source type="image/webp" srcset="/logos/ferriobras.webp"><img src="/logos/ferriobras.png" alt="Ferriobras" width="520" height="162" loading="lazy" decoding="async" style="--w:93.7%"></picture></span></li>
-    <li class="muro-item logo-tile" style="--i:9"><span class="lg"><picture><source type="image/webp" srcset="/logos/dolormed.webp"><img src="/logos/dolormed.png" alt="Dolormed" width="160" height="230" loading="lazy" decoding="async" style="--w:32.0%"></picture></span></li>
-  </ul>
+  <div class="ticker-section ticker-pat" role="region" aria-label="Patrocinadores oficiales">
+    <div class="ticker-outer luz" style="--dur:62s">
+      <ul class="ticker-track">
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/technolabs.webp"><img src="/logos/technolabs.png" alt="Technolabs" width="298" height="230" loading="lazy" decoding="async" style="--w:52.8%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/camara-comercio-tulua.webp"><img src="/logos/camara-comercio-tulua.png" alt="Cámara de Comercio de Tuluá" width="230" height="230" loading="lazy" decoding="async" style="--w:46.1%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/master-commerce.webp"><img src="/logos/master-commerce.png" alt="Master Commerce" width="520" height="210" loading="lazy" decoding="async" style="--w:87.7%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/seenmcom.webp"><img src="/logos/seenmcom.png" alt="Seenmcom" width="520" height="78" loading="lazy" decoding="async" style="--w:100%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/unmerco.webp"><img src="/logos/unmerco.png" alt="Unmerco" width="509" height="230" loading="lazy" decoding="async" style="--w:71.0%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/central-transporte-tulua.webp"><img src="/logos/central-transporte-tulua.png" alt="Central de Transportes de Tuluá" width="520" height="211" loading="lazy" decoding="async" style="--w:84.7%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/dya-academy.webp"><img src="/logos/dya-academy.png" alt="D&amp;A Academy" width="306" height="230" loading="lazy" decoding="async" style="--w:61.3%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/padi.webp"><img src="/logos/padi.png" alt="PADI" width="520" height="135" loading="lazy" decoding="async" style="--w:83.3%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/ferriobras.webp"><img src="/logos/ferriobras.png" alt="Ferriobras" width="520" height="162" loading="lazy" decoding="async" style="--w:93.7%"></picture></span></li>
+        <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/dolormed.webp"><img src="/logos/dolormed.png" alt="Dolormed" width="160" height="230" loading="lazy" decoding="async" style="--w:32.0%"></picture></span></li>
+        <!-- copia 1 (bucle) -->
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/technolabs.webp"><img src="/logos/technolabs.png" alt="" width="298" height="230" loading="lazy" decoding="async" style="--w:52.8%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/camara-comercio-tulua.webp"><img src="/logos/camara-comercio-tulua.png" alt="" width="230" height="230" loading="lazy" decoding="async" style="--w:46.1%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/master-commerce.webp"><img src="/logos/master-commerce.png" alt="" width="520" height="210" loading="lazy" decoding="async" style="--w:87.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/seenmcom.webp"><img src="/logos/seenmcom.png" alt="" width="520" height="78" loading="lazy" decoding="async" style="--w:100%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/unmerco.webp"><img src="/logos/unmerco.png" alt="" width="509" height="230" loading="lazy" decoding="async" style="--w:71.0%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/central-transporte-tulua.webp"><img src="/logos/central-transporte-tulua.png" alt="" width="520" height="211" loading="lazy" decoding="async" style="--w:84.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/dya-academy.webp"><img src="/logos/dya-academy.png" alt="" width="306" height="230" loading="lazy" decoding="async" style="--w:61.3%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/padi.webp"><img src="/logos/padi.png" alt="" width="520" height="135" loading="lazy" decoding="async" style="--w:83.3%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/ferriobras.webp"><img src="/logos/ferriobras.png" alt="" width="520" height="162" loading="lazy" decoding="async" style="--w:93.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/dolormed.webp"><img src="/logos/dolormed.png" alt="" width="160" height="230" loading="lazy" decoding="async" style="--w:32.0%"></picture></span></li>
+        <!-- copia 2 (bucle) -->
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/technolabs.webp"><img src="/logos/technolabs.png" alt="" width="298" height="230" loading="lazy" decoding="async" style="--w:52.8%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/camara-comercio-tulua.webp"><img src="/logos/camara-comercio-tulua.png" alt="" width="230" height="230" loading="lazy" decoding="async" style="--w:46.1%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/master-commerce.webp"><img src="/logos/master-commerce.png" alt="" width="520" height="210" loading="lazy" decoding="async" style="--w:87.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/seenmcom.webp"><img src="/logos/seenmcom.png" alt="" width="520" height="78" loading="lazy" decoding="async" style="--w:100%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/unmerco.webp"><img src="/logos/unmerco.png" alt="" width="509" height="230" loading="lazy" decoding="async" style="--w:71.0%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/central-transporte-tulua.webp"><img src="/logos/central-transporte-tulua.png" alt="" width="520" height="211" loading="lazy" decoding="async" style="--w:84.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/dya-academy.webp"><img src="/logos/dya-academy.png" alt="" width="306" height="230" loading="lazy" decoding="async" style="--w:61.3%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/padi.webp"><img src="/logos/padi.png" alt="" width="520" height="135" loading="lazy" decoding="async" style="--w:83.3%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/ferriobras.webp"><img src="/logos/ferriobras.png" alt="" width="520" height="162" loading="lazy" decoding="async" style="--w:93.7%"></picture></span></li>
+        <li class="ticker-card logo-tile" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/dolormed.webp"><img src="/logos/dolormed.png" alt="" width="160" height="230" loading="lazy" decoding="async" style="--w:32.0%"></picture></span></li>
+      </ul>
+    </div>
+  </div>
   <a class="muro-cta" href="#paquetes"><span class="mas" aria-hidden="true">+</span>¿Quieres tu marca aquí? <b>Ver paquetes de patrocinio</b><span class="fl" aria-hidden="true">→</span></a>
 
   <!-- ── SEPARADOR ── -->
@@ -1727,7 +1755,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <h2 class="s-title reveal">Aliados <span class="ac">Estratégicos</span></h2>
   </div>
   <div class="ticker-section" role="region" aria-label="Aliados estratégicos del evento">
-    <div class="ticker-outer" style="--dur:50s">
+    <div class="ticker-outer ticker-reverse" style="--dur:50s">
       <ul class="ticker-track">
         <li class="ticker-card logo-tile placa"><span class="lg"><picture><source type="image/webp" srcset="/logos/alcaldia-tulua.webp"><img src="/logos/alcaldia-tulua.png" alt="Alcaldía de Tuluá" width="393" height="129" loading="lazy" decoding="async" style="--w:81.0%"></picture></span></li>
         <li class="ticker-card logo-tile"><span class="lg"><picture><source type="image/webp" srcset="/logos/feria-effix.webp"><img src="/logos/feria-effix.png" alt="Feria Effix" width="310" height="230" loading="lazy" decoding="async" style="--w:56.2%"></picture></span></li>
@@ -1760,7 +1788,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <li class="ticker-card logo-tile placa" aria-hidden="true"><span class="lg"><picture><source type="image/webp" srcset="/logos/joyas-humberto.webp"><img src="/logos/joyas-humberto.png" alt="" width="520" height="214" loading="lazy" decoding="async" style="--w:80.9%"></picture></span></li>
       </ul>
     </div>
-    <div class="ticker-outer ticker-reverse" style="--dur:56s">
+    <div class="ticker-outer" style="--dur:56s">
       <ul class="ticker-track">
         <li class="ticker-card logo-tile placa"><span class="lg"><picture><source type="image/webp" srcset="/logos/dropi.webp"><img src="/logos/dropi.png" alt="Dropi" width="490" height="230" loading="lazy" decoding="async" style="--w:67.8%"></picture></span></li>
         <li class="ticker-card logo-tile placa"><span class="lg"><picture><source type="image/webp" srcset="/logos/tiendanube.webp"><img src="/logos/tiendanube.png" alt="Tiendanube" width="520" height="110" loading="lazy" decoding="async" style="--w:100%"></picture></span></li>
@@ -2301,7 +2329,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 
 </div>
 
-<script src="js/main.js?v=20261020" defer></script>
+<script src="js/main.js?v=20261020c" defer></script>
 <script>
 /* ══ EXPERIENCIA INMERSIVA — 3 ACTOS ══ */
 var IMX = {
