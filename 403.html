@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceso restringido · Labs Summit 2026</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07020F">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#07020F;color:#F0EAFF;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden;position:relative}
+body::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 50% 38%,rgba(232,121,249,.22),transparent 55%),radial-gradient(circle at 20% 90%,rgba(168,85,247,.14),transparent 45%);pointer-events:none}
+.grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,174,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(201,174,255,.06) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(circle at 50% 45%,#000 0,transparent 70%);-webkit-mask-image:radial-gradient(circle at 50% 45%,#000 0,transparent 70%);pointer-events:none}
+main{position:relative;max-width:560px;text-align:center}
+.marca{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:.32em;font-size:13px;color:#C9AEFF;text-decoration:none}
+.marca b{color:#F0EAFF}
+.candado{width:72px;height:72px;margin:28px auto 4px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid rgba(232,121,249,.45);box-shadow:0 0 40px rgba(232,121,249,.25),inset 0 0 20px rgba(168,85,247,.2)}
+.codigo{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:clamp(84px,22vw,150px);line-height:1;margin:12px 0 8px;background:linear-gradient(180deg,#F0EAFF 0%,#E879F9 65%,#A855F7 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:clamp(22px,5vw,30px);margin-bottom:12px}
+p{color:#C9AEFF;font-size:16px;line-height:1.6;margin-bottom:28px}
+.acciones{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;transition:transform .2s,box-shadow .2s,background .2s}
+.btn:focus-visible{outline:2px solid #E879F9;outline-offset:3px}
+.primario{background:linear-gradient(90deg,#A855F7,#E879F9);color:#14051F;box-shadow:0 8px 28px rgba(168,85,247,.35)}
+.primario:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(168,85,247,.5)}
+.secundario{border:1px solid rgba(201,174,255,.35);color:#F0EAFF}
+.secundario:hover{background:rgba(168,85,247,.15)}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}}
+</style>
+</head>
+<body>
+<div class="grid" aria-hidden="true"></div>
+<main>
+  <a class="marca" href="/">LABS <b>SUMMIT</b></a>
+  <div class="candado" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F0EAFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+  </div>
+  <div class="codigo" aria-hidden="true">403</div>
+  <h1>Acceso restringido</h1>
+  <p>Esta zona no es pública. Si crees que deberías poder verla, escríbele al equipo de Labs Summit.</p>
+  <div class="acciones">
+    <a class="btn primario" href="/">Volver al inicio</a>
+    <a class="btn secundario" href="https://wa.me/573176092339" rel="noopener">Escribir al equipo</a>
+  </div>
+</main>
+</body>
+</html>

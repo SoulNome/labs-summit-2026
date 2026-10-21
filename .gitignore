@@ -18,6 +18,11 @@ _originales/
 optimizar-imagenes.bat
 optimizar-imagenes.ps1
 
+# Scripts locales: nunca se publican en la web
+*.bat
+*.ps1
+cult-ui-main/
+
 # Archivos de prueba
 speakers/newtest.jpg
 speakers/newtest2.jpg
@@ -34,3 +39,6 @@ Aliados estrategicos/
 documents/
 Recursos_/
 How to use Claude/
+
+# Vista previa local del mapa (no va a la web)
+VISTA-PREVIA-*.html

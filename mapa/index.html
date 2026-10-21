@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa del evento · Labs Summit 2026</title>
+<meta name="description" content="Mapa 3D del Coliseo de Ferias para el 29 de octubre: zonas, stands, cómo llegar y agenda en vivo de Labs Summit 2026.">
+<meta name="theme-color" content="#07020F">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/favicon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Labs Summit 2026">
+<meta property="og:title" content="Mapa del evento · Labs Summit 2026">
+<meta property="og:description" content="29 de octubre · Coliseo de Ferias Manuel Victoria Rojas, Tuluá. Encuentra cada zona, mira qué pasa en vivo y entra a cada espacio en 3D.">
+<meta property="og:url" content="https://labssummit.com/mapa/">
+<meta property="og:image" content="https://labssummit.com/bannerInferior/imgg.jpg?v=3">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/mapa/mapa.css?v=2">
+<link rel="preload" href="/mapa/vendor/three.min.js?v=147" as="script">
+<script>
+  (function(c,l,a,r,i,t,y){
+    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+  })(window, document, "clarity", "script", "xiatmrdd2q");
+</script>
+</head>
+<body>
+<div id="app" class="cargando">
+
+  <div id="lienzo" role="img" aria-label="Mapa 3D del Coliseo de Ferias con las zonas del evento"></div>
+  <div id="etiquetas" class="etiquetas"></div>
+  <div id="pin" class="pin" hidden aria-hidden="true"><span class="onda"></span><span class="onda o2"></span><span class="nucleo"></span><b>Estás aquí</b></div>
+
+  <header class="barra">
+    <a class="marca" href="/" aria-label="Ir a labssummit.com">LABS <b>SUMMIT</b></a>
+    <span class="dia">29 oct · Tuluá</span>
+    <span id="sinred" class="sinred" hidden title="Sin conexión: estás usando el mapa guardado en tu celular">Sin señal</span>
+    <span class="esp"></span>
+    <button class="btn-ico" id="btn-agenda" aria-label="Agenda, Mi agenda y búsqueda">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+  </header>
+
+  <nav id="filtros" class="filtros" aria-label="Filtrar zonas"></nav>
+
+  <div class="controles" aria-label="Controles del mapa">
+    <button class="btn-ico" id="c-izq" aria-label="Girar a la izquierda">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg>
+    </button>
+    <button class="btn-ico" id="c-der" aria-label="Girar a la derecha">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/></svg>
+    </button>
+    <button class="btn-ico" id="c-centro" aria-label="Volver a mi ubicación o a la vista general">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+    </button>
+    <button class="btn-ico solo-escritorio" id="c-mas" aria-label="Acercar">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button class="btn-ico solo-escritorio" id="c-menos" aria-label="Alejar">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <section id="hoja" class="hoja" aria-live="polite">
+    <div class="agarre" role="button" aria-label="Mostrar más o menos información"><i></i></div>
+    <div id="franja" class="franja">
+      <div class="franja-txt">
+        <div id="franja-t" class="franja-t">Labs Summit 2026</div>
+        <div id="franja-s" class="franja-s">29 de octubre · Coliseo de Ferias</div>
+      </div>
+      <button class="btn pri" id="btn-franja-agenda">Agenda</button>
+    </div>
+    <div id="ficha" class="ficha" hidden></div>
+  </section>
+
+  <div id="recordatorio" class="recordatorio" role="alert" hidden></div>
+
+  <section id="panel" class="panel" hidden aria-label="Agenda y búsqueda">
+    <div class="panel-cab">
+      <div>
+        <h2>Agenda del 29 de octubre</h2>
+        <p id="aviso-ejemplo" class="nota" hidden>Horarios de ejemplo: la agenda oficial se publica antes del evento.</p>
+      </div>
+      <button class="btn-ico" id="cerrar-panel" aria-label="Cerrar agenda">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="pestanas" role="tablist" aria-label="Ver agenda">
+      <button class="pestana" data-tab="todo" role="tab" aria-selected="true">Toda la agenda</button>
+      <button class="pestana" data-tab="mia" role="tab" aria-selected="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>
+        Mi agenda <span id="cuenta-mia" class="cuenta"></span>
+      </button>
+    </div>
+    <label class="buscador">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="buscar" type="search" placeholder="Busca una charla, zona o servicio" autocomplete="off" aria-label="Buscar en la agenda">
+    </label>
+    <div class="panel-cuerpo">
+      <p class="sin3d-msg">Tu teléfono no puede mostrar el mapa 3D. Aquí tienes la misma información en lista.</p>
+      <ul id="lista-agenda" class="lista"></ul>
+      <h3 id="titulo-zonas">Zonas</h3>
+      <ul id="lista-zonas" class="lista"></ul>
+    </div>
+  </section>
+
+  <section id="interior" class="interior" hidden aria-label="Recorrido 3D">
+    <div class="int-barra">
+      <button class="btn-ico" id="int-salir" aria-label="Volver al mapa">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="int-titulo">
+        <span id="int-tipo"></span>
+        <h2 id="int-nombre"></h2>
+      </div>
+      <button class="btn-ico" id="int-giro" aria-label="Pausar el giro" aria-pressed="true">
+        <svg class="i-pausa" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+        <svg class="i-giro" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20 4v4h-4"/></svg>
+      </button>
+    </div>
+    <div class="int-pie">
+      <div class="int-ayuda">Arrastra para girar · pellizca o usa la rueda para acercar</div>
+      <div id="int-vivo" class="int-vivo" hidden></div>
+      <div id="int-zonas" class="int-zonas" aria-label="Otras zonas en 3D"></div>
+    </div>
+  </section>
+
+  <div id="guia" class="guia" hidden role="dialog" aria-modal="true" aria-labelledby="guia-titulo">
+    <div class="guia-tarjeta">
+      <span class="guia-marca">LABS <b>SUMMIT</b> · 29 OCT</span>
+      <h2 id="guia-titulo">Así funciona el mapa</h2>
+      <ul id="guia-pasos" class="guia-pasos"></ul>
+      <button class="btn pri ancho" id="guia-ok">Empezar</button>
+    </div>
+  </div>
+
+  <div class="velo" aria-hidden="true"></div>
+  <div id="aviso" class="aviso" role="status"></div>
+  <div class="cargador" aria-hidden="true"><span>LABS <b>SUMMIT</b></span><i></i></div>
+</div>
+
+<noscript><p style="color:#F0EAFF;padding:24px;font-family:sans-serif">Activa JavaScript para ver el mapa del evento.</p></noscript>
+
+<script src="/mapa/vendor/three.min.js?v=147"></script>
+<script src="/mapa/vendor/OrbitControls.min.js?v=147"></script>
+<script src="/mapa/evento.js?v=2"></script>
+<script src="/mapa/escena.js?v=2"></script>
+<script src="/mapa/interiores.js?v=2"></script>
+<script src="/mapa/app.js?v=2"></script>
+</body>
+</html>

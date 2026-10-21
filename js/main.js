@@ -401,3 +401,26 @@ function showMysteryHint(card){
 document.querySelectorAll('.video-card').forEach(card=>{
   card.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' ') card.click(); });
 });
+
+/* ─────────────────────────────────
+   MURO DE PATROCINADORES: luz neón que sigue el cursor
+   (solo con mouse; en celular las tarjetas tienen su propio destello en CSS)
+───────────────────────────────── */
+(function(){
+  const muro = document.querySelector('.muro');
+  if(!muro || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const fichas = Array.from(muro.querySelectorAll('.logo-tile'));
+  let x = 0, y = 0, pendiente = false;
+  function pintar(){
+    pendiente = false;
+    fichas.forEach(f=>{
+      const r = f.getBoundingClientRect();
+      f.style.setProperty('--mx', (x - r.left) + 'px');
+      f.style.setProperty('--my', (y - r.top) + 'px');
+    });
+  }
+  muro.addEventListener('pointermove', e=>{
+    x = e.clientX; y = e.clientY;
+    if(!pendiente){ pendiente = true; requestAnimationFrame(pintar); }
+  }, {passive:true});
+})();
