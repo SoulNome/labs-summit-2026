@@ -1116,6 +1116,9 @@
     auditorio: auditorio, expositores: expositores, marcas: marcas, podcast: podcast,
     workshops: workshops, foto: foto, cafe: cafe, taquillas: taquillas, info: info
   };
+  // Zonas del plano oficial que reutilizan un recorrido 3D existente.
+  var ALIAS = { gastrolabs: 'cafe' };
+  function base(id) { return ALIAS[id] || id; }
 
   function crear(THREE, id, opciones) {
     T = THREE;
@@ -1131,6 +1134,7 @@
     PIEL = [0xC69C7A, 0x8D5E3C, 0xE0B897, 0xA8784F, 0x6E4A32].map(hexa);
     PANTALON = [0x1A1724, 0x23304A, 0x2B2235, 0x3A3448, 0x141018, 0x4A3F35].map(hexa);
     prepararTexturas();
+    id = base(id);
     var r = CONSTRUCTORES[id]();
     if (id === 'taquillas') respirar(M.verdeLed, 0x22C55E, 0x0E4D27, 3.2);
     if (id === 'expositores' || id === 'info') respirar(M.neonV, 0xA855F7, 0xE879F9, 1.4);
@@ -1149,8 +1153,9 @@
   }
 
   window.LSInteriores = {
-    tiene: function (id) { return CONSTRUCTORES.hasOwnProperty(id); },
+    tiene: function (id) { return CONSTRUCTORES.hasOwnProperty(base(id)) && (window.LS_EVENTO ? window.LS_EVENTO.zonas.some(function (z) { return z.id === id; }) : true); },
     crear: crear,
-    zonas: Object.keys(CONSTRUCTORES)
+    // zonas del evento que tienen recorrido 3D, en el orden de evento.js
+    get zonas() { return (window.LS_EVENTO ? window.LS_EVENTO.zonas.map(function (z) { return z.id; }) : Object.keys(CONSTRUCTORES)).filter(function (id) { return CONSTRUCTORES.hasOwnProperty(base(id)); }); }
   };
 })();

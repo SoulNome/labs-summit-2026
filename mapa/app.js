@@ -140,12 +140,17 @@
     boleta: '<path d="M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 6v2.5M14 11v2M14 15.5V18"/>',
     bano: '<circle cx="8" cy="5" r="1.7"/><circle cx="16" cy="5" r="1.7"/><path d="M6.5 8.5h3l.6 6.5H9v5H7v-5H5.9zM14 8.5h4l1.5 7h-2V20h-3v-4.5h-2z"/>',
     candado: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
-    wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 15.8a5 5 0 0 1 6.4 0"/><circle cx="12" cy="19" r="1"/>'
+    wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.8 15.8a5 5 0 0 1 6.4 0"/><circle cx="12" cy="19" r="1"/>',
+    regalo: '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18M12 9v11M12 9c-1.5-3-5-4-5.5-1.8S10 9 12 9c2 0 6-0.5 5.5-1.8S13.5 6 12 9"/>',
+    cubiertos: '<path d="M7 3v7a2 2 0 0 0 2 2v9M11 3v7a2 2 0 0 1-2 2M9 3v6"/><path d="M17 21V3c-2 1.5-3 4-3 7s1 4 3 4"/>',
+    auto: '<path d="M5 16h14v-4l-2-5H7l-2 5z"/><path d="M5 12h14"/><circle cx="8" cy="16.5" r="1.6"/><circle cx="16" cy="16.5" r="1.6"/>'
   };
-  var ICONO_ZONA = { auditorio: 'mic', workshops: 'pizarra', expositores: 'tienda', marcas: 'tienda', podcast: 'audifonos', foto: 'camara', cafe: 'taza', info: 'info', taquillas: 'boleta', banos: 'bano', camerinos: 'candado' };
+  var ICONO_ZONA = { auditorio: 'mic', workshops: 'pizarra', expositores: 'tienda', gastrolabs: 'cubiertos', cowork: 'wifi', kits: 'regalo', speakers: 'estrella', bebidas: 'taza', taquillas: 'boleta', banos: 'bano', banos2: 'bano', parqueo: 'auto', marcas: 'tienda', podcast: 'audifonos', foto: 'camara', cafe: 'taza', info: 'info', camerinos: 'candado' };
   function icono(n, tam) {
     return '<svg viewBox="0 0 24 24" width="' + (tam || 18) + '" height="' + (tam || 18) + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (TRAZOS[n] || '') + '</svg>';
   }
+
+  function nombrePrincipal() { var z = zonasDatos.auditorio; return z ? z.nombre : 'el escenario principal'; }
 
   /* ---------------- franja inferior: estado del evento ---------------- */
   function textoEstado() {
@@ -159,9 +164,9 @@
       return { t: 'Tu próxima charla · ' + hora(hm(mia.inicio)), s: mia.titulo + ' · ' + zonasDatos[mia.zona].nombre, mia: true };
     }
     var en = estadoZona('auditorio', n).en;
-    if (en && !en.pausa) return { t: 'En vivo en el auditorio', s: en.titulo + ' · hasta ' + hora(hm(en.fin)), vivo: true };
+    if (en && !en.pausa) return { t: 'En vivo en ' + nombrePrincipal(), s: en.titulo + ' · hasta ' + hora(hm(en.fin)), vivo: true };
     var sig = estadoZona('auditorio', n).sig;
-    if (sig) return { t: 'Siguiente en el auditorio · ' + hora(hm(sig.inicio)), s: sig.titulo };
+    if (sig) return { t: 'Siguiente en ' + nombrePrincipal() + ' · ' + hora(hm(sig.inicio)), s: sig.titulo };
     return { t: 'Estamos abiertos', s: 'Hasta las ' + hora(hm(D.cierra)) };
   }
 
@@ -585,8 +590,10 @@
 
     var MITAD = 100;
     var camara = new THREE.OrthographicCamera(-MITAD, MITAD, MITAD, -MITAD, 1, 2000);
-    var AZIMUT = Math.PI / 4, RADIO = 600;
-    var objetivo0 = new THREE.Vector3(13, 0, 4);
+    // Vista inicial desde el sur, como el plano impreso (norte arriba), con un leve giro para dar volumen.
+    var AZIMUT = 0.16, RADIO = 600;
+    var V = M.vista || { centro: [13, 4], encuadre: [-82, 108, -58, 66] };
+    var objetivo0 = new THREE.Vector3(V.centro[0], 0, V.centro[1]);
     function posicionar(t, az, pol) {
       camara.position.set(t.x + RADIO * Math.sin(pol) * Math.sin(az), RADIO * Math.cos(pol), t.z + RADIO * Math.sin(pol) * Math.cos(az));
       camara.lookAt(t);
@@ -664,7 +671,7 @@
     }
 
     function encuadreGeneral() {
-      zoomBase = zoomPara(-82, 108, -58, 66, 12, areaLibre());
+      zoomBase = zoomPara(V.encuadre[0], V.encuadre[1], V.encuadre[2], V.encuadre[3], 12, areaLibre());
       controles.minZoom = zoomBase * 0.7;
       controles.maxZoom = zoomBase * 8;
       return zoomBase;
@@ -949,7 +956,7 @@
     Object.keys(zonas).forEach(function (id) {
       var dz = zonasDatos[id]; if (!dz) return;
       var t = tipos[dz.tipo] || { color: '#C9AEFF' };
-      var b = el('button', 'lbl' + (dz.privado || id === 'banos' || id === 'camerinos' ? ' menor' : ''),
+      var b = el('button', 'lbl' + (dz.privado || dz.menor ? ' menor' : ''),
         '<span class="ico">' + icono(ICONO_ZONA[id] || 'info', 15) + '</span><span class="txt">' + esc(dz.corto) + '</span><b class="envivo">EN VIVO</b>');
       b.style.setProperty('--c', t.color);
       b.setAttribute('aria-label', dz.nombre);
@@ -973,7 +980,8 @@
       return { x: x, y: y, fuera: fuera };
     }
     // Orden de importancia: si dos etiquetas se tapan, se oculta la de menos prioridad.
-    var ORDEN = ['auditorio', 'expositores', 'marcas', 'cafe', 'workshops', 'foto', 'podcast', 'taquillas', 'info', 'banos', 'camerinos'];
+    // Orden de la lista de zonas en evento.js = importancia.
+    var ORDEN = D.zonas.map(function (zd) { return zd.id; }).filter(function (k) { return !!zonas[k]; });
     function medirEtiquetas() {
       for (var id in etiquetas) { etiquetas[id].w = etiquetas[id].el.offsetWidth; etiquetas[id].h = etiquetas[id].el.offsetHeight; }
     }
@@ -1103,13 +1111,14 @@
       return interior.ctrl.autoRotate;
     }
 
-    // Vista inicial: en celular un poco más cerca y sobre el corazón del evento.
+    // Vista inicial. En celular (pantalla vertical) se mira desde el occidente:
+    // la taquilla queda abajo y el recorrido «sube» hacia la Caja de Arena y Gastrolabs.
     medir();
     var vertical = alto > ancho;
-    posicionar(objetivo0, vertical ? 1.15 : AZIMUT, vertical ? 0.8 : 0.96);
+    posicionar(objetivo0, vertical ? -1.42 : AZIMUT, vertical ? 0.82 : 0.96);
     controles.target.copy(objetivo0);
-    var zInicio = encuadreGeneral() * (vertical ? 1.6 : 1);
-    var centroInicio = vertical ? new THREE.Vector3(6, 0, -6) : objetivo0;
+    var zInicio = encuadreGeneral() * (vertical ? 1.32 : 1);
+    var centroInicio = objetivo0;
     var tInicio = objetivoPara(centroInicio.x, centroInicio.z, zInicio, areaLibre());
     var offInicio = camara.position.clone().sub(controles.target);
     controles.target.copy(tInicio);
@@ -1119,7 +1128,8 @@
 
     // Entrada animada: la maqueta se levanta zona por zona mientras la cámara se acerca.
     if (opcionesMapa && opcionesMapa.intro && !REDUCIDO) {
-      var ordenIntro = ['taquillas', 'info', 'workshops', 'auditorio', 'expositores', 'foto', 'banos', 'cafe', 'camerinos', 'marcas', 'podcast'];
+      // la maqueta se levanta siguiendo el recorrido: de la taquilla hacia el oriente
+      var ordenIntro = Object.keys(zonas).sort(function (a, b) { return zonas[a].centro.x - zonas[b].centro.x; });
       app.classList.add('intro');
       ordenIntro.forEach(function (id, i) {
         var g = zonas[id].grupo;

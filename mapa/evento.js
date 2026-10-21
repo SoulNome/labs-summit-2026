@@ -5,13 +5,18 @@
    o charlas. El mapa lo vuelve a leer cada 90 segundos, así que un cambio
    publicado le llega a todos sin recargar.
 
+   La distribución sigue el «Mapa recorrido evento» oficial (Taquilla e
+   ingreso → Zona Cowork → Labs Session, Stands, Gastrolabs y Caja de Arena).
+
    - Horas en formato 24 h, hora de Colombia (ej. '14:30').
    - "zona" en la agenda debe ser uno de los id de la lista de zonas.
+   - El orden de la lista de zonas es también su importancia en el mapa
+     (si dos nombres se tapan, se muestra el que va primero).
    - "confirmar: true" marca lo que aún está pendiente de confirmar con
      logística; se ve con ?dev=1 en la URL.
    ========================================================================== */
 window.LS_EVENTO = {
-  version: '2026-10-20.1',
+  version: '2026-10-21.1',
   fecha: '2026-10-29',
   abre: '08:00',
   cierra: '19:00',
@@ -29,62 +34,66 @@ window.LS_EVENTO = {
   },
 
   zonas: [
-    { id: 'auditorio', nombre: 'Auditorio principal', corto: 'Auditorio', tipo: 'charlas', lugar: 'Pabellón 1',
+    { id: 'auditorio', nombre: 'Caja de Arena', corto: 'Caja de Arena', tipo: 'charlas', lugar: 'Escenario principal',
       foto: '/mapa/img/auditorio.jpg',
-      texto: 'Escenario central con cuatro pantallas. Aquí son las conferencias principales del día.' },
-    { id: 'expositores', nombre: 'Zona Expositores', corto: 'Expositores', tipo: 'marcas', lugar: 'Plaza de los samanes',
-      foto: '/mapa/img/expositores.jpg',
-      texto: 'Stands de patrocinadores y zona de networking bajo los samanes.' },
-    { id: 'marcas', nombre: 'Pabellón de marcas', corto: 'Pabellón 2', tipo: 'marcas', lugar: 'Pabellón 2',
-      foto: '/mapa/img/marcas.jpg',
-      texto: 'Stands de marcas aliadas, lounge con DJ y el set del podcast.' },
-    { id: 'podcast', nombre: 'Podcast Studio', corto: 'Podcast', tipo: 'experiencias', lugar: 'Dentro del Pabellón 2',
-      foto: '/mapa/img/podcast.jpg',
-      texto: 'Entrevistas en vivo con speakers. Puedes verlas de pie frente al set.' },
-    { id: 'workshops', nombre: 'Zona de workshops', corto: 'Workshops', tipo: 'charlas', lugar: 'Cubierta norte',
-      foto: '/mapa/img/workshops.jpg', confirmar: true,
-      texto: 'Talleres prácticos en grupos pequeños. Llega 5 minutos antes: el cupo es por orden de llegada.' },
-    { id: 'foto', nombre: 'Zona fotográfica', corto: 'Foto', tipo: 'experiencias', lugar: 'Bajo el samán, junto al restaurante',
-      foto: '/mapa/img/foto.jpg',
-      texto: 'El escenario de flores y letras LABS SUMMIT para tu foto del evento.' },
-    { id: 'cafe', nombre: 'Café y restaurante', corto: 'Café', tipo: 'comida', lugar: 'Edificio del restaurante',
+      texto: 'El escenario principal: aquí son las conferencias del día. Ingreso VIP y General por el costado norte; Diamante y Black tienen su propio ingreso.' },
+    { id: 'gastrolabs', nombre: 'Zona Gastrolabs', corto: 'Gastrolabs', tipo: 'comida', lugar: 'Plaza central',
       foto: '/mapa/img/cafe.jpg',
-      texto: 'Café, almuerzo y snacks en la terraza.' },
-    { id: 'info', nombre: 'Punto de información', corto: 'Info', tipo: 'servicios', lugar: 'Extremo occidental de la plaza',
-      texto: 'Ayuda, objetos perdidos, mapa impreso y agenda del día.' },
-    { id: 'taquillas', nombre: 'Taquillas y entrada', corto: 'Entrada', tipo: 'servicios', lugar: 'Alameda de ingreso',
-      foto: '/mapa/img/taquillas.jpg', confirmar: true,
+      texto: 'La plaza de comida: puestos gastronómicos, mesas y un lugar para descansar entre charlas.' },
+    { id: 'expositores', nombre: 'Zona de stands', corto: 'Stands', tipo: 'marcas', lugar: 'Pabellón norte',
+      foto: '/mapa/img/expositores.jpg',
+      texto: 'Stands de patrocinadores y marcas aliadas. Al fondo del pabellón está la entrega de kits.' },
+    { id: 'workshops', nombre: 'Labs Session', corto: 'Labs Session', tipo: 'charlas', lugar: 'Junto a la Zona Cowork',
+      foto: '/mapa/img/workshops.jpg', confirmar: true,
+      texto: 'Sesiones prácticas en grupos pequeños. Llega 5 minutos antes: el cupo es por orden de llegada.' },
+    { id: 'cowork', nombre: 'Zona Cowork', corto: 'Cowork', tipo: 'experiencias', lugar: 'Centro del recorrido',
+      texto: 'Mesas para trabajar, conectarte y hacer networking entre charlas.' },
+    { id: 'taquillas', nombre: 'Taquilla e ingreso', corto: 'Ingreso', tipo: 'servicios', lugar: 'Entrada peatonal, costado occidental',
+      foto: '/mapa/img/taquillas.jpg',
       texto: 'Validación de boletas y entrega de manillas. Ten tu QR de compra a mano.' },
-    { id: 'banos', nombre: 'Baños', corto: 'Baños', tipo: 'servicios', lugar: 'Junto al restaurante', confirmar: true,
-      texto: 'Baños para asistentes.' },
-    { id: 'camerinos', nombre: 'Camerinos', corto: 'Camerinos', tipo: 'servicios', lugar: 'Edificio del restaurante',
-      privado: true,
-      texto: 'Zona de speakers y staff. No es de acceso al público.' }
+    { id: 'kits', nombre: 'Entrega de kits', corto: 'Kits', tipo: 'servicios', lugar: 'Al fondo de la Zona de stands', confirmar: true,
+      texto: 'Reclama aquí tu kit de asistente con tu QR de compra.' },
+    { id: 'speakers', nombre: 'P1 · Zona speakers', corto: 'Speakers', tipo: 'experiencias', lugar: 'Frente a la Zona de stands', confirmar: true,
+      texto: 'Espacio de los speakers del evento.' },
+    { id: 'bebidas', nombre: 'P2 · Zona de bebidas', corto: 'Bebidas', tipo: 'comida', lugar: 'Frente a la Zona de stands',
+      texto: 'Bebidas frías y calientes durante todo el día.' },
+    { id: 'banos', nombre: 'Baños 1', corto: 'Baños 1', tipo: 'servicios', lugar: 'Costado norte', menor: true,
+      texto: 'Baños para asistentes, junto al muro norte.' },
+    { id: 'banos2', nombre: 'Baños 2', corto: 'Baños 2', tipo: 'servicios', lugar: 'Junto a la Caja de Arena', menor: true,
+      texto: 'Baños para asistentes, al lado del ingreso a la Caja de Arena.' },
+    { id: 'parqueo', nombre: 'Zona de parqueo', corto: 'Parqueo', tipo: 'servicios', lugar: 'Ingreso vehicular, esquina sur-occidental',
+      texto: 'Parqueadero del evento. Los carros entran por el ingreso vehicular; desde ahí caminas a la taquilla.' }
   ],
 
   // Zonas sin charlas: horario en que están abiertas.
   horarios: {
+    gastrolabs:  ['08:00', '19:00'],
     expositores: ['08:00', '19:00'],
-    marcas:      ['08:00', '19:00'],
-    foto:        ['08:00', '19:00'],
-    cafe:        ['07:30', '19:00'],
-    info:        ['07:30', '19:30'],
+    cowork:      ['08:00', '19:00'],
     taquillas:   ['07:00', '14:00'],
-    banos:       ['07:00', '19:30']
+    kits:        ['07:00', '14:00'],
+    speakers:    ['08:00', '19:00'],
+    bebidas:     ['08:00', '19:00'],
+    banos:       ['07:00', '19:30'],
+    banos2:      ['07:00', '19:30'],
+    parqueo:     ['06:30', '20:00']
   },
 
   // Códigos de los QR impresos: labssummit.com/mapa?p=<código>
   // x, z = dónde está pegado el cartel en el modelo (metros aproximados).
   puntos: {
-    entrada:   { zona: 'taquillas',   x: -74, z: 70, nombre: 'Entrada principal' },
-    taquillas: { zona: 'taquillas',   x: -74, z: 63, nombre: 'Taquillas' },
-    stands:    { zona: 'expositores', x: 10,  z: 6,  nombre: 'Zona Expositores' },
-    auditorio: { zona: 'auditorio',   x: 0,   z: -20, nombre: 'Puerta del auditorio' },
-    workshops: { zona: 'workshops',   x: -67, z: -25, nombre: 'Zona de workshops' },
-    podcast:   { zona: 'podcast',     x: 68,  z: 20, nombre: 'Podcast Studio' },
-    cafe:      { zona: 'cafe',        x: 26,  z: 31, nombre: 'Café y restaurante' },
-    foto:      { zona: 'foto',        x: 28,  z: 1,  nombre: 'Zona fotográfica' },
-    banos:     { zona: 'banos',       x: 15,  z: 24, nombre: 'Baños' }
+    entrada:    { zona: 'taquillas',   x: -62, z: -7,    nombre: 'Entrada peatonal' },
+    taquillas:  { zona: 'taquillas',   x: -50, z: -7,    nombre: 'Taquilla' },
+    cowork:     { zona: 'cowork',      x: -9.4, z: -1,   nombre: 'Zona Cowork' },
+    labs:       { zona: 'workshops',   x: -28, z: -15,   nombre: 'Labs Session' },
+    stands:     { zona: 'expositores', x: 5.3, z: -28.5, nombre: 'Zona de stands' },
+    kits:       { zona: 'kits',        x: 5.3, z: -48.5, nombre: 'Entrega de kits' },
+    gastrolabs: { zona: 'gastrolabs',  x: 23,  z: -7,    nombre: 'Zona Gastrolabs' },
+    vip:        { zona: 'auditorio',   x: 23,  z: 6.5,   nombre: 'Ingreso VIP y General' },
+    diamante:   { zona: 'auditorio',   x: 40,  z: 6.5,   nombre: 'Ingreso Diamante y Black' },
+    banos:      { zona: 'banos',       x: -27.6, z: -42, nombre: 'Baños 1' },
+    banos2:     { zona: 'banos2',      x: 62,  z: 9.5,   nombre: 'Baños 2' },
+    parqueo:    { zona: 'parqueo',     x: -46, z: 40,    nombre: 'Ingreso vehicular' }
   },
 
   // Agenda del 29. Mientras agendaDeEjemplo sea true son horarios de ejemplo.
@@ -104,14 +113,6 @@ window.LS_EVENTO = {
     { zona: 'workshops', inicio: '10:30', fin: '11:30', titulo: 'Automatiza tu negocio con IA' },
     { zona: 'workshops', inicio: '11:45', fin: '12:45', titulo: 'Tu primera tienda online en una hora' },
     { zona: 'workshops', inicio: '14:00', fin: '15:00', titulo: 'Embudos de venta por WhatsApp' },
-    { zona: 'workshops', inicio: '15:15', fin: '16:15', titulo: 'Contenido que convierte' },
-
-    { zona: 'podcast', inicio: '10:00', fin: '10:45', titulo: 'Entrevista en vivo con un speaker' },
-    { zona: 'podcast', inicio: '11:30', fin: '12:15', titulo: 'Historias de fundadores' },
-    { zona: 'podcast', inicio: '14:30', fin: '15:15', titulo: 'Ideas que venden' },
-    { zona: 'podcast', inicio: '16:00', fin: '16:45', titulo: 'Preguntas del público' },
-
-    { zona: 'marcas', inicio: '12:30', fin: '13:30', titulo: 'Lounge: DJ set y networking' },
-    { zona: 'marcas', inicio: '17:45', fin: '19:00', titulo: 'Lounge: networking de cierre' }
+    { zona: 'workshops', inicio: '15:15', fin: '16:15', titulo: 'Contenido que convierte' }
   ]
 };

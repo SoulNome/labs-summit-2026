@@ -1,18 +1,30 @@
 /* ==========================================================================
-   Labs Summit 2026 · Modelo 3D del Coliseo de Ferias Manuel Victoria Rojas
+   Labs Summit 2026 · Modelo 3D del recorrido del evento (29 de octubre)
+   Coliseo de Ferias Manuel Victoria Rojas · Tuluá
    --------------------------------------------------------------------------
-   Unidades ≈ metros. x crece hacia la derecha del plano, z hacia el frente.
-   La distribución sigue el plano de ubicación del evento (Pabellón 1, Zona
-   Expositores, Restaurante, Camerinos, Pabellón 2, Punto de información) y
-   los renders oficiales del día 29. Las medidas son aproximadas: para mover
-   algo basta con cambiar sus números aquí.
+   La distribución sigue el «Mapa recorrido evento» oficial de Labs Summit:
+   Taquilla e ingreso (occidente) → filtros → Zona Cowork → Labs Session,
+   P1/P2, Zona de stands con Entrega de kits (norte), Zona Gastrolabs (plaza
+   central) y Caja de Arena (sur), Baños 1 y 2, Zona de parqueo e ingreso
+   vehicular.
+
+   Unidades ≈ metros. x crece hacia el oriente, z hacia el sur (igual que el
+   plano impreso: arriba = norte). Conversión usada desde el plano oficial
+   (imagen de 2000 px de ancho): x = (px − 700) · 0,13 ; z = (py − 680) · 0,13.
+   Para mover algo basta con cambiar sus números aquí.
    ========================================================================== */
 (function () {
   'use strict';
   var T;
 
-  var LIMITES = { x0: -100, x1: 110, z0: -70, z1: 72 };   // terreno del recinto
-  var SUELO = { x0: -125, x1: 125, z0: -85, z1: 85 };      // plano visible
+  // Zona del recorrido (lo que la cámara encuadra) y plano visible completo.
+  var LIMITES = { x0: -64, x1: 78, z0: -60, z1: 46 };
+  var SUELO = { x0: -92, x1: 172, z0: -92, z1: 70 };
+  var VISTA = { centro: [6, -6], encuadre: [-62, 76, -57, 44] };
+
+  // Contorno del recinto (muro perimetral) tomado del plano oficial.
+  var CONTORNO = [[-78.7, -28.3], [45.5, -80.9], [164.8, -79], [102.7, 33.2], [104, 57.2],
+                  [-47, 45.5], [-51.5, 61], [-56, 61], [-74, 2]];
 
   /* ---------- utilidades ---------- */
   function caja(x0, x1, y0, y1, z0, z1) {
@@ -83,17 +95,23 @@
     return new T.CanvasTexture(c);
   }
 
-  /* ---------- piso horneado en una textura ---------- */
+  /* ---------- piso horneado en una textura (estilo del plano oficial) ---------- */
   function texturaSuelo(ligero, extras) {
     extras = extras || { sombras: [], faroles: [] };
-    var W = ligero ? 1024 : 2048, H = ligero ? 512 : 1024;
+    var W = ligero ? 1024 : 2048, H = ligero ? 640 : 1256;
     var c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d');
     var sx = W / (SUELO.x1 - SUELO.x0), sz = H / (SUELO.z1 - SUELO.z0);
     function X(v) { return (v - SUELO.x0) * sx; }
     function Z(v) { return (v - SUELO.z0) * sz; }
     function rect(x0, x1, z0, z1) { x.fillRect(X(x0), Z(z0), (x1 - x0) * sx, (z1 - z0) * sz); }
+    function marco(x0, x1, z0, z1) { x.strokeRect(X(x0), Z(z0), (x1 - x0) * sx, (z1 - z0) * sz); }
     function linea(a, b, c2, d) { x.beginPath(); x.moveTo(X(a), Z(b)); x.lineTo(X(c2), Z(d)); x.stroke(); }
+    function trazo(pts) { x.beginPath(); x.moveTo(X(pts[0][0]), Z(pts[0][1])); for (var i = 1; i < pts.length; i++) x.lineTo(X(pts[i][0]), Z(pts[i][1])); }
+    function via(pts, ancho, color) {
+      x.save(); x.strokeStyle = color; x.lineWidth = ancho * sx; x.lineCap = 'round'; x.lineJoin = 'round';
+      trazo(pts); x.stroke(); x.restore();
+    }
     function redondo(x0, x1, z0, z1, r) {
       var ax = X(x0), bx = X(x1), az = Z(z0), bz = Z(z1), rx = r * sx, rz = r * sz;
       x.beginPath();
@@ -103,65 +121,79 @@
       x.closePath();
     }
 
-    // fondo y calles
-    x.fillStyle = '#08030F'; x.fillRect(0, 0, W, H);
-    x.fillStyle = '#120A21';
-    rect(SUELO.x0, SUELO.x1, -80, -73); rect(-112, -104, SUELO.z0, SUELO.z1); rect(SUELO.x0, SUELO.x1, 75, 82);
-    x.strokeStyle = 'rgba(201,174,255,0.18)'; x.lineWidth = 2; x.setLineDash([10, 12]);
-    linea(SUELO.x0, -76.5, SUELO.x1, -76.5); linea(-108, SUELO.z0, -108, SUELO.z1); linea(SUELO.x0, 78.5, SUELO.x1, 78.5);
-    x.setLineDash([]);
+    // fondo exterior
+    x.fillStyle = '#05070F'; x.fillRect(0, 0, W, H);
+    // cuadrícula técnica, como en el plano
+    x.strokeStyle = 'rgba(90,120,255,0.05)'; x.lineWidth = 1;
+    for (var gx = SUELO.x0; gx <= SUELO.x1; gx += 10) linea(gx, SUELO.z0, gx, SUELO.z1);
+    for (var gz = SUELO.z0; gz <= SUELO.z1; gz += 10) linea(SUELO.x0, gz, SUELO.x1, gz);
 
     // terreno del recinto
-    redondo(LIMITES.x0, LIMITES.x1, LIMITES.z0, LIMITES.z1, 8);
-    x.fillStyle = '#0D061C'; x.fill();
-    x.strokeStyle = 'rgba(201,174,255,0.22)'; x.lineWidth = 2; x.stroke();
+    trazo(CONTORNO); x.closePath();
+    x.fillStyle = '#0B1029'; x.fill();
+    // muro perimetral con brillo azul
+    x.save();
+    trazo(CONTORNO); x.closePath();
+    x.shadowColor = 'rgba(80,110,255,0.8)'; x.shadowBlur = 2.2 * sx;
+    x.strokeStyle = '#2C3C93'; x.lineWidth = 2.4 * sx; x.lineJoin = 'round'; x.stroke();
+    x.restore();
+    trazo(CONTORNO); x.closePath();
+    x.strokeStyle = 'rgba(150,170,255,0.55)'; x.lineWidth = Math.max(1, 0.35 * sx); x.stroke();
 
-    // cuadrícula de 5 m
-    x.strokeStyle = 'rgba(201,174,255,0.045)'; x.lineWidth = 1;
-    for (var gx = -100; gx <= 110; gx += 5) linea(gx, LIMITES.z0, gx, LIMITES.z1);
-    for (var gz = -70; gz <= 72; gz += 5) linea(LIMITES.x0, gz, LIMITES.x1, gz);
+    // calles internas (gris azulado)
+    var gris = '#171E3D';
+    via([[-70, -27], [44, -74], [160, -73]], 5, gris);                 // vía norte, junto al muro
+    via([[-67, -26], [-61, -8], [-55, 16], [-50, 42]], 5, gris);         // vía occidental (taquilla)
+    via([[-50, 42], [101, 53.5]], 6, gris);                              // vía sur
+    via([[75.5, -64], [75.5, 52]], 4.5, gris);                           // vía oriental de la plaza
+    via([[20.8, -33], [20.8, 9]], 4, gris);                              // vía entre P2 y Gastrolabs
+    via([[20.8, -33], [118, -33]], 4, gris);                             // vía norte de la plaza
+    via([[21, 9], [14, 7], [9, 16], [6, 30], [4, 42]], 5, gris);         // curva hacia el sur
+    via([[118, -66], [118, 30]], 3.5, gris);
+    via([[-30, -27.6], [20, -27.6]], 3.2, gris);                         // paso frente a P1/P2
+    via([[-30, -27.6], [-29, -44]], 3, gris);                            // hacia Baños 1
+    via([[-5, -48], [-5, -28]], 2.6, gris);
 
-    // caminos
-    x.fillStyle = '#1A1030';
-    rect(-78, -70, 8, 72);                  // alameda de ingreso
-    rect(-8, 8, -24, -19);                  // plaza → auditorio
-    rect(38, 106, 3, 9);                    // pérgola
-    rect(18, 24, 8, 14);                    // plaza → restaurante
-    rect(-70, -56, 2, 8);                   // alameda → punto de información
-    rect(-72, -62, -28, 2);                 // hacia workshops
-    rect(10, 22, 22, 34);                   // frente del restaurante
-    x.strokeStyle = 'rgba(201,174,255,0.08)'; x.lineWidth = 1;
-    for (var az = 10; az < 72; az += 2) linea(-78, az, -70, az);
-    for (var px = 38; px <= 106; px += 6) { linea(px, 3, px, 9); }
+    // lotes del costado oriental (fuera del evento)
+    x.strokeStyle = 'rgba(95,120,230,0.22)'; x.lineWidth = Math.max(1, 0.3 * sx);
+    marco(37, 72.5, -64, -35); marco(78, 115, -64, -35.5); marco(78, 115, -30, 30);
+    marco(121, 160, -70, -10);
+    x.beginPath(); x.moveTo(X(121), Z(-5)); x.lineTo(X(150), Z(-5)); x.lineTo(X(108), Z(30)); x.lineTo(X(121), Z(30)); x.closePath(); x.stroke();
 
-    // plaza de los samanes
-    redondo(-46, 38, -20, 8, 12);
-    x.fillStyle = '#170C2E'; x.fill();
-    x.strokeStyle = 'rgba(232,121,249,0.35)'; x.lineWidth = 2; x.stroke();
-    x.strokeStyle = 'rgba(201,174,255,0.09)'; x.lineWidth = 1;
-    linea(-40, -18, -10, 6); linea(-40, 6, -10, -18); linea(-12, -18, 18, 6); linea(-12, 6, 18, -18);
-    linea(14, -18, 36, 6); linea(14, 6, 36, -18); linea(-46, -6, 38, -6);
+    // zona de parqueo (azul) con demarcación
+    x.fillStyle = '#10204A'; rect(-54.6, -25.4, -4.6, 38.4);
+    x.strokeStyle = 'rgba(120,160,255,0.35)'; x.lineWidth = Math.max(1, 0.25 * sx);
+    marco(-54.6, -25.4, -4.6, 38.4);
+    x.strokeStyle = 'rgba(200,215,255,0.16)';
+    for (var pz = -2; pz <= 36; pz += 2.6) { linea(-53, pz, -47.5, pz); linea(-43, pz, -36.5, pz); linea(-32.5, pz, -27, pz); }
+    linea(-40, -3, -40, 37);
 
-    // rotonda
-    x.strokeStyle = 'rgba(201,174,255,0.25)'; x.lineWidth = 2;
-    x.beginPath(); x.ellipse(X(76), Z(-4), 7 * sx, 7 * sz, 0, 0, Math.PI * 2); x.stroke();
-    x.beginPath(); x.ellipse(X(76), Z(-4), 1.6 * sx, 1.6 * sz, 0, 0, Math.PI * 2); x.stroke();
-    for (var k = 0; k < 8; k++) {
-      var an = k * Math.PI / 4;
-      linea(76 + Math.cos(an) * 1.6, -4 + Math.sin(an) * 1.6, 76 + Math.cos(an) * 7, -4 + Math.sin(an) * 7);
+    // recorrido peatonal principal (taquilla → filtros → Cowork → plaza)
+    via([[-62, -7], [-17, -7]], 4.2, '#222B55');
+    via([[-2, -7], [22, -7]], 4.2, '#222B55');
+    via([[-13.5, -12.5], [-4, -20]], 2.6, '#1E264D');
+    via([[-5.5, -12.5], [5.3, -20]], 2.6, '#1E264D');
+    // huellas que marcan el sentido del recorrido
+    x.fillStyle = 'rgba(200,190,255,0.28)';
+    function huellas(x0, z0, x1, z1, paso) {
+      var dx = x1 - x0, dz = z1 - z0, L = Math.sqrt(dx * dx + dz * dz), n = Math.floor(L / paso);
+      for (var i = 0; i <= n; i++) {
+        var t = i / Math.max(1, n), lado = (i % 2 ? 0.45 : -0.45);
+        var px = x0 + dx * t - dz / L * lado, pz2 = z0 + dz * t + dx / L * lado;
+        x.beginPath(); x.ellipse(X(px), Z(pz2), 0.32 * sx, 0.2 * sz, Math.atan2(dz, dx), 0, Math.PI * 2); x.fill();
+      }
     }
+    huellas(-60, -7, -18, -7, 3.2); huellas(-1, -7, 21, -7, 3.2);
+    huellas(-12.5, -13, -4.5, -19.5, 2.6); huellas(-4.5, -13, 4.5, -19.5, 2.6);
+    huellas(20.8, -5, 20.8, 6, 2.6); huellas(5.3, -21, 5.3, -27, 2.4);
 
-    // jardines del frente
-    x.strokeStyle = 'rgba(201,174,255,0.12)'; x.lineWidth = 1.5;
-    var jard = [[30, 44, 36, 50], [46, 60, 36, 50], [30, 44, 52, 66], [46, 60, 52, 66]];
-    for (var j = 0; j < jard.length; j++) {
-      var q = jard[j];
-      x.strokeRect(X(q[0]), Z(q[2]), (q[1] - q[0]) * sx, (q[3] - q[2]) * sz);
-      linea(q[0], q[2], q[1], q[3]); linea(q[0], q[3], q[1], q[2]);
-    }
-    x.strokeRect(X(-44), Z(28), 40 * sx, 18 * sz);
-    x.strokeRect(X(-40), Z(52), 30 * sx, 12 * sz);
-    x.strokeRect(X(70), Z(42), 30 * sx, 18 * sz);
+    // plaza Gastrolabs: piso propio con borde de neón
+    redondo(22.8, 73.5, -31.9, 7.2, 4);
+    x.fillStyle = '#120E33'; x.fill();
+    x.save(); x.shadowColor = 'rgba(232,121,249,0.9)'; x.shadowBlur = 1.6 * sx;
+    x.strokeStyle = 'rgba(232,121,249,0.6)'; x.lineWidth = Math.max(1.5, 0.35 * sx); x.stroke(); x.restore();
+    // franja de ingresos a la Caja de Arena
+    x.fillStyle = '#151A3E'; rect(21.5, 56, 7.2, 13);
 
     // sombras suaves bajo cada edificio (le dan peso a la maqueta)
     x.save();
@@ -182,12 +214,12 @@
       x.save();
       x.translate(X(p[0]), Z(p[1]));
       x.scale(1, sz / sx);
-      var g = x.createRadialGradient(0, 0, 0, 0, 0, 7.5 * sx);
-      g.addColorStop(0, 'rgba(255,186,105,0.30)');
-      g.addColorStop(0.45, 'rgba(255,170,90,0.11)');
+      var g = x.createRadialGradient(0, 0, 0, 0, 0, 6.5 * sx);
+      g.addColorStop(0, 'rgba(255,186,105,0.26)');
+      g.addColorStop(0.45, 'rgba(255,170,90,0.09)');
       g.addColorStop(1, 'rgba(255,160,80,0)');
       x.fillStyle = g;
-      x.beginPath(); x.arc(0, 0, 7.5 * sx, 0, Math.PI * 2); x.fill();
+      x.beginPath(); x.arc(0, 0, 6.5 * sx, 0, Math.PI * 2); x.fill();
       x.restore();
     }
     x.restore();
@@ -389,15 +421,15 @@
 
   /* ---------- faroles a lo largo de los caminos (x, z) ---------- */
   var FAROLES = (function () {
-    var f = [], z;
-    for (z = 66; z >= 12; z -= 9) f.push([-79.5, z], [-68.5, z - 4.5]);   // alameda, entre los árboles
-    f.push([-66, 3.5], [-58.5, 9]);                                        // hacia el punto de información
-    f.push([-44, 9.5], [-30, 10], [-14, 10], [2, 10], [18, 10], [34, 9.5]); // borde sur de la plaza
-    f.push([-44, -21], [-24, -21.5], [24, -21.5], [38, -19.5]);            // borde norte de la plaza
-    f.push([-9.5, -22.5], [9.5, -22.5]);                                   // acceso al auditorio
-    f.push([17, 26.5], [24, 34], [32, 34]);                                // frente del restaurante
-    f.push([-73.5, -12], [-60.5, -13]);                                    // camino a workshops
-    f.push([58, 1.5], [108, 10]);                                          // pérgola
+    var f = [], v;
+    for (v = -50; v <= -20; v += 7.5) f.push([v, -10], [v + 3.7, -4]);    // recorrido de ingreso
+    for (v = 0; v <= 18; v += 6) f.push([v, -10], [v + 3, -4]);           // hacia la plaza
+    for (v = -26; v <= 6; v += 8) f.push([18.6, v]);                      // vía entre P2 y Gastrolabs
+    for (v = 26; v <= 70; v += 8.8) f.push([v, -34.5], [v + 4.4, 9.5]);   // bordes de la plaza
+    for (v = -28; v <= 4; v += 8) f.push([77.5, v]);                      // vía oriental
+    f.push([-26, -30], [-12, -30], [10, -30], [-31.5, -38]);             // paso norte y Baños 1
+    f.push([-57, 2], [-57, 14], [-53, 28], [-49.5, 40]);                  // vía occidental / parqueo
+    f.push([10, 14], [7, 26], [5.5, 38]);                                 // curva sur
     return f;
   })();
 
@@ -439,23 +471,23 @@
      Nodos (x, z) sobre los caminos y uniones entre ellos. Cada zona tiene un nodo de llegada. */
   var RED = {
     nodos: {
-      calle: [-74, 73], taqF: [-74, 63.5], taqD: [-74, 52], arco: [-74, 40], conect: [-74, 26], aveA: [-74, 5],
-      infoC: [-61, 5], infoD: [-55, -1.2], wkC: [-67, 4], wkD: [-67, -26.5],
-      plO: [-44, 3.5], pl1: [-26, 5.5], plS1: [-6, 5.5], plW: [-6.5, -14], aud: [0, -22],
-      expo: [10, 4], plS3: [21, 6.5], foto: [28, 0.5], rest1: [20.5, 11.5], rest2: [20.2, 23.5], rest3: [20.2, 30.5],
-      cafe: [26, 30.5], banos: [15.5, 22.6], plE: [36.5, 5.5], perg1: [50, 6], perg2: [62, 6], pabW: [62, 22],
-      pab: [64.5, 22], pod: [68, 19.2]
+      calle: [-63, -7], taq: [-50, -7], c1: [-45, -7], c23: [-28, -7], c3: [-22, -7],
+      cowO: [-16.6, -7], cow: [-9.4, -7], cowE: [-2.2, -7], cowN: [-9.4, -14], e1: [8, -7], e2: [20.8, -7],
+      labs: [-28, -15.4], p1: [-0.5, -19.6], pp: [5.3, -19.6], p2: [11, -19.6], n5: [20.8, -19.6],
+      st: [5.3, -27.8], kits: [5.3, -48.6], w0: [-5, -27.6], w1: [-29.5, -27.6], b1: [-28.4, -42],
+      gasW: [24, -7], gas: [44, -12], r1: [20.8, 5], vip: [23.4, 6.6], caja: [30, 6.6], dia: [40, 6.6],
+      bs: [56, 9.5], b2: [62.5, 10], pq1: [-58.5, 4], pq: [-40, 12], veh: [-46, 40]
     },
     aristas: [
-      ['calle', 'taqF'], ['taqF', 'taqD'], ['taqD', 'arco'], ['arco', 'conect'], ['conect', 'aveA'],
-      ['aveA', 'infoC'], ['aveA', 'wkC'], ['wkC', 'infoC'], ['wkC', 'wkD'], ['infoC', 'infoD'], ['infoC', 'plO'], ['infoD', 'plO'],
-      ['plO', 'pl1'], ['pl1', 'plS1'], ['plS1', 'plW'], ['plW', 'aud'], ['plS1', 'expo'], ['expo', 'plS3'],
-      ['plS3', 'foto'], ['plS3', 'rest1'], ['rest1', 'rest2'], ['rest2', 'banos'], ['rest2', 'rest3'], ['rest3', 'cafe'],
-      ['plS3', 'plE'], ['plE', 'perg1'], ['perg1', 'perg2'], ['perg2', 'pabW'], ['pabW', 'pab'], ['pab', 'pod']
+      ['calle', 'taq'], ['taq', 'c1'], ['c1', 'c23'], ['c23', 'c3'], ['c23', 'labs'], ['c3', 'cowO'], ['cowO', 'cow'],
+      ['cow', 'cowE'], ['cowE', 'e1'], ['e1', 'e2'], ['cow', 'cowN'], ['cowN', 'p1'], ['p1', 'pp'], ['pp', 'p2'],
+      ['p2', 'n5'], ['n5', 'e2'], ['pp', 'st'], ['st', 'kits'], ['st', 'w0'], ['w0', 'w1'], ['w1', 'b1'],
+      ['e2', 'gasW'], ['gasW', 'gas'], ['e2', 'r1'], ['r1', 'vip'], ['vip', 'caja'], ['caja', 'dia'], ['gas', 'dia'],
+      ['dia', 'bs'], ['bs', 'b2'], ['calle', 'pq1'], ['pq1', 'pq'], ['pq', 'veh']
     ],
     destino: {
-      auditorio: 'aud', expositores: 'expo', marcas: 'pab', podcast: 'pod', workshops: 'wkD', foto: 'foto',
-      cafe: 'cafe', info: 'infoD', taquillas: 'taqF', banos: 'banos'
+      taquillas: 'taq', workshops: 'labs', cowork: 'cow', speakers: 'p1', bebidas: 'p2', expositores: 'st',
+      kits: 'kits', gastrolabs: 'gas', auditorio: 'caja', banos: 'b1', banos2: 'b2', parqueo: 'pq'
     },
     inicio: 'calle'
   };
@@ -476,8 +508,8 @@
     };
 
     var escena = new T.Scene();
-    escena.background = new T.Color(0x07020F);
-    escena.add(new T.HemisphereLight(0xB9A6FF, 0x120624, 0.95));
+    escena.background = new T.Color(0x05070F);
+    escena.add(new T.HemisphereLight(0xB9B6FF, 0x0C0A26, 0.95));
     var sol = new T.DirectionalLight(0xFFFFFF, 0.55);
     sol.position.set(60, 120, 40);
     escena.add(sol);
@@ -494,230 +526,258 @@
     var matPantalla = new T.MeshBasicMaterial({ map: texturaPantalla() });
     var zonas = {};
     var bosque = new Bosque();
-    var deco = [];  // líneas decorativas (pérgola, arcos)
-    var z, i, x;
+    var z, i, x, v;
 
-    /* ---- Pabellón 1 · Auditorio principal ---- */
-    z = zonas.auditorio = new Zona('auditorio', C.charlas, 2);
-    z.caja('base', -24, 24, 0, 0.4, -58, -24, 'tenue');
-    for (i = 0; i < 5; i++) z.caja('alto', 24 + i * 1.6, 32, 0.4, 1.3 + i * 0.9, -54, -28, 'tenue');  // gradería
-    z.caja('oscuro', -24, 24, 0.4, 5, -58, -57.5);          // cortina norte
-    z.caja('oscuro', -24, -23.5, 0.4, 5, -58, -24);         // cortina occidental
-    z.caja('oscuro', -24, -8, 0.4, 3.2, -24.5, -24);        // cortina sur (con acceso al centro)
-    z.caja('oscuro', 8, 24, 0.4, 3.2, -24.5, -24);
-    var cols = [-24, -12, 0, 12, 24, 32];
-    for (i = 0; i < cols.length; i++) {
-      z.caja('acero', cols[i] - 0.3, cols[i] + 0.3, 0, 10, -58.3, -57.7, 'no');
-      z.caja('acero', cols[i] - 0.3, cols[i] + 0.3, 0, 10, -24.3, -23.7, 'no');
-      z.trazo(true, [cols[i], 10, -58, cols[i], 13.5, -41, cols[i], 13.5, -41, cols[i], 10, -24,
-                     cols[i], 0, -58, cols[i], 10, -58, cols[i], 0, -24, cols[i], 10, -24]);
-      if (i < cols.length - 1) {
-        var a1 = cols[i], a2 = cols[i + 1];
-        z.trazo(true, [a1, 10, -58, a2, 13.5, -41, a2, 10, -58, a1, 13.5, -41,
-                       a1, 10, -24, a2, 13.5, -41, a2, 10, -24, a1, 13.5, -41]);
+    function postes(zona, lista, alto) {
+      for (var k = 0; k < lista.length; k++) zona.caja('acero', lista[k][0] - 0.18, lista[k][0] + 0.18, 0, alto, lista[k][1] - 0.18, lista[k][1] + 0.18, 'no');
+    }
+    function mesaRedonda(zona, cx, cz, r, sillasN) {
+      var m = new T.CylinderGeometry(r, r, 0.12, 14); m.translate(cx, 0.85, cz); zona.forma('blanco', m);
+      var pata = new T.CylinderGeometry(0.08, 0.08, 0.8, 6); pata.translate(cx, 0.42, cz); zona.forma('acero', pata);
+      for (var k = 0; k < sillasN; k++) {
+        var a = k / sillasN * Math.PI * 2;
+        zona.caja('alto', cx + Math.cos(a) * (r + 0.55) - 0.25, cx + Math.cos(a) * (r + 0.55) + 0.25, 0, 0.55, cz + Math.sin(a) * (r + 0.55) - 0.25, cz + Math.sin(a) * (r + 0.55) + 0.25, 'no');
       }
     }
-    z.trazo(false, [-24, 10, -58, 32, 10, -58, -24, 13.5, -41, 32, 13.5, -41, -24, 10, -24, 32, 10, -24]);
-    z.forma('vidrio', cuadro([-24, 10, -58], [32, 10, -58], [32, 13.5, -41], [-24, 13.5, -41]));
-    z.forma('vidrio', cuadro([-24, 13.5, -41], [32, 13.5, -41], [32, 10, -24], [-24, 10, -24]));
-    // escenario central con cuatro pantallas
-    z.caja('alto', -5, 5, 0.4, 1.8, -46, -36);
-    z.caja('neon', -5.05, 5.05, 1.8, 1.95, -46.05, -35.95, 'no');
-    var torres = [[-5, -46], [5, -46], [5, -36], [-5, -36]];
-    for (i = 0; i < 4; i++) z.caja('acero', torres[i][0] - 0.35, torres[i][0] + 0.35, 0.4, 10, torres[i][1] - 0.35, torres[i][1] + 0.35, 'no');
-    z.trazo(false, [-5, 10, -46, 5, 10, -46, 5, 10, -46, 5, 10, -36, 5, 10, -36, -5, 10, -36, -5, 10, -36, -5, 10, -46]);
-    var pan = new T.Group();
-    var geoPan = new T.PlaneGeometry(7.4, 3.6);
-    var lados = [[0, -35.7, 0], [0, -46.3, Math.PI], [5.3, -41, Math.PI / 2], [-5.3, -41, -Math.PI / 2]];
-    for (i = 0; i < 4; i++) {
-      var p = new T.Mesh(geoPan, matPantalla);
-      p.position.set(lados[i][0], 7.6, lados[i][1]);
-      p.rotation.y = lados[i][2];
-      pan.add(p);
-    }
-    z.grupo.add(pan);
-    // mesas largas alrededor del escenario
-    z.caja('blanco', -11, 11, 0.4, 1.2, -52.5, -51.5, 'no');
-    z.caja('blanco', -12.5, -11.5, 0.4, 1.2, -51, -31, 'no');
-    z.caja('blanco', 11.5, 12.5, 0.4, 1.2, -51, -31, 'no');
-    z.caja('blanco', -11, -2.5, 0.4, 1.2, -30.5, -29.5, 'no');
-    z.caja('blanco', 2.5, 11, 0.4, 1.2, -30.5, -29.5, 'no');
-    sillas(z, [
-      [-16, -3, -28.2, -25.6], [3, 16, -28.2, -25.6],
-      [-22, -14.5, -50, -31.5], [14.5, 22, -50, -31.5],
-      [-10, 10, -56.4, -54.2]
-    ]);
-    z.area(-24, 32, 13.5, -58, -24, 4, 17, -41);
 
-    /* ---- Zona Expositores (pabellón de vidrio en la plaza) ---- */
+    /* ---- Caja de Arena · escenario principal ---- */
+    z = zonas.auditorio = new Zona('auditorio', C.charlas, 2);
+    var cx0 = 21.8, cx1 = 55.3, cz0 = 13, cz1 = 42.9, hM = 9.5, hC = 15;
+    z.caja('base', cx0, cx1, 0, 0.4, cz0, cz1, 'tenue');
+    z.caja('alto', cx0, cx1, 0.4, 2.2, cz0, cz0 + 0.5, 'tenue');          // zócalo norte (con accesos)
+    z.caja('alto', cx0, cx1, 0.4, 2.2, cz1 - 0.5, cz1, 'tenue');
+    z.caja('alto', cx0, cx0 + 0.5, 0.4, 2.2, cz0, cz1, 'tenue');
+    z.caja('alto', cx1 - 0.5, cx1, 0.4, 2.2, cz0, cz1, 'tenue');
+    z.forma('vidrio', caja(cx0, cx1, 2.2, hM, cz0, cz0 + 0.1));
+    z.forma('vidrio', caja(cx0, cx1, 2.2, hM, cz1 - 0.1, cz1));
+    z.forma('vidrio', caja(cx0, cx0 + 0.1, 2.2, hM, cz0, cz1));
+    z.forma('vidrio', caja(cx1 - 0.1, cx1, 2.2, hM, cz0, cz1));
+    aristasCaja(z.lin, cx0, cx1, 0.4, hM, cz0, cz1);
+    // techo a cuatro aguas (la «X» del plano)
+    var r0 = [31, hC, 27.95], r1 = [46.1, hC, 27.95];
+    var e00 = [cx0, hM, cz0], e10 = [cx1, hM, cz0], e11 = [cx1, hM, cz1], e01 = [cx0, hM, cz1];
+    z.forma('vidrio', cuadro(e00, e10, r1, r0));
+    z.forma('vidrio', cuadro(e01, r0, r1, e11));
+    z.forma('vidrio', cuadro(e00, r0, r0, e01));
+    z.forma('vidrio', cuadro(e10, e11, r1, r1));
+    z.trazo(false, [].concat(e00, r0, e10, r1, e11, r1, e01, r0, r0, r1));
+    for (v = cx0 + 4.2; v < cx1 - 1; v += 4.2) z.trazo(true, [v, hM, cz0, v, 0.4, cz0, v, hM, cz1, v, 0.4, cz1]);
+    // escenario al sur con pantalla gigante y pantallas laterales
+    z.caja('alto', 30, 47, 0.4, 1.8, 36.5, 41.6);
+    z.caja('neon', 29.95, 47.05, 1.8, 1.95, 36.45, 36.6, 'no');
+    var pg = new T.Mesh(new T.PlaneGeometry(13, 5.4), matPantalla); pg.position.set(38.5, 5.6, 41.7); pg.rotation.y = Math.PI; z.grupo.add(pg);
+    var pl = new T.Mesh(new T.PlaneGeometry(4.6, 2.6), matPantalla); pl.position.set(26.5, 4.8, 40.5); pl.rotation.y = Math.PI * 0.86; z.grupo.add(pl);
+    var pr = new T.Mesh(new T.PlaneGeometry(4.6, 2.6), matPantalla); pr.position.set(50.5, 4.8, 40.5); pr.rotation.y = -Math.PI * 0.86; z.grupo.add(pr);
+    postes(z, [[29.6, 36.5], [47.4, 36.5], [29.6, 41.6], [47.4, 41.6]], 9);
+    z.trazo(false, [29.6, 9, 36.5, 47.4, 9, 36.5, 29.6, 9, 41.6, 47.4, 9, 41.6]);
+    sillas(z, [[25, 52, 16.5, 33, 1.3]]);
+    // hall de Ingreso VIP y General + portal Diamante y Black
+    z.caja('alto', 23.4, 36.4, 0, 3.2, 7.8, 12.4);
+    z.caja('neon', 23.4, 36.4, 3.2, 3.36, 7.75, 7.9, 'no');
+    for (v = 24.6; v < 35.5; v += 2.2) z.caja('neon', v, v + 1.1, 1, 2.3, 7.72, 7.8, 'no');
+    z.caja('oscuro', 38, 38.7, 0, 4.2, 8, 12.6, 'tenue');
+    z.caja('oscuro', 41.3, 42, 0, 4.2, 8, 12.6, 'tenue');
+    z.caja('oscuro', 38, 42, 4.2, 5, 8, 12.6, 'tenue');
+    z.caja('neon', 38.7, 41.3, 4.05, 4.2, 7.95, 8.05, 'no');
+    z.area(cx0, cx1, hC, 7.6, cz1, 38.5, 17, 30);
+
+    /* ---- Zona Gastrolabs · plaza de comida ---- */
+    z = zonas.gastrolabs = new Zona('gastrolabs', C.comida, 1);
+    z.caja('base', 22.8, 73.5, 0, 0.15, -31.9, 7.2, 'tenue');
+    var puestos = [[33, 37, -29, -26.6], [35.4, 39.6, -25.6, -23.4], [25.8, 28.4, -21.5, -17], [29, 31.8, -19.2, -15],
+                   [54, 56.6, -24.2, -21], [57.2, 60, -26.6, -22.6], [65, 67.6, -19.2, -15], [68.1, 70.6, -21.6, -17],
+                   [47.4, 50, -11, -6.6], [50.3, 52.8, -13, -9]];
+    for (i = 0; i < puestos.length; i++) {
+      var q = puestos[i];
+      z.caja('alto', q[0], q[1], 0.15, 2.7, q[2], q[3], 'tenue');
+      z.caja('neon', q[0] - 0.15, q[1] + 0.15, 2.7, 2.95, q[2] - 0.15, q[3] + 0.15, 'no');
+      z.caja('blanco', q[0], q[1], 0.15, 1.1, q[3], q[3] + 0.5, 'no');   // mostrador
+    }
+    var mesas = [[34, -6], [39, -2], [44, 2], [36, 2.5], [56, -3], [61, 1.5], [66, -4], [60, -12], [40, -14], [62, -28], [46, -27], [70, 3]];
+    for (i = 0; i < mesas.length; i++) {
+      mesaRedonda(z, mesas[i][0], mesas[i][1], 0.75, 4);
+      var som = new T.ConeGeometry(1.8, 0.7, 8); som.translate(mesas[i][0], 2.6, mesas[i][1]); z.forma('lona', som);
+      var palo = new T.CylinderGeometry(0.05, 0.05, 2.4, 5); palo.translate(mesas[i][0], 1.3, mesas[i][1]); z.forma('acero', palo);
+    }
+    // portal de ingreso a la plaza (barra rosada del plano)
+    z.caja('oscuro', 22.6, 23.4, 0, 3.6, -10.2, -9.4, 'tenue');
+    z.caja('oscuro', 22.6, 23.4, 0, 3.6, -4.6, -3.8, 'tenue');
+    z.caja('neon', 22.6, 23.4, 3.6, 3.9, -10.2, -3.8, 'no');
+    z.area(22.8, 73.5, 4, -31.9, 7.2, 47, 7, -21);
+
+    /* ---- Zona de stands (pabellón norte) ---- */
     z = zonas.expositores = new Zona('expositores', C.marcas, 2);
-    z.bajoSamanes = true;
-    z.caja('base', -2, 22, 0, 0.3, -10, 2, 'tenue');
-    z.forma('vidrio', caja(-2, 22, 0.3, 5.5, -10, -9.9));
-    z.forma('vidrio', caja(-2, 22, 0.3, 5.5, 1.9, 2));
-    z.forma('vidrio', caja(-2, -1.9, 0.3, 5.5, -10, 2));
-    z.forma('vidrio', caja(21.9, 22, 0.3, 5.5, -10, 2));
-    z.forma('vidrio', cuadro([-2, 5.5, -10], [22, 5.5, -10], [22, 7.6, -4], [-2, 7.6, -4]));
-    z.forma('vidrio', cuadro([-2, 7.6, -4], [22, 7.6, -4], [22, 5.5, 2], [-2, 5.5, 2]));
-    aristasCaja(z.lin, -2, 22, 0.3, 5.5, -10, 2);
-    for (x = -2; x <= 22; x += 4) {
-      z.trazo(x === -2 || x === 22 ? false : true, [x, 5.5, -10, x, 7.6, -4, x, 7.6, -4, x, 5.5, 2, x, 0.3, -10, x, 5.5, -10, x, 0.3, 2, x, 5.5, 2]);
+    var sx0 = -1.3, sx1 = 12, sz0 = -49.7, sz1 = -28, hs = 5, cum = 7.2, mx = (sx0 + sx1) / 2;
+    z.caja('base', sx0, sx1, 0, 0.3, sz0, sz1, 'tenue');
+    z.forma('vidrio', caja(sx0, sx0 + 0.1, 0.3, hs, sz0, sz1));
+    z.forma('vidrio', caja(sx1 - 0.1, sx1, 0.3, hs, sz0, sz1));
+    z.forma('vidrio', caja(sx0, sx1, 0.3, hs, sz1 - 0.1, sz1));
+    z.forma('vidrio', cuadro([sx0, hs, sz0], [mx, cum, sz0], [mx, cum, sz1], [sx0, hs, sz1]));
+    z.forma('vidrio', cuadro([mx, cum, sz0], [sx1, hs, sz0], [sx1, hs, sz1], [mx, cum, sz1]));
+    aristasCaja(z.lin, sx0, sx1, 0.3, hs, sz0, sz1);
+    for (v = sz0; v <= sz1 + 0.01; v += 3.6) z.trazo(Math.abs(v - sz0) > 0.1 && Math.abs(v - sz1) > 0.1, [sx0, hs, v, mx, cum, v, mx, cum, v, sx1, hs, v]);
+    z.trazo(false, [mx, cum, sz0, mx, cum, sz1]);
+    for (v = sz0 + 0.6; v < sz1 - 3; v += 3.5) {
+      z.caja('blanco', sx0 + 0.4, sx0 + 2.8, 0.3, 2.6, v, v + 3, 'tenue');
+      z.caja('neon', sx0 + 2.75, sx0 + 2.9, 2.5, 2.7, v, v + 3, 'no');
+      z.caja('blanco', sx1 - 2.8, sx1 - 0.4, 0.3, 2.6, v, v + 3, 'tenue');
+      z.caja('neon', sx1 - 2.9, sx1 - 2.75, 2.5, 2.7, v, v + 3, 'no');
     }
-    z.trazo(false, [-2, 7.6, -4, 22, 7.6, -4]);
-    for (x = -0.6; x < 20; x += 3.6) {
-      z.caja('blanco', x, x + 3.2, 0.3, 2.6, -9.6, -7.4, 'tenue');
-      z.caja('neon', x, x + 3.2, 2.6, 2.8, -7.5, -7.35, 'no');
-      z.caja('blanco', x, x + 3.2, 0.3, 2.6, -0.6, 1.6, 'tenue');
-      z.caja('neon', x, x + 3.2, 2.6, 2.8, -0.75, -0.6, 'no');
-    }
-    var anillo = new T.TorusGeometry(2.6, 0.45, 6, 24);
-    anillo.rotateX(Math.PI / 2); anillo.translate(10, 0.75, -4);
-    z.forma('alto', anillo);
-    var mesa = new T.CylinderGeometry(0.9, 0.9, 1, 12); mesa.translate(10, 0.8, -4);
-    z.forma('neon', mesa);
-    z.area(-2, 22, 7.6, -10, 2, 10, 10.5, -4);
+    z.caja('neon', sx0 + 2, sx1 - 2, hs - 0.6, hs - 0.3, sz1 - 0.05, sz1 + 0.05, 'no');   // letrero de entrada
+    z.area(sx0, sx1, cum, sz0, sz1, mx, 10.5, -38);
 
-    /* ---- Zona fotográfica (bajo el samán, junto al restaurante) ---- */
-    z = zonas.foto = new Zona('foto', C.experiencias, 3);
-    z.bajoSamanes = true;
-    var tarima = new T.CylinderGeometry(3, 3.2, 0.6, 24); tarima.translate(28, 0.3, -7);
-    z.forma('alto', tarima);
-    var aro = new T.TorusGeometry(3.05, 0.08, 4, 32); aro.rotateX(Math.PI / 2); aro.translate(28, 0.62, -7);
-    z.forma('neon', aro);
-    z.caja('oscuro', 23, 33, 0, 1.5, -2.6, -2);
-    z.caja('neon', 23, 33, 1.5, 1.62, -2.6, -2, 'no');
-    z.caja('oscuro', 21.6, 22.8, 0, 1.2, -2.9, -1.7);
-    z.caja('oscuro', 33.2, 34.4, 0, 1.2, -2.9, -1.7);
-    for (i = 0; i < 6; i++) {
-      var an = Math.PI * (0.9 + i * 0.24);
-      var flor = new T.IcosahedronGeometry(1.1, 0);
-      flor.scale(1, 0.8, 1); flor.translate(28 + Math.cos(an) * 4, 0.8, -7 + Math.sin(an) * 4);
-      z.forma('cesped', flor);
+    /* ---- Entrega de kits (cabecera norte del pabellón) ---- */
+    z = zonas.kits = new Zona('kits', C.servicios, 3);
+    z.caja('base', -1.3, 12, 0, 0.3, -56.2, -49.7, 'tenue');
+    z.caja('alto', -1.3, 12, 0.3, 4.2, -56.2, -55.6, 'tenue');
+    z.caja('alto', -1.3, -0.8, 0.3, 4.2, -56.2, -49.7, 'tenue');
+    z.caja('alto', 11.5, 12, 0.3, 4.2, -56.2, -49.7, 'tenue');
+    z.caja('base', -1.3, 12, 4.2, 4.6, -56.2, -49.7);
+    z.caja('neon', -1.3, 12, 4.6, 4.75, -49.75, -49.6, 'no');
+    z.caja('blanco', 0.6, 10.2, 0.3, 1.15, -52.4, -51.6);               // mostrador
+    for (v = 0.4; v < 10.4; v += 1.15) {
+      for (var nivel = 0; nivel < 3; nivel++) z.caja(nivel === 1 ? 'neon' : 'blanco', v, v + 0.9, 0.5 + nivel * 0.8, 1.15 + nivel * 0.8, -55.4, -54.5, 'no');
     }
-    z.area(21.5, 34.5, 3, -11, -1.5, 28, 5.5, -6);
+    z.area(-1.3, 12, 4.75, -56.2, -49.7, 5.3, 8.2, -53);
 
-    /* ---- Café y restaurante (edificio amarillo) ---- */
-    z = zonas.cafe = new Zona('cafe', C.comida, 2);
-    z.caja('alto', 22, 46, 0, 3.6, 14, 22);
-    z.caja('alto', 30, 38, 0, 6.2, 12, 22);
-    z.caja('base', 21.6, 30.4, 3.2, 3.45, 22, 28.4);            // cubierta de la terraza
-    var postes = [[22, 28], [26, 28], [30, 28]];
-    for (i = 0; i < postes.length; i++) z.caja('acero', postes[i][0] - 0.2, postes[i][0] + 0.2, 0, 3.2, postes[i][1] - 0.2, postes[i][1] + 0.2, 'no');
-    z.caja('neon', 22, 30, 0, 1, 27.9, 28.1, 'tenue');
-    for (i = 0; i < 6; i++) {
-      var m2 = new T.CylinderGeometry(0.6, 0.6, 0.8, 10);
-      m2.translate(23.6 + (i % 3) * 2.6, 0.4, 23.8 + Math.floor(i / 3) * 2.4);
-      z.forma('blanco', m2);
+    /* ---- Labs Session ---- */
+    z = zonas.workshops = new Zona('workshops', C.charlas, 2);
+    var lx0 = -42.6, lx1 = -14.3, lz0 = -25.1, lz1 = -16.3, hl = 4.6;
+    z.caja('base', lx0, lx1, 0, 0.3, lz0, lz1, 'tenue');
+    z.forma('vidrio', caja(lx0, lx1, 0.3, hl, lz0, lz0 + 0.1));
+    z.forma('vidrio', caja(lx0, lx0 + 0.1, 0.3, hl, lz0, lz1));
+    z.forma('vidrio', caja(lx1 - 0.1, lx1, 0.3, hl, lz0, lz1));
+    z.forma('vidrio', caja(lx0, -31, 0.3, hl, lz1 - 0.1, lz1));
+    z.forma('vidrio', caja(-25, lx1, 0.3, hl, lz1 - 0.1, lz1));
+    z.caja('base', lx0 - 0.4, lx1 + 0.4, hl, hl + 0.35, lz0 - 0.4, lz1 + 0.4);
+    z.caja('neon', lx0 - 0.4, lx1 + 0.4, hl + 0.35, hl + 0.5, lz1 + 0.35, lz1 + 0.45, 'no');
+    aristasCaja(z.lin, lx0, lx1, 0.3, hl, lz0, lz1);
+    z.caja('alto', lx0 + 0.3, lx0 + 4, 0.3, 1, lz0 + 1, lz1 - 1);         // tarima
+    var pw = new T.Mesh(new T.PlaneGeometry(6.4, 3.2), matPantalla); pw.position.set(lx0 + 0.25, 2.9, (lz0 + lz1) / 2); pw.rotation.y = Math.PI / 2; z.grupo.add(pw);
+    sillas(z, [[-36, -17.2, -23.6, -17.6, 1.2]]);
+    z.area(lx0 - 0.4, lx1 + 0.4, hl + 0.5, lz0 - 0.4, lz1 + 0.4, -28.5, 8.5, -20.7);
+
+    /* ---- Zona Cowork (círculo central del recorrido) ---- */
+    z = zonas.cowork = new Zona('cowork', C.experiencias, 3);
+    var ccx = -9.4, ccz = -7, cr = 7.2;
+    var disco = new T.CylinderGeometry(cr, cr, 0.3, 40); disco.translate(ccx, 0.15, ccz); z.forma('base', disco);
+    var aro = new T.TorusGeometry(cr, 0.12, 4, 48); aro.rotateX(Math.PI / 2); aro.translate(ccx, 0.32, ccz); z.forma('neon', aro);
+    var muro = new T.CylinderGeometry(cr - 0.2, cr - 0.2, 2.6, 40, 1, true); muro.translate(ccx, 1.6, ccz); z.forma('vidrio', muro);
+    var anilloT = new T.TorusGeometry(cr - 0.2, 0.08, 4, 48); anilloT.rotateX(Math.PI / 2); anilloT.translate(ccx, 2.9, ccz); z.forma('neon', anilloT);
+    for (i = 0; i < 12; i++) {
+      var an = i / 12 * Math.PI * 2;
+      z.trazo(true, [ccx + Math.cos(an) * (cr - 0.2), 2.9, ccz + Math.sin(an) * (cr - 0.2), ccx, 5.2, ccz]);
     }
-    z.caja('neon', 30.2, 37.8, 4.2, 4.6, 21.9, 22.05, 'no');  // aviso CAFÉ
-    for (x = 31; x <= 43; x += 3) if (x > 38.5) z.caja('neon', x, x + 1.6, 1.4, 2.5, 21.99, 22.07, 'no');   // ventanas encendidas
-    z.caja('neon', 31, 37, 5.0, 5.7, 21.99, 22.07, 'no');
-    z.area(22, 46, 6.2, 12, 28.4, 34, 9.5, 19);
+    var jard = new T.CylinderGeometry(1.4, 1.5, 0.6, 18); jard.translate(ccx, 0.6, ccz); z.forma('cesped', jard);
+    var tablas = [[-3.6, -2.4], [3.6, -2.4], [-3.6, 2.6], [3.6, 2.6]];
+    for (i = 0; i < tablas.length; i++) mesaRedonda(z, ccx + tablas[i][0], ccz + tablas[i][1], 0.8, 4);
+    z.area(ccx - cr, ccx + cr, 5.2, ccz - cr, ccz + cr, ccx, 8.4, ccz);
 
-    /* ---- Camerinos (solo speakers y staff) ---- */
-    z = zonas.camerinos = new Zona('camerinos', C.servicios, 1);
-    z.caja('base', 46, 58, 0, 3.6, 14, 22);
-    for (x = 47.5; x < 57; x += 3) z.caja('neon', x, x + 1.2, 1.7, 2.5, 21.99, 22.06, 'no');
-    z.area(46, 58, 3.6, 14, 22, 52, 6.4, 18);
+    /* ---- P1 · Zona speakers ---- */
+    z = zonas.speakers = new Zona('speakers', C.experiencias, 3);
+    z.caja('base', -5.9, 5.2, 0, 0.3, -25.1, -20.5, 'tenue');
+    z.caja('lona', -6.1, 5.2, 3.1, 3.25, -25.3, -20.3, 'tenue');
+    postes(z, [[-5.7, -24.9], [5, -24.9], [-5.7, -20.7], [5, -20.7]], 3.1);
+    z.caja('oscuro', -5.9, 5.2, 0.3, 3.1, -25.1, -24.8, 'tenue');       // fondo con nombre
+    z.caja('neon', -4, 3.3, 2.2, 2.5, -24.8, -24.72, 'no');
+    var sofaP = [[-3.6, -22.8], [0.4, -22.8], [3.2, -21.5]];
+    for (i = 0; i < sofaP.length; i++) z.caja('blanco', sofaP[i][0] - 1.2, sofaP[i][0] + 1.2, 0.3, 1, sofaP[i][1] - 0.5, sofaP[i][1] + 0.5, 'no');
+    z.area(-6.1, 5.2, 3.3, -25.3, -20.3, -0.4, 6.2, -22.8);
+
+    /* ---- P2 · Zona de bebidas ---- */
+    z = zonas.bebidas = new Zona('bebidas', C.comida, 3);
+    z.caja('base', 5.2, 17.6, 0, 0.3, -25.1, -20.5, 'tenue');
+    z.caja('lona', 5.2, 17.8, 3.1, 3.25, -25.3, -20.3, 'tenue');
+    postes(z, [[5.4, -24.9], [17.4, -24.9], [5.4, -20.7], [17.4, -20.7]], 3.1);
+    z.caja('alto', 7, 16, 0.3, 1.15, -22.6, -21.9);                    // barra
+    z.caja('neon', 7, 16, 1.15, 1.25, -22.6, -21.9, 'no');
+    z.caja('oscuro', 7, 16, 0.3, 2.4, -24.9, -24.4, 'tenue');            // contrabarra
+    for (v = 7.4; v < 15.8; v += 1.05) z.caja('neon', v, v + 0.5, 1.6, 2.1, -24.42, -24.36, 'no');
+    for (v = 7.6; v < 15.8; v += 1.6) { var bt = new T.CylinderGeometry(0.25, 0.25, 0.75, 8); bt.translate(v, 0.68, -21.2); z.forma('blanco', bt); }
+    z.area(5.2, 17.8, 3.3, -25.3, -20.3, 11.4, 6.2, -22.8);
+
+    /* ---- Taquilla e ingreso + filtros del recorrido ---- */
+    z = zonas.taquillas = new Zona('taquillas', C.servicios, 2);
+    z.caja('alto', -58.5, -51, 0, 3.2, -11.5, -2.5);
+    z.caja('base', -59.2, -50.3, 3.2, 3.6, -12.2, -1.8);
+    z.caja('neon', -50.4, -50.25, 2.6, 3.0, -11, -3, 'no');
+    for (v = -10.6; v < -3; v += 1.9) z.caja('neon', -50.98, -50.92, 1.1, 2.3, v, v + 1.2, 'no');   // ventanillas
+    z.caja('blanco', -50.9, -50.1, 0, 1.1, -11, -3, 'no');
+    var filtros = [-45.2, -34.2, -23.7];
+    for (i = 0; i < filtros.length; i++) {
+      var fx = filtros[i];
+      z.caja('oscuro', fx - 0.4, fx + 0.4, 0, 3.4, -9.8, -9.1, 'tenue');
+      z.caja('oscuro', fx - 0.4, fx + 0.4, 0, 3.4, -4.9, -4.2, 'tenue');
+      z.caja('oscuro', fx - 0.4, fx + 0.4, 3.4, 4.1, -9.8, -4.2, 'tenue');
+      z.caja('neon', fx + 0.4, fx + 0.48, 3.45, 4.05, -9.1, -4.9, 'no');
+      z.caja('acero', fx - 0.15, fx + 0.15, 0, 1, -8.6, -5.4, 'no');     // torniquete
+    }
+    z.area(-59.2, -50.3, 3.6, -12.2, -1.8, -54.8, 7, -7);
+    // los filtros también responden al toque
+    z.area(-46, -23, 4.1, -10, -4);
 
     /* ---- Baños ---- */
     z = zonas.banos = new Zona('banos', C.servicios, 2);
-    z.caja('base', 12, 19, 0, 3, 15, 21);
-    z.caja('neon', 12.8, 18.2, 2.2, 2.4, 20.95, 21.05, 'no');
-    z.area(12, 19, 3, 15, 21, 15.5, 5.6, 18);
+    z.caja('base', -31, -24.4, 0, 3, -47.2, -42.8);
+    z.caja('neon', -30.4, -25, 2.2, 2.4, -42.85, -42.75, 'no');
+    z.area(-31, -24.4, 3, -47.2, -42.8, -27.7, 5.6, -45);
 
-    /* ---- Pabellón 2 · marcas, lounge y DJ ---- */
-    z = zonas.marcas = new Zona('marcas', C.marcas, 1);
-    z.caja('base', 64, 106, 0, 0.25, 12, 32, 'tenue');
-    var carpa = new T.CylinderGeometry(10, 10, 42, 20, 1, true, 0, Math.PI);
-    carpa.rotateZ(Math.PI / 2); carpa.scale(1, 0.9, 1); carpa.translate(85, 0, 22);
-    z.forma('lona', carpa);
-    for (x = 64; x <= 106; x += 6) {
-      var arco = [];
-      for (i = 0; i < 12; i++) {
-        var f1 = Math.PI * i / 12, f2 = Math.PI * (i + 1) / 12;
-        arco.push(x, Math.sin(f1) * 9, 22 + Math.cos(f1) * 10, x, Math.sin(f2) * 9, 22 + Math.cos(f2) * 10);
-      }
-      z.trazo(x !== 64 && x !== 106, arco);
+    z = zonas.banos2 = new Zona('banos2', C.servicios, 2);
+    z.caja('base', 57.9, 70.6, 0, 3, 11, 17.6);
+    z.caja('neon', 58.5, 70, 2.2, 2.4, 10.9, 11, 'no');
+    z.area(57.9, 70.6, 3, 11, 17.6, 64.2, 5.6, 14.3);
+
+    /* ---- Zona de parqueo + ingreso vehicular ---- */
+    z = zonas.parqueo = new Zona('parqueo', C.servicios, 1);
+    z.caja('base', -54.6, -25.4, 0, 0.08, -4.6, 38.4, 'tenue');
+    var carros = [], rr = azar(5);
+    var filasC = [[-52.2, -49.4], [-45, -42.2], [-38.4, -35.6], [-30.8, -28]];
+    for (var fc = 0; fc < filasC.length; fc++) {
+      for (v = -1; v < 36; v += 2.6) if (rr() < 0.62) carros.push([(filasC[fc][0] + filasC[fc][1]) / 2, v + 1.3]);
     }
-    var cumbres = [Math.PI / 2, Math.PI / 4, 3 * Math.PI / 4];
-    for (i = 0; i < cumbres.length; i++) {
-      var yy = Math.sin(cumbres[i]) * 9, zz = 22 + Math.cos(cumbres[i]) * 10;
-      z.trazo(true, [64, yy, zz, 106, yy, zz]);
+    var mCarro = new T.InstancedMesh(fusionar([caja(-1.1, 1.1, 0, 0.75, -0.95, 0.95), caja(-0.75, 0.75, 0.75, 1.3, -0.8, 0.8)]), new T.MeshLambertMaterial({ color: 0xffffff }), carros.length);
+    var dC = new T.Object3D(), tonos = [0x9AA4C8, 0x2B3352, 0xD8DCEB, 0x6B2A7E, 0x3A4F8C, 0x8C2F3A].map(function (h) { return new T.Color(h); });
+    for (i = 0; i < carros.length; i++) {
+      dC.position.set(carros[i][0], 0.08, carros[i][1]); dC.rotation.y = Math.PI / 2; dC.updateMatrix();
+      mCarro.setMatrixAt(i, dC.matrix); mCarro.setColorAt(i, tonos[i % tonos.length]);
     }
-    for (x = 72.5; x < 104; x += 4) z.caja('blanco', x, x + 3.6, 0.25, 2.6, 12.6, 15, 'tenue');
-    for (x = 65.5; x < 104; x += 4) z.caja('blanco', x, x + 3.6, 0.25, 2.6, 29, 31.4, 'tenue');
-    var cesped = new T.CylinderGeometry(6, 6, 0.2, 28); cesped.translate(88, 0.35, 22);
-    z.forma('cesped', cesped);
-    var cabina = new T.CylinderGeometry(1.8, 1.8, 1.3, 16); cabina.translate(88, 1.1, 22);
-    z.forma('oscuro', cabina);
-    var anilloDj = new T.TorusGeometry(1.85, 0.08, 4, 24); anilloDj.rotateX(Math.PI / 2); anilloDj.translate(88, 1.2, 22);
-    z.forma('neon', anilloDj);
-    var sofas = [[83, 18.5], [93, 18.5], [83, 25.5], [93, 25.5]];
-    for (i = 0; i < sofas.length; i++) z.caja('blanco', sofas[i][0] - 1.6, sofas[i][0] + 1.6, 0.45, 1.2, sofas[i][1] - 0.6, sofas[i][1] + 0.6, 'no');
-    z.area(64, 106, 9, 12, 32, 85, 12.5, 22);
-
-    /* ---- Podcast Studio (dentro del Pabellón 2) ---- */
-    z = zonas.podcast = new Zona('podcast', C.experiencias, 3);
-    z.caja('oscuro', 65, 71, 0.25, 3.6, 13, 13.35);
-    z.caja('oscuro', 65, 65.35, 0.25, 3.6, 13, 17.5);
-    z.caja('oscuro', 70.65, 71, 0.25, 3.6, 13, 17.5);
-    z.caja('base', 65, 71, 3.2, 3.6, 13, 17.5);
-    var aroPod = new T.TorusGeometry(1.2, 0.07, 4, 24); aroPod.translate(68, 2.1, 13.4);
-    z.forma('neon', aroPod);
-    z.caja('blanco', 66.2, 67.3, 0.25, 0.95, 15.2, 16.3, 'no');
-    z.caja('blanco', 68.7, 69.8, 0.25, 0.95, 15.2, 16.3, 'no');
-    z.area(65, 71, 3.6, 13, 17.5, 68, 6.8, 15);
-
-    /* ---- Zona de workshops (cubierta norte) ---- */
-    z = zonas.workshops = new Zona('workshops', C.charlas, 2);
-    z.caja('base', -80, -54, 0, 0.25, -48, -28, 'tenue');
-    z.caja('acero', -80.6, -53.4, 6, 6.35, -48.6, -27.4);
-    var pw = [-80, -71, -62, -54];
-    for (i = 0; i < pw.length; i++) {
-      z.caja('acero', pw[i] - 0.25, pw[i] + 0.25, 0, 6, -48.25, -47.75, 'no');
-      z.caja('acero', pw[i] - 0.25, pw[i] + 0.25, 0, 6, -28.25, -27.75, 'no');
-      z.trazo(true, [pw[i], 0, -48, pw[i], 6, -48, pw[i], 0, -28, pw[i], 6, -28]);
-    }
-    z.caja('oscuro', -80, -54, 0.25, 5, -48, -47.6, 'tenue');
-    z.caja('alto', -72, -62, 0.25, 1.1, -47.4, -43.5);
-    var pantW = new T.Mesh(new T.PlaneGeometry(7, 3.4), matPantalla);
-    pantW.position.set(-67, 3.6, -47.5);
-    z.grupo.add(pantW);
-    sillas(z, [[-77, -68.5, -40.5, -30.5, 1.2], [-65.5, -57, -40.5, -30.5, 1.2]]);
-    z.area(-80.6, -53.4, 6.35, -48.6, -27.4, -67, 9.5, -38);
-
-    /* ---- Punto de información ---- */
-    z = zonas.info = new Zona('info', C.servicios, 2);
-    z.caja('base', -60, -50, 0, 3.5, -9, -3);
-    z.caja('alto', -59, -51, 0, 1.1, -2.6, -1.6);
-    z.caja('neon', -59, -51, 1.1, 1.2, -2.6, -1.6, 'no');
-    z.caja('neon', -58.5, -51.5, 1.6, 2.9, -3.03, -2.96, 'no');   // vitrina iluminada
-    z.area(-60, -50, 3.5, -9, -1.5, -55, 6.5, -5.5);
-
-    /* ---- Taquillas y alameda de ingreso ---- */
-    z = zonas.taquillas = new Zona('taquillas', C.servicios, 2);
-    z.caja('blanco', -82, -80, 0, 5, 56.5, 59);
-    z.caja('blanco', -68, -66, 0, 5, 56.5, 59);
-    z.caja('blanco', -82, -66, 4, 5.4, 56.5, 59);
-    for (x = -79; x <= -69; x += 1.65) z.caja('acero', x - 0.25, x + 0.25, 0, 1.1, 57.3, 58.3, 'no');
-    z.caja('neon', -79.5, -68.5, 4.6, 4.9, 59, 59.1, 'no');
-    // arco LABS SUMMIT y arco «Zona de conectividad»
-    var arcos = [44, 30];
-    for (i = 0; i < arcos.length; i++) {
-      var az2 = arcos[i];
-      z.caja('oscuro', -80.5, -79.3, 0, 4.6, az2 - 0.6, az2 + 0.6, 'tenue');
-      z.caja('oscuro', -68.7, -67.5, 0, 4.6, az2 - 0.6, az2 + 0.6, 'tenue');
-      z.caja('oscuro', -80.5, -67.5, 4.6, 5.8, az2 - 0.5, az2 + 0.5, 'tenue');
-      z.caja('neon', -79.3, -68.7, 4.5, 4.62, az2 + 0.5, az2 + 0.56, 'no');
-    }
-    z.area(-84, -64, 5.4, 54, 62, -74, 8.5, 57.5);
+    mCarro.instanceMatrix.needsUpdate = true; if (mCarro.instanceColor) mCarro.instanceColor.needsUpdate = true;
+    z.grupo.add(mCarro);
+    z.caja('acero', -47.6, -47.2, 0, 1.4, 40.6, 41, 'no');               // talanquera del ingreso vehicular
+    z.caja('neon', -47.2, -42.4, 1.05, 1.2, 40.72, 40.88, 'no');
+    z.caja('alto', -50.5, -48.4, 0, 2.6, 39.4, 42, 'tenue');             // caseta
+    z.area(-54.6, -25.4, 1.5, -4.6, 38.4, -40, 4.5, 15);
 
     /* ---- terminar zonas ---- */
     for (var id in zonas) if (zonas.hasOwnProperty(id)) zonas[id].terminar(escena, texBrillo, texHaz);
 
-    /* ---- piso con sombras suaves y luz de faroles (todo horneado: no cuesta nada al dibujar) ---- */
-    var sombras = ['auditorio', 'expositores', 'cafe', 'camerinos', 'banos', 'info', 'workshops', 'marcas'].map(function (k) { return zonas[k].huella; });
+    /* ---- edificios existentes del recinto (sin interacción, como en el plano) ---- */
+    var matEd = new T.MeshLambertMaterial({ color: 0x141A3A });
+    var matEdAlto = new T.MeshLambertMaterial({ color: 0x1B2350 });
+    var edGeo = [], edGeo2 = [], edLin = [];
+    function edificio(x0, x1, z0, z1, h, destacado) {
+      (destacado ? edGeo2 : edGeo).push(caja(x0, x1, 0, h, z0, z1));
+      aristasCaja(edLin, x0, x1, 0, h, z0, z1);
+    }
+    edificio(-27.7, -9.1, -37.7, -29.2, 3.4);              // pabellón de puestos (al norte de Labs Session)
+    edificio(13.6, 18.9, -42.9, -35.8, 4);
+    edificio(-25.4, -18.5, 4, 38.4, 5);                    // edificio en L
+    edificio(-18.5, -8, 28.2, 38.4, 5);
+    edificio(-15.5, -11, 12, 21, 3);
+    edificio(-6, 0.5, 1.5, 6, 3, false);
+    edificio(-1, 5.5, 8.5, 13, 3);
+    edificio(-5.9, 2, 22.8, 27.3, 3.5);
+    edificio(54, 69, 35.8, 42.3, 4);
+    edificio(-5.9, -2.4, -47, -41, 3);
+    // tribuna junto a la Caja de Arena (escalonada)
+    for (i = 0; i < 5; i++) edificio(10.4 + i * 1.9, 21.4, 14 + i * 0.6, 36 - i * 0.6, 1.2 + i * 1.2, true);
+    var mEd = new T.Mesh(fusionar(edGeo), matEd); escena.add(mEd);
+    var mEd2 = new T.Mesh(fusionar(edGeo2), matEdAlto); escena.add(mEd2);
+    var gEd = new T.BufferGeometry(); gEd.setAttribute('position', new T.Float32BufferAttribute(edLin, 3));
+    escena.add(new T.LineSegments(gEd, new T.LineBasicMaterial({ color: 0x4D63C9, transparent: true, opacity: 0.45 })));
+
+    /* ---- piso con sombras suaves y luz de faroles (todo horneado) ---- */
+    var sombras = ['auditorio', 'expositores', 'kits', 'workshops', 'banos', 'banos2', 'taquillas', 'speakers', 'bebidas'].map(function (k) { return zonas[k].huella; });
     var suelo = new T.Mesh(
       new T.PlaneGeometry(SUELO.x1 - SUELO.x0, SUELO.z1 - SUELO.z0),
       new T.MeshBasicMaterial({ map: texturaSuelo(ligero, { sombras: sombras, faroles: FAROLES }) })
@@ -738,13 +798,16 @@
     puntosLuz(escena, cabezas, 0xFFD08A, 2.2, texBrillo);
     puntosLuz(escena, cabezas, 0xFFF1D6, 0.55, texBrillo);
 
-    /* ---- luz cálida dentro de la carpa del Pabellón 2 ---- */
-    var lamp = [];
-    for (x = 67; x <= 103; x += 4.5) { lamp.push(x, 6.4, 18.5, x, 6.4, 25.5); }
-    puntosLuz(zonas.marcas.grupo, lamp, 0xFFC46B, 1.6, texBrillo);
-    var calida = new T.Mesh(new T.PlaneGeometry(40, 18), new T.MeshBasicMaterial({ map: texBrillo, color: 0xFFA347, transparent: true, opacity: 0.28, blending: T.AdditiveBlending, depthWrite: false }));
-    calida.rotation.x = -Math.PI / 2; calida.position.set(85, 0.3, 22); calida.renderOrder = 1;
-    zonas.marcas.grupo.add(calida);
+    /* ---- guirnaldas de luces sobre la plaza Gastrolabs ---- */
+    var guir = [];
+    for (v = 0; v < 6; v++) {
+      var za = -29 + v * 6.4;
+      for (x = 25; x <= 71; x += 1.6) guir.push(x, 5.2 - Math.sin((x - 25) / 46 * Math.PI) * 0.9, za + Math.sin(x * 0.4) * 0.3);
+    }
+    puntosLuz(zonas.gastrolabs.grupo, guir, 0xFFC46B, 1.1, texBrillo);
+    var calida = new T.Mesh(new T.PlaneGeometry(52, 40), new T.MeshBasicMaterial({ map: texBrillo, color: 0xFFA347, transparent: true, opacity: 0.22, blending: T.AdditiveBlending, depthWrite: false }));
+    calida.rotation.x = -Math.PI / 2; calida.position.set(48, 0.3, -12); calida.renderOrder = 1;
+    zonas.gastrolabs.grupo.add(calida);
 
     /* ---- gente en miniatura: da escala y vida a la maqueta ---- */
     var r = azar(17);
@@ -758,51 +821,35 @@
       }
       return l;
     }
-    var fueraPlaza = function (px, pz) { return (px > -3 && px < 23 && pz > -11 && pz < 3) || (px > 21 && px < 35 && pz > -11 && pz < -1); };
+    var enPuesto = function (px, pz) {
+      for (var k = 0; k < puestos.length; k++) { var q = puestos[k]; if (px > q[0] - 0.6 && px < q[1] + 0.6 && pz > q[2] - 0.6 && pz < q[3] + 1.1) return true; }
+      return false;
+    };
     gentecita(escena, [].concat(
-      regadas(22, -76.5, -71.5, 60.5, 71),
-      regadas(26, -77, -71, 12, 54),
-      regadas(56, -42, 36, -17, 6.5, 0, 1, fueraPlaza),
-      regadas(6, 25, 31, -1.2, 1.5),
-      regadas(12, 40, 100, 4, 8),
-      regadas(4, -57, -53, -1.4, 1.2),
-      regadas(8, -6, 6, -23, -19.5)
+      regadas(18, -66, -59, -10, -4),            // fila de llegada
+      regadas(30, -49, -18, -8.8, -5.2),         // recorrido de ingreso
+      regadas(16, -1, 20, -8.8, -5.2),
+      regadas(10, -12, 5, -19.5, -12.5),
+      regadas(14, 21.5, 55, 7.6, 12.6, 0, 1, function (px) { return px > 23 && px < 36.6; }),
+      regadas(6, -2, 12, -27.6, -26.2),
+      regadas(4, -47, -41, 38, 41)
     ));
-    gentecita(zonas.expositores.grupo, regadas(16, 0, 20, -6.6, -1.4, 0.3));
+    gentecita(zonas.gastrolabs.grupo, regadas(70, 24, 72, -30.5, 6, 0.15, 1, enPuesto));
+    gentecita(zonas.expositores.grupo, regadas(26, 2.2, 8.6, -48.5, -29, 0.3));
+    gentecita(zonas.kits.grupo, regadas(10, 1, 10, -51, -50.2, 0.3));
+    gentecita(zonas.cowork.grupo, regadas(12, ccx - 5.5, ccx + 5.5, ccz - 5.5, ccz + 5.5, 0.3, 1, function (px, pz) { return Math.hypot(px - ccx, pz - ccz) > 6 || Math.hypot(px - ccx, pz - ccz) < 2; }));
     gentecita(zonas.auditorio.grupo, [].concat(
-      regadas(48, -16, 16, -28, -25.8, 0.35, 0.78, function (px) { return Math.abs(px) < 3; }),
-      regadas(30, -22, -14.5, -50, -31.5, 0.35, 0.78),
-      regadas(30, 14.5, 22, -50, -31.5, 0.35, 0.78),
-      regadas(10, -12, 12, -34, -31, 0.4)
+      regadas(140, 25, 52, 16.5, 33, 0.4, 0.78),
+      regadas(12, 24, 52, 34, 36, 0.4)
     ));
-    gentecita(zonas.cafe.grupo, regadas(9, 22.6, 29.6, 22.8, 27.6, 0, 0.85));
-    gentecita(zonas.marcas.grupo, regadas(40, 66, 104, 16, 28, 0.25, 1, function (px, pz) { return Math.hypot(px - 88, pz - 22) < 2.2; }));
-    gentecita(zonas.workshops.grupo, regadas(52, -77, -57, -40.5, -30.5, 0.25, 0.78, function (px) { return px > -68.5 && px < -65.5; }));
+    gentecita(zonas.workshops.grupo, regadas(46, -36, -17.2, -23.6, -17.6, 0.3, 0.78));
+    gentecita(zonas.bebidas.grupo, regadas(8, 7, 16, -21.4, -20.6, 0.3));
+    gentecita(zonas.speakers.grupo, regadas(4, -4.5, 3.5, -23.6, -21.2, 0.3));
 
-    /* ---- pérgola, rotonda y árboles (decoración sin interacción) ---- */
-    var matDeco = new T.LineBasicMaterial({ color: 0xC9AEFF, transparent: true, opacity: 0.28 });
-    var postesP = [];
-    for (x = 40; x <= 104; x += 6) {
-      deco.push(x, 0, 3, x, 3.2, 3, x, 0, 9, x, 3.2, 9, x, 3.2, 3, x, 3.2, 9);
-      postesP.push(x);
-    }
-    deco.push(40, 3.2, 3, 104, 3.2, 3, 40, 3.2, 9, 104, 3.2, 9);
-    var gd = new T.BufferGeometry();
-    gd.setAttribute('position', new T.Float32BufferAttribute(deco, 3));
-    escena.add(new T.LineSegments(gd, matDeco));
-    var fuente = new T.Mesh(new T.CylinderGeometry(1.4, 1.6, 0.8, 16), new T.MeshLambertMaterial({ color: 0x2A1E46 }));
-    fuente.position.set(76, 0.4, -4);
-    escena.add(fuente);
-
-    bosque.saman(-36, -6);
-    bosque.saman(-17, -1);
-    bosque.saman(5, -16);
-    bosque.saman(29, -9);
-    var zs = [68, 50, 43, 36, 29, 22, 15];
-    for (i = 0; i < zs.length; i++) { bosque.arbol(-84, zs[i], 3, 7); bosque.arbol(-64, zs[i], 3, 7); }
-    var sueltos = [[-92, -55, 5], [-90, -20, 4.5], [-90, 12, 4], [-94, 42, 5], [-48, 30, 4], [-36, 48, 5], [-18, 60, 4.5],
-                   [-40, -45, 5], [-40, -62, 4.5], [40, -50, 5], [56, -36, 4.5], [50, -62, 4], [88, -30, 5],
-                   [100, -10, 4], [98, 46, 5], [82, 54, 4], [64, 62, 4.5], [10, 52, 4], [-6, 40, 4.5], [-88, -66, 4]];
+    /* ---- árboles: sombra en la plaza y verde en los bordes ---- */
+    var sueltos = [[-64, -20, 3.5], [-62, 10, 3.5], [-58, 26, 3.5], [-60, 36, 3], [-20, 44, 3.5], [10, 47, 3.5], [40, 49, 3.5],
+                   [72, 52, 3], [80, 20, 3.5], [80, -12, 3.5], [80, -50, 3], [30, -62, 3.5], [10, -58, 3], [-20, -50, 3.5],
+                   [-40, -36, 3], [-12, -56, 3], [96, 40, 3.5], [120, -40, 4], [140, -55, 3.5], [100, 10, 3.5]];
     for (i = 0; i < sueltos.length; i++) bosque.arbol(sueltos[i][0], sueltos[i][1], sueltos[i][2], sueltos[i][2] * 2.2);
     bosque.terminar(escena, ligero);
 
@@ -812,6 +859,7 @@
       brillo: texBrillo,
       zonas: zonas,
       limites: LIMITES,
+      vista: VISTA,
       samanes: bosque.matSaman
     };
   }
