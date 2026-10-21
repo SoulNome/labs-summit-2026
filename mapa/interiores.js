@@ -1,5 +1,9 @@
 /* ==========================================================================
    Labs Summit 2026 · Recorridos 3D de cada zona (día 29)
+   Zonas según el «Mapa recorrido evento» oficial: Caja de Arena, Zona
+   Gastrolabs, Zona de stands (con entrega de kits), Labs Session, Zona Cowork,
+   Taquilla e ingreso (con los 3 filtros), Entrega de kits, P1 Zona speakers
+   y P2 Zona de bebidas.
    --------------------------------------------------------------------------
    Cada función arma la escena detallada de un espacio a partir de los renders
    oficiales. Unidades ≈ metros, origen en el centro del espacio.
@@ -478,7 +482,17 @@
     genteAleatoria(g, 34, -20, 20, cz + 9.6, cz + 11.6, 3);
     genteAleatoria(g, 12, -4, 4, cz + 12, cz + 18, 11);
     g.push([-8.4, cz + 5.9, 0], [8.4, cz + 5.9, 0], [0.3, cz + 1, 0.2]);
-    gente(e, g);
+    // nombre del espacio sobre la cortina y los dos ingresos del plano oficial
+    var kc = new Kit();
+    kc.box('negro', -9, 9, 7, 8.9, -19.2, -18.95);
+    kc.box('negro', -12.6, -11.8, 0, 4.4, 18.6, 19.4); kc.box('negro', -4.2, -3.4, 0, 4.4, 18.6, 19.4); kc.box('negro', -12.6, -3.4, 3.6, 4.6, 18.6, 19.4);
+    kc.box('negro', 3.4, 4.2, 0, 4.4, 18.6, 19.4); kc.box('negro', 11.8, 12.6, 0, 4.4, 18.6, 19.4); kc.box('negro', 3.4, 12.6, 3.6, 4.6, 18.6, 19.4);
+    kc.box('neonV', -12.6, -3.4, 3.5, 3.6, 19.35, 19.45); kc.box('calido', 3.4, 12.6, 3.5, 3.6, 19.35, 19.45);
+    kc.armar(e);
+    cartel(e, TEX.cajaArena, 17.4, 1.7, 0, 7.95, -18.93, 0);
+    cartel(e, TEX.ingresoVip, 8.8, 0.9, -8, 4.1, 19.42, 0);
+    cartel(e, TEX.ingresoDiamante, 8.8, 0.9, 8, 4.1, 19.42, 0);
+    gente(e, g.concat([[-8, 21, Math.PI], [-7.2, 22.2, Math.PI], [-8.6, 23.4, Math.PI], [8, 21.2, Math.PI], [8.6, 22.6, Math.PI]]));
     return { escena: e, pos: [-18, 22, 42], obj: [0, 2, -2], dist: [10, 85] };
   }
 
@@ -538,8 +552,8 @@
       k.g('azulSofa', resp);
     }
     k.g('madera', CIL(0.95, 0.95, 0.08, 20, 0, 0.75, 0)); k.g('negro', CIL(0.2, 0.3, 0.6, 10, 0, 0.42, 0));
-    cartel(e, TEX.networking, 4.6, 0.9, 0, 3.3, 3.35, 0, { transp: true });
-    cartel(e, TEX.networking, 4.6, 0.9, 0, 3.3, -3.35, Math.PI, { transp: true });
+    cartel(e, TEX.standsCentro, 4.6, 0.9, 0, 3.3, 3.35, 0, { transp: true });
+    cartel(e, TEX.standsCentro, 4.6, 0.9, 0, 3.3, -3.35, Math.PI, { transp: true });
     k.box('negro', -2.4, -2.3, 0.2, 3.8, 3.3, 3.4); k.box('negro', 2.3, 2.4, 0.2, 3.8, 3.3, 3.4);
     k.box('negro', -2.4, -2.3, 0.2, 3.8, -3.4, -3.3); k.box('negro', 2.3, 2.4, 0.2, 3.8, -3.4, -3.3);
     // muro de bienvenida con el logo
@@ -547,8 +561,11 @@
     cartel(e, TEX.logo, 6.6, 3.3, -12.48, 2.5, 0, Math.PI / 2, { transp: true });
     haz(e, -12.4, 0.2, -2.8, Math.PI / 2, 0xA855F7, 4); haz(e, -12.4, 0.2, 2.8, Math.PI / 2, 0xA855F7, 4);
     for (i = 0; i < 6; i++) planta(k, -10 + i * 4, i % 2 ? -3.6 : 3.6, 1.6, 0.7);
-    // samanes de la plaza
-    saman(k, -22, -17, 0.8); saman(k, 21, -18, 0.75);
+    // al fondo del pabellón: entrega de kits (como en el plano)
+    k.box('blanco', 10.2, 10.9, 0.15, 1.1, -3, 3); k.box('neonV', 10.18, 10.22, 0.95, 1.02, -3, 3);
+    k.box('maderaOscura', 12.2, 12.85, 0.15, 2.6, -3.2, 3.2);
+    for (i = 0; i < 4; i++) k.box(i % 2 ? 'lila' : 'blanco', 12.25, 12.8, 0.6 + i * 0.5, 0.95 + i * 0.5, -2.8, 2.8);
+    cartel(e, TEX.kits, 6.2, 0.75, 12.86, 3.6, 0, -Math.PI / 2);
     charco(e, 0, 0, 12, 7, 0xE879F9, 0.25);
     charco(e, 0, 0, 4, 4, 0x22D3EE, 0.3);
     k.armar(e);
@@ -745,13 +762,12 @@
     alternar([cartel(e, TEX.pantalla, 7, 3.9, 0, 3.6, -9.3, 0)], VIVO ? [TEX.pantalla, TEX.vivo] : [TEX.pantalla, TEX.lema], VIVO ? 5 : 7);
     k.box('negro', -7.3, -6.7, 0, 2.8, -7.8, -7.2); k.box('negro', 6.7, 7.3, 0, 2.8, -7.8, -7.2);
     k.box('negro', -0.3, 0.3, 0.8, 1.9, -7, -6.6);
+    cartel(e, TEX.labsSession, 7.2, 0.62, 0, 0.42, -5.98, 0);
     barrer([cono(e, -3, 6.1, -7.4, 5.3, 1.6, 0xA855F7, 0.07), cono(e, 3, 6.1, -7.4, 5.3, 1.6, 0xE879F9, 0.06)], 0.2, 0.6);
     charco(e, 0, -7.5, 8, 4, 0x8B3FE0, 0.4);
-    // árboles que atraviesan la cubierta
-    k.g('tronco', CIL(0.55, 0.75, 9, 8, -14.6, 4.5, -2));
-    k.g('tronco', BARRA([-14.6, 7, -2], [-18, 10, 0], 0.4)); k.g('tronco', BARRA([-14.6, 7.5, -2], [-12, 10.5, -5], 0.35));
-    k.g('copaT', BOLA(7, -15, 11, -2, 1, 0.45, 1)); k.g('copaT', BOLA(5, -11, 10.6, -6, 1, 0.45, 1));
-    arbol(k, 17, 6, 9, 4.5, true); arbol(k, 16, -12, 10, 5, true); arbol(k, -18, 12, 8, 4, true);
+    // nombre de la sala sobre la pantalla
+    k.box('negro', -4.2, 4.2, 5.75, 6.65, -9.35, -9.2);
+    cartel(e, TEX.labsSession, 8, 0.78, 0, 6.2, -9.18, 0);
     k.armar(e);
     // sillas y público con audífonos
     var sillas = [], pub = [], aud = [], semilla = 13;
@@ -910,14 +926,19 @@
     var tA = texRejilla('rgba(30,18,22,0.55)', '#5C4140', 32); tA.repeat.set(7, 40);
     var camino = new T.Mesh(new T.PlaneGeometry(14, 80), new T.MeshLambertMaterial({ map: tA }));
     camino.rotation.x = -Math.PI / 2; camino.position.set(0, 0.02, -10); e.add(camino);
-    k.box('cesped', -30, -7, 0, 0.03, -50, 30); k.box('cesped', 7, 30, 0, 0.03, -50, 30);
-    // árboles de la alameda
-    for (z = 26; z >= -48; z -= 5.5) { arbol(k, -9, z, 8.5, 2.2); arbol(k, 9, z + 2.5, 8.5, 2.2); }
-    // reja negra a la izquierda
-    k.box('negro', -12.2, -12, 0, 2.6, -48, 22);
-    for (z = -48; z <= 22; z += 3) k.box('negro', -12.25, -11.95, 0, 2.9, z - 0.06, z + 0.06);
-    k.box('gris', -22, -12.5, 2.6, 3.1, -46, 18);
-    // pórtico de taquillas
+    k.box('pisoOscuro', -30, -7, 0, 0.03, -50, 30); k.box('pisoOscuro', 7, 30, 0, 0.03, -50, 30);
+    // a un lado, la zona de parqueo; al otro, la Labs Session (como en el plano)
+    var tP = texRejilla('rgba(200,215,255,0.25)', '#122450', 64); tP.repeat.set(4, 8);
+    var parq = new T.Mesh(new T.PlaneGeometry(22, 46), new T.MeshLambertMaterial({ map: tP }));
+    parq.rotation.x = -Math.PI / 2; parq.position.set(-19, 0.04, -4); e.add(parq);
+    var carros = [], tonosC = [hexa(0x9AA4C8), hexa(0x2B3352), hexa(0xD8DCEB), hexa(0x6B2A7E), hexa(0x3A4F8C), hexa(0x8C2F3A)];
+    for (z = -24; z <= 16; z += 2.9) { carros.push([-12.5, 0.04, z, Math.PI / 2]); if (z % 2 > -0.5) carros.push([-25, 0.04, z + 1, -Math.PI / 2]); }
+    inst(e, fusionar([B(-0.95, 0.95, 0, 0.72, -2.1, 2.1), B(-0.8, 0.8, 0.72, 1.25, -1.2, 1)]), lam(0xffffff), carros, tonosC);
+    k.box('lila', 9, 22, 0, 4.4, -32, -12);
+    k.box('vidrio', 8.96, 9.02, 0.3, 4.2, -31.5, -12.5);
+    k.box('neonV', 8.9, 8.98, 4.2, 4.4, -32, -12);
+    cartel(e, TEX.labsSession, 10, 0.86, 8.92, 3.4, -22, -Math.PI / 2);
+    // pórtico de la taquilla
     k.box('blanco', -7, -5.7, 0, 4.6, 8.6, 11.4); k.box('blanco', 5.7, 7, 0, 4.6, 8.6, 11.4);
     k.box('blanco', -7, 7, 3.4, 4.6, 8.6, 11.4);
     cartel(e, TEX.taquillas, 9.5, 0.9, 0, 4.0, 11.42, 0);
@@ -929,16 +950,23 @@
       k.box('verdeLed', mx - 0.1, mx + 0.1, 0.8, 0.95, 10.51, 10.53);
       if (i < 7) { k.g('acero', BARRA([mx + 0.18, 0.85, 10.05], [mx + 0.75, 0.85, 10.05], 0.04)); molinetes.push([mx + 0.7, 9.2, Math.PI]); }
     }
-    // arco LABS SUMMIT con patrocinadores
-    k.box('negro', -6.6, -5.4, 0, 5.2, -6.6, -5.4); k.box('negro', 5.4, 6.6, 0, 5.2, -6.6, -5.4);
-    k.box('negro', -6.6, 6.6, 4.1, 5.3, -6.5, -5.5);
-    cartel(e, TEX.arcoLabs, 9.8, 1.1, 0, 4.7, -5.48, 0);
-    cartel(e, TEX.columna, 1.1, 3.6, -6, 2.1, -5.38, 0); cartel(e, TEX.columna, 1.1, 3.6, 6, 2.1, -5.38, 0);
-    // zona de conectividad
-    k.box('negro', -5.4, -4.6, 0, 4.4, -24.4, -23.6); k.box('negro', 4.6, 5.4, 0, 4.4, -24.4, -23.6);
-    k.box('negro', -5.4, 5.4, 3.6, 4.5, -24.3, -23.7);
-    cartel(e, TEX.conectividad, 9, 0.8, 0, 4.05, -23.68, 0);
-    for (i = 0; i < 4; i++) k.box('maderaClara', -3.5 + (i % 2) * 5, -1.5 + (i % 2) * 5, 0, 0.78, -29 - Math.floor(i / 2) * 3, -28 - Math.floor(i / 2) * 3);
+    // los tres filtros de ingreso (barras rosadas del plano)
+    var filtros = [-2, -12, -22];
+    for (i = 0; i < filtros.length; i++) {
+      var fz = filtros[i];
+      k.box('negro', -5.6, -4.8, 0, 4.2, fz - 0.4, fz + 0.4); k.box('negro', 4.8, 5.6, 0, 4.2, fz - 0.4, fz + 0.4);
+      k.box('negro', -5.6, 5.6, 3.4, 4.3, fz - 0.35, fz + 0.35);
+      k.box('neonR', -4.8, 4.8, 3.32, 3.42, fz + 0.3, fz + 0.4); k.box('neonR', -4.86, -4.8, 0, 3.4, fz + 0.3, fz + 0.4); k.box('neonR', 4.8, 4.86, 0, 3.4, fz + 0.3, fz + 0.4);
+      cartel(e, TEX.filtro[i], 9, 0.75, 0, 3.86, fz + 0.37, 0);
+      k.box('acero', -0.6, 0.6, 0, 1, fz - 0.3, fz + 0.3);
+      charco(e, 0, fz + 1, 6, 2.2, 0xE879F9, 0.25);
+    }
+    // al fondo, la Zona Cowork
+    k.g('pisoClaro', CIL(7, 7, 0.2, 40, 0, 0.1, -40));
+    var ac = new T.TorusGeometry(7, 0.08, 4, 56); ac.rotateX(Math.PI / 2); ac.translate(0, 0.22, -40); k.g('neonC', ac);
+    var mc = new T.CylinderGeometry(6.8, 6.8, 2.4, 40, 1, true); mc.translate(0, 1.4, -40); k.g('vidrio', mc);
+    var ac2 = new T.TorusGeometry(6.8, 0.07, 4, 56); ac2.rotateX(Math.PI / 2); ac2.translate(0, 2.62, -40); k.g('neonC', ac2);
+    cartel(e, TEX.cowork, 6, 1.5, 0, 4.2, -32.8, 0);
     // banderas
     var flags = [[-8, 14], [8, 14]];
     for (i = 0; i < flags.length; i++) { k.g('acero', CIL(0.05, 0.05, 4.4, 6, flags[i][0], 2.2, flags[i][1])); cartel(e, TEX.bandera, 1.6, 1.2, flags[i][0] + (i ? -0.8 : 0.8), 3.6, flags[i][1], 0, { doble: true }); }
@@ -950,13 +978,13 @@
     k.box('blanco', 0.8, 1.7, 0.45, 0.7, 4.0, 4.4); k.box('blanco', 1.65, 1.95, 0.55, 0.8, 4.05, 4.35);
     k.box('acero', 0.85, 0.95, 0, 0.45, 4.05, 4.15); k.box('acero', 1.55, 1.65, 0, 0.45, 4.05, 4.15); k.box('acero', 0.85, 0.95, 0, 0.45, 4.25, 4.35); k.box('acero', 1.55, 1.65, 0, 0.45, 4.25, 4.35);
     charco(e, 0, 10, 8, 3, 0xFFFFFF, 0.12);
-    charco(e, 0, -6, 7, 3, 0xA855F7, 0.3);
     k.armar(e);
     var g = molinetes.slice();
     genteAleatoria(g, 18, -5, 5, 12.5, 22, 4);
-    genteAleatoria(g, 14, -5, 5, -20, -2, 8);
+    genteAleatoria(g, 16, -4, 4, -30, -3, 8);
+    genteAleatoria(g, 8, -4, 4, -44, -36, 12);
     gente(e, g);
-    return { escena: e, pos: [2, 5.8, 31], obj: [0, 2.2, 2], dist: [8, 60] };
+    return { escena: e, pos: [6, 8, 31], obj: [0, 2, -6], dist: [8, 70] };
   }
 
   /* ======================================================================
@@ -979,6 +1007,244 @@
     k.armar(e);
     gente(e, [[-1, -1.2, 0], [1.1, -1.2, 0], [0, 1.6, Math.PI], [0.5, 2.6, Math.PI], [0.1, 3.5, Math.PI]]);
     return { escena: e, pos: [5.5, 4.2, 9.5], obj: [0, 1.5, -0.5], dist: [4, 26] };
+  }
+
+  /* ======================================================================
+     ZONAS DEL PLANO OFICIAL (mapa recorrido evento)
+     ====================================================================== */
+  // pieza girada alrededor de (cx, cz): (lx, lz) son coordenadas locales (frente hacia +z)
+  function local(cx, cz, ry, lx, lz) {
+    var c = Math.cos(ry), s = Math.sin(ry);
+    return [cx + lx * c + lz * s, cz - lx * s + lz * c];
+  }
+  function cajaL(k, mat, cx, cz, ry, lx0, lx1, y0, y1, lz0, lz1) {
+    var p = local(cx, cz, ry, (lx0 + lx1) / 2, (lz0 + lz1) / 2);
+    k.g(mat, BR(lx1 - lx0, y1 - y0, lz1 - lz0, p[0], (y0 + y1) / 2, p[1], ry));
+  }
+
+  /* ---------------- ZONA GASTROLABS · plaza de comida ---------------- */
+  function gastrolabs() {
+    var e = escenaBase(45, 130), k = new Kit(), i, x, z;
+    suelo(e, '#0A0A1C', 240);
+    k.box('pisoOscuro', -24, 24, 0, 0.06, -16, 16);
+    k.box('neonR', -24, 24, 0.06, 0.12, -16.1, -15.95); k.box('neonR', -24, 24, 0.06, 0.12, 15.95, 16.1);
+    k.box('neonR', -24.1, -23.95, 0.06, 0.12, -16, 16); k.box('neonR', 23.95, 24.1, 0.06, 0.12, -16, 16);
+    // puestos gastronómicos alrededor de la plaza (como los bloques azules del plano)
+    var toldos = ['rojo', 'lila', 'amarillo', 'rosa'];
+    var puestos = [[-17, -12.6, 0], [-9, -13, 0], [-1, -12.6, 0], [7, -13, 0], [15, -12.6, 0],
+                   [-20.4, -3, Math.PI / 2], [-20.4, 5, Math.PI / 2], [20.4, -4, -Math.PI / 2], [20.4, 4, -Math.PI / 2]];
+    var nombres = ['BURGERS', 'AREPAS', 'PIZZA', 'TACOS', 'POSTRES', 'CAFÉ', 'JUGOS', 'HELADOS', 'WRAPS'];
+    for (i = 0; i < puestos.length; i++) {
+      var cx = puestos[i][0], cz = puestos[i][1], ry = puestos[i][2], t = toldos[i % toldos.length];
+      cajaL(k, 'blanco', cx, cz, ry, -1.9, 1.9, 0.06, 2.6, -1.3, 1.1);       // cuerpo
+      cajaL(k, 'negro', cx, cz, ry, -1.5, 1.5, 1.1, 2.2, 1.1, 1.14);         // ventana de atención
+      cajaL(k, t, cx, cz, ry, -2.1, 2.1, 2.6, 2.75, -1.4, 2.2);              // toldo
+      cajaL(k, 'maderaClara', cx, cz, ry, -1.7, 1.7, 0.06, 1.05, 1.14, 1.55); // mostrador
+      cajaL(k, 'calido', cx, cz, ry, -1.7, 1.7, 1.05, 1.1, 1.14, 1.55);
+      var pc = local(cx, cz, ry, 0, 1.16);
+      cartel(e, TEX.puesto[nombres[i % nombres.length]], 3.2, 0.62, pc[0], 3.2, pc[1], ry);
+      var pl = local(cx, cz, ry, 0, 2.6);
+      charco(e, pl[0], pl[1], 2.6, 2.2, 0xFFB347, 0.28);
+    }
+    // mesas con parasol y sillas
+    var mesas = [], sillas = [], sentados = [];
+    for (x = -13.5; x <= 13.6; x += 4.5) {
+      for (z = -5.5; z <= 9.6; z += 5) {
+        if (Math.abs(x) < 2 && z > 6) continue;
+        mesas.push([x, 0.06, z, 0]);
+        k.g('lona', new T.ConeGeometry(1.7, 0.6, 10).translate(x, 2.55, z));
+        k.g('acero', CIL(0.04, 0.04, 2.3, 5, x, 1.3, z));
+        for (var a = 0; a < 4; a++) {
+          var an = a * Math.PI / 2 + 0.3;
+          sillas.push([x + Math.cos(an) * 0.95, 0.06, z + Math.sin(an) * 0.95, -an - Math.PI / 2]);
+          if ((a + Math.round(x + z)) % 3 === 0) sentados.push([x + Math.cos(an) * 0.95, z + Math.sin(an) * 0.95, -an + Math.PI / 2, true]);
+        }
+      }
+    }
+    inst(e, geoMesaRedonda(0.6), M.maderaClara, mesas);
+    inst(e, geoSilla(LIGERO), M.blanco, sillas);
+    // portal de ingreso con el nombre
+    k.box('negro', -6.4, -5.6, 0, 4.6, 16.1, 16.9); k.box('negro', 5.6, 6.4, 0, 4.6, 16.1, 16.9);
+    k.box('negro', -6.4, 6.4, 3.8, 4.8, 16.1, 16.9);
+    cartel(e, TEX.gastrolabs, 11.6, 0.95, 0, 4.3, 16.92, 0);
+    k.box('neonR', -6.4, 6.4, 3.72, 3.8, 16.85, 16.95);
+    // postes con guirnaldas de bombillos
+    var gl = [], postes = [[-23, -15], [-23, 0], [-23, 15], [23, -15], [23, 0], [23, 15], [0, -15], [0, 15]];
+    for (i = 0; i < postes.length; i++) k.g('acero', CIL(0.07, 0.09, 5.2, 6, postes[i][0], 2.6, postes[i][1]));
+    guirnalda(gl, [-23, 5.1, -15], [23, 5.1, 15], 1.2, 70); guirnalda(gl, [-23, 5.1, 15], [23, 5.1, -15], 1.2, 70);
+    guirnalda(gl, [-23, 5.1, 0], [23, 5.1, 0], 1, 60); guirnalda(gl, [0, 5.1, -15], [0, 5.1, 15], 0.9, 40);
+    guirnalda(gl, [-23, 5.1, -15], [23, 5.1, -15], 0.8, 60); guirnalda(gl, [-23, 5.1, 15], [23, 5.1, 15], 0.8, 60);
+    titilar(luces(e, gl, 0xFFD39A, 0.24), 2.4, 0.45);
+    planta(k, -22.5, 14.5, 2.2, 0.8); planta(k, 22.5, 14.5, 2.2, 0.8); planta(k, -22.5, -14.5, 2.2, 0.8); planta(k, 22.5, -14.5, 2.2, 0.8);
+    charco(e, 0, 2, 20, 14, 0xFFA347, 0.18);
+    k.armar(e);
+    var g = sentados.slice();
+    genteAleatoria(g, 34, -19, 19, -9.5, 13, 9);
+    for (i = 0; i < puestos.length; i++) { var fila = local(puestos[i][0], puestos[i][1], puestos[i][2], 0.3, 2.3); g.push([fila[0], fila[1], puestos[i][2] + Math.PI]); }
+    gente(e, g);
+    return { escena: e, pos: [-16, 13, 31], obj: [0, 1.5, -1], dist: [8, 75] };
+  }
+
+  /* ---------------- ZONA COWORK (círculo central) ---------------- */
+  function cowork() {
+    var e = escenaBase(30, 90), k = new Kit(), i, a;
+    suelo(e, '#0A0A1C', 160);
+    k.g('pisoClaro', CIL(9, 9, 0.2, 56, 0, 0.1, 0));
+    var anillo = new T.TorusGeometry(9, 0.09, 4, 72); anillo.rotateX(Math.PI / 2); anillo.translate(0, 0.22, 0); k.g('neonC', anillo);
+    // muro de vidrio con cuatro accesos (el recorrido atraviesa el círculo)
+    for (i = 0; i < 4; i++) {
+      var muro = new T.CylinderGeometry(8.8, 8.8, 2.4, 18, 1, true, i * Math.PI / 2 + 0.28, Math.PI / 2 - 0.56);
+      muro.translate(0, 1.4, 0); k.g('vidrio', muro);
+    }
+    var aro = new T.TorusGeometry(8.8, 0.07, 4, 72); aro.rotateX(Math.PI / 2); aro.translate(0, 2.62, 0); k.g('neonC', aro);
+    for (i = 0; i < 16; i++) {
+      a = i / 16 * Math.PI * 2;
+      k.g('acero', BARRA([Math.cos(a) * 8.8, 2.6, Math.sin(a) * 8.8], [Math.cos(a) * 1.4, 5.4, Math.sin(a) * 1.4], 0.08));
+      if (i % 2 === 0) k.g('acero', CIL(0.07, 0.07, 2.6, 6, Math.cos(a) * 8.8, 1.3, Math.sin(a) * 8.8));
+    }
+    var top = new T.TorusGeometry(1.4, 0.1, 6, 24); top.rotateX(Math.PI / 2); top.translate(0, 5.4, 0); k.g('neonC', top);
+    // jardín central
+    k.g('maceta', CIL(1.7, 1.9, 0.7, 28, 0, 0.55, 0));
+    planta(k, 0, 0, 3.2, 1.3, false); planta(k, 0.9, 0.6, 2.2, 0.8, false); planta(k, -0.8, -0.6, 2.4, 0.9, false);
+    // mesas de trabajo en abanico, con portátiles encendidos
+    var sillas = [], sentados = [];
+    for (i = 0; i < 6; i++) {
+      a = i / 6 * Math.PI * 2 + Math.PI / 6;
+      var cx = Math.cos(a) * 5.3, cz = Math.sin(a) * 5.3, ry = -a + Math.PI / 2;
+      cajaL(k, 'maderaClara', cx, cz, ry, -1.5, 1.5, 0.72, 0.78, -0.45, 0.45);
+      cajaL(k, 'negro', cx, cz, ry, -1.4, -1.32, 0.2, 0.72, -0.4, 0.4); cajaL(k, 'negro', cx, cz, ry, 1.32, 1.4, 0.2, 0.72, -0.4, 0.4);
+      for (var s = -1; s <= 1; s += 2) {
+        for (var p = -0.8; p <= 0.81; p += 1.6) {
+          var ps = local(cx, cz, ry, p, s * 0.95);
+          sillas.push([ps[0], 0.2, ps[1], ry + (s > 0 ? Math.PI : 0)]);
+          if ((i + p + s) % 2 !== 0) sentados.push([ps[0], ps[1], ry + (s > 0 ? Math.PI : 0) + Math.PI, true]);
+          var lp = local(cx, cz, ry, p, s * 0.2);
+          k.g('negro', BR(0.42, 0.02, 0.3, lp[0], 0.8, lp[1], ry));
+          var sc = local(cx, cz, ry, p, s * 0.06);
+          k.g('neonC', BR(0.4, 0.26, 0.015, sc[0], 0.94, sc[1], ry));
+        }
+      }
+    }
+    inst(e, geoSilla(true), M.negro, sillas);
+    // sillones junto a los accesos
+    var sillones = [];
+    for (i = 0; i < 4; i++) { a = i * Math.PI / 2 + Math.PI / 4; sillones.push([Math.cos(a) * 7.6, 0.2, Math.sin(a) * 7.6, -a - Math.PI / 2]); }
+    inst(e, geoSillon(), M.azulSofa, sillones);
+    // letrero de la zona en tótem
+    k.box('negro', -2.4, 2.4, 0, 3.4, 10.4, 10.7);
+    cartel(e, TEX.cowork, 4.6, 1.15, 0, 2.6, 10.72, 0);
+    cartel(e, TEX.wifi, 4.6, 0.55, 0, 1.6, 10.72, 0);
+    charco(e, 0, 0, 10, 10, 0x22D3EE, 0.2);
+    k.armar(e);
+    var g = sentados.slice();
+    genteAleatoria(g, 10, -7, 7, -7, 7, 31);
+    gente(e, g.filter(function (q) { return q[3] || Math.hypot(q[0], q[1]) > 2.4; }));
+    return { escena: e, pos: [12, 9.5, 17], obj: [0, 1, 0], dist: [5, 45] };
+  }
+
+  /* ---------------- ENTREGA DE KITS ---------------- */
+  function kits() {
+    var e = escenaBase(25, 80), k = new Kit(), i, x;
+    suelo(e, '#0C0816', 140);
+    k.box('pisoClaro', -9, 9, 0, 0.08, -6.5, 7);
+    k.box('negro', -9, 9, 0.08, 4.6, -6.5, -6.2);
+    k.box('negro', -9.2, -8.9, 0.08, 4.6, -6.5, 7); k.box('negro', 8.9, 9.2, 0.08, 4.6, -6.5, 7);
+    k.box('techoT', -9.3, 9.3, 4.6, 4.75, -6.6, 7.1);
+    cartel(e, TEX.kits, 9, 1.1, 0, 3.75, -6.18, 0);
+    k.box('neonV', -8.8, 8.8, 4.45, 4.55, -6.18, -6.1);
+    // estanterías con los kits (bolsas y cajas)
+    var colores = ['lila', 'blanco', 'rosa', 'blanco'];
+    for (x = -8.2; x <= 7.2; x += 2.2) {
+      k.box('maderaOscura', x, x + 1.9, 0.08, 2.7, -6.1, -5.3);
+      for (var n = 0; n < 3; n++) {
+        k.box('maderaClara', x, x + 1.9, 0.5 + n * 0.8, 0.55 + n * 0.8, -6.1, -5.3);
+        for (var b = 0; b < 3; b++) k.box(colores[(n + b + Math.round(x)) & 3], x + 0.12 + b * 0.6, x + 0.58 + b * 0.6, 0.55 + n * 0.8, 1.05 + n * 0.8, -5.95, -5.45);
+      }
+    }
+    // mostrador con lectores de QR
+    k.box('blanco', -7, 7, 0.08, 1.1, -2.6, -1.8);
+    k.box('neonV', -7, 7, 0.95, 1.02, -1.79, -1.76);
+    for (x = -5.5; x <= 5.6; x += 2.75) { k.box('negro', x - 0.25, x + 0.25, 1.1, 1.13, -2.4, -2.0); k.box('verdeLed', x - 0.2, x + 0.2, 1.13, 1.14, -2.35, -2.05); }
+    // fila con cintas (zigzag)
+    var cintas = [];
+    for (i = 0; i < 4; i++) {
+      var zz = 0.8 + i * 1.5;
+      for (x = -5; x <= 5.01; x += 2.5) { k.g('acero', CIL(0.05, 0.12, 1.0, 8, x, 0.5, zz)); }
+      cintas.push(-5, 0.9, zz, 5, 0.9, zz);
+    }
+    for (i = 0; i < cintas.length; i += 6) k.g('lila', BARRA([cintas[i], cintas[i + 1], cintas[i + 2]], [cintas[i + 3], cintas[i + 4], cintas[i + 5]], 0.05));
+    charco(e, 0, -2, 9, 4, 0xA855F7, 0.3);
+    k.armar(e);
+    var g = [];
+    for (x = -5.5; x <= 5.6; x += 2.75) g.push([x, -3.3, 0]);
+    for (i = 0; i < 4; i++) for (x = -4.2; x <= 4.3; x += 1.4) if ((i + x * 3) % 2 > -0.5) g.push([x + (i % 2) * 0.6, 1.5 + i * 1.5, Math.PI]);
+    g.push([-2, -1.2, Math.PI], [2.4, -1.2, Math.PI]);
+    gente(e, g);
+    return { escena: e, pos: [6.5, 3.6, 13], obj: [0, 1.5, -2.5], dist: [4, 30] };
+  }
+
+  /* ---------------- P1 · ZONA SPEAKERS ---------------- */
+  function speakers() {
+    var e = escenaBase(25, 80), k = new Kit(), i;
+    suelo(e, '#0C0816', 140);
+    k.box('pisoClaro', -8, 8, 0, 0.1, -5, 5);
+    k.box('lona', -8.2, 8.2, 3.4, 3.5, -5.2, 5.2);
+    var post = [[-8, -5], [8, -5], [-8, 5], [8, 5], [0, 5]];
+    for (i = 0; i < post.length; i++) k.g('acero', CIL(0.08, 0.08, 3.4, 6, post[i][0], 1.7, post[i][1]));
+    // muro de fondo para fotos y entrevistas
+    k.box('negro', -7.5, 7.5, 0.1, 3.3, -5, -4.7);
+    cartel(e, TEX.muroSpeakers, 14.6, 3.1, 0, 1.75, -4.68, 0);
+    // sillones y mesas de centro
+    inst(e, geoSillon(), M.tela, [[-4.6, 0.1, -1.8, 0.4], [-2.6, 0.1, -2.4, 0], [2.6, 0.1, -2.4, 0], [4.6, 0.1, -1.8, -0.4], [-3.6, 0.1, 1.2, Math.PI - 0.3], [3.6, 0.1, 1.2, Math.PI + 0.3]]);
+    k.g('maderaClara', CIL(0.7, 0.7, 0.4, 20, -3.6, 0.32, -0.5)); k.g('maderaClara', CIL(0.7, 0.7, 0.4, 20, 3.6, 0.32, -0.5));
+    // set de entrevista con aro de luz
+    inst(e, geoTaburete(), M.negro, [[-0.7, 0.1, -2.2, 0], [0.7, 0.1, -2.2, 0]]);
+    var aro = new T.TorusGeometry(0.55, 0.04, 6, 32); aro.translate(0, 1.6, -0.6); k.g('neonC', aro);
+    k.g('acero', CIL(0.03, 0.03, 1.5, 6, 0, 0.85, -0.6));
+    k.box('neonC', -7.5, 7.5, 3.25, 3.3, -4.68, -4.62);
+    planta(k, -7.2, 4.2, 1.8, 0.6); planta(k, 7.2, 4.2, 1.8, 0.6);
+    var gl = []; guirnalda(gl, [-8, 3.3, 5], [8, 3.3, 5], 0.4, 40); titilar(luces(e, gl, 0xFFD39A, 0.18), 2.2, 0.4);
+    charco(e, 0, -2, 7, 3.4, 0x22D3EE, 0.25);
+    k.armar(e);
+    gente(e, [[-0.7, -2.2, 0, true], [0.7, -2.2, Math.PI, true], [-4.6, -1.8, 0.4, true], [3.6, 1.2, Math.PI, true], [1.6, 2.4, Math.PI], [2.2, 2.9, Math.PI + 0.4], [-1.8, 3.6, 3]]);
+    return { escena: e, pos: [4.5, 2.7, 11.5], obj: [0, 1.5, -2], dist: [4, 26] };
+  }
+
+  /* ---------------- P2 · ZONA DE BEBIDAS ---------------- */
+  function bebidas() {
+    var e = escenaBase(25, 80), k = new Kit(), i, x;
+    suelo(e, '#0C0816', 140);
+    k.box('pisoClaro', -9, 9, 0, 0.1, -5, 5.5);
+    k.box('lona', -9.2, 9.2, 3.5, 3.6, -5.2, 5.7);
+    var post = [[-9, -5], [9, -5], [-9, 5.5], [9, 5.5]];
+    for (i = 0; i < post.length; i++) k.g('acero', CIL(0.08, 0.08, 3.5, 6, post[i][0], 1.75, post[i][1]));
+    // contrabarra con botellas y nombre de la zona
+    k.box('maderaOscura', -7.5, 7.5, 0.1, 2.9, -5, -4.4);
+    for (var n = 0; n < 2; n++) k.box('negro', -7.4, 7.4, 1.2 + n * 0.7, 1.24 + n * 0.7, -4.95, -4.4);
+    var bot = [];
+    for (x = -7.1; x <= 7.1; x += 0.32) for (n = 0; n < 2; n++) bot.push([x, 1.24 + n * 0.7, -4.65, 0]);
+    inst(e, fusionar([CIL(0.07, 0.07, 0.3, 8, 0, 0.15, 0), CIL(0.025, 0.04, 0.14, 6, 0, 0.37, 0)]), lam(0xffffff, { transparent: true, opacity: 0.85 }), bot, [hexa(0xF59E0B), hexa(0x22C55E), hexa(0xE879F9), hexa(0xC9AEFF), hexa(0xFF6B6B)]);
+    cartel(e, TEX.bebidas, 9, 0.9, 0, 3.2, -4.38, 0);
+    k.box('calido', -7.5, 7.5, 2.86, 2.9, -4.4, -4.36);
+    // barra en U con luz cálida
+    k.box('maderaOscura', -6, 6, 0.1, 1.08, -2.1, -1.4);
+    k.box('maderaOscura', -6.7, -6, 0.1, 1.08, -2.1, 1.2); k.box('maderaOscura', 6, 6.7, 0.1, 1.08, -2.1, 1.2);
+    k.box('negro', -6.8, 6.8, 1.08, 1.16, -2.2, -1.3);
+    k.box('calido', -6, 6, 0.12, 0.18, -1.39, -1.36);
+    for (x = -4.5; x <= 4.6; x += 3) { k.box('acero', x - 0.1, x + 0.1, 1.16, 1.6, -1.95, -1.8); k.box('acero', x - 0.3, x + 0.3, 1.5, 1.6, -1.95, -1.6); }
+    charco(e, 0, -1, 7, 2.2, 0xFFB347, 0.35);
+    // taburetes y mesas altas
+    var tab = [], altas = [];
+    for (x = -5.4; x <= 5.5; x += 1.2) tab.push([x, 0.1, -0.6, 0]);
+    altas.push([-5, 0.1, 3.2, 0], [-1.6, 0.1, 3.6, 0], [1.8, 0.1, 3.2, 0], [5, 0.1, 3.6, 0]);
+    inst(e, geoTaburete(), M.negro, tab);
+    inst(e, geoMesaAlta(), M.blanco, altas);
+    var gl = []; guirnalda(gl, [-9, 3.4, 5.5], [9, 3.4, 5.5], 0.4, 40); guirnalda(gl, [-9, 3.4, -5], [9, 3.4, -5], 0.3, 40);
+    titilar(luces(e, gl, 0xFFD39A, 0.18), 2.2, 0.4);
+    planta(k, -8.5, 5, 1.6, 0.5); planta(k, 8.5, 5, 1.6, 0.5);
+    k.armar(e);
+    gente(e, [[-3, -3.2, 0], [1.5, -3.2, 0], [-4.2, -0.3, Math.PI], [-1.8, -0.3, Math.PI], [0.6, -0.3, Math.PI], [3, -0.3, Math.PI], [-5.4, 3.7, 2.6], [-4.6, 2.7, 0.5], [1.2, 3.8, 3], [2.4, 2.8, 0.2], [5.4, 4.1, 3.4]]);
+    return { escena: e, pos: [-5.5, 2.7, 11.5], obj: [0, 1.5, -2], dist: [4, 26] };
   }
 
   /* ---------------- texturas compartidas ---------------- */
@@ -1060,7 +1326,34 @@
       x.fillStyle = 'rgba(232,226,214,.7)';
       for (var i = 0; i < 12; i++) { x.fillRect(30, 100 + i * 32, 130 + (i * 37) % 60, 6); x.fillRect(200, 100 + i * 32, 26, 6); }
     });
-    TEX.taquillas = texTexto([{ t: 'TAQUILLAS', f: 'bold 112px Arial', c: '#17121D', y: 0.55 }], { fondo: '#F6F3FA', w: 1024, h: 128 });
+    TEX.taquillas = texTexto([{ t: 'TAQUILLA E INGRESO', f: 'bold 88px Arial', c: '#17121D', y: 0.55 }], { fondo: '#F6F3FA', w: 1024, h: 128 });
+    function letrero(t, brillo, fondo, tam) { return texTexto([{ t: t, f: 'bold ' + (tam || 84) + 'px Arial', c: '#F6F0FF', y: 0.55, g: brillo || '#A855F7' }], { fondo: fondo || '#0B0812', w: 1024, h: 128 }); }
+    TEX.cajaArena = letrero('CAJA DE ARENA', '#A855F7', '#0B0812', 96);
+    TEX.ingresoVip = letrero('INGRESO VIP Y GENERAL', '#A855F7', '#0B0812', 70);
+    TEX.ingresoDiamante = letrero('INGRESO DIAMANTE Y BLACK', '#FFC46B', '#0B0812', 64);
+    TEX.labsSession = letrero('LABS SESSION', '#E879F9');
+    TEX.kits = letrero('ENTREGA DE KITS', '#A855F7');
+    TEX.standsCentro = texTexto([{ t: 'ZONA DE STANDS', f: 'bold 88px Arial', c: '#F0EAFF', y: 0.5, g: '#E879F9' }], { w: 1024, h: 256 });
+    TEX.gastrolabs = letrero('ZONA GASTROLABS', '#FFB347', '#120B18', 92);
+    TEX.cowork = texTexto([{ t: 'ZONA', f: 'bold 64px Arial', c: '#CFFAFE', y: 0.3, g: '#22D3EE' }, { t: 'COWORK', f: 'bold 120px Arial', c: '#F0FDFF', y: 0.7, g: '#22D3EE' }], { fondo: '#06121A', w: 512, h: 256 });
+    TEX.wifi = texTexto([{ t: 'Wi-Fi · enchufes · mesas de trabajo', f: '600 40px Arial', c: '#CFFAFE', y: 0.55 }], { fondo: '#06121A', w: 1024, h: 128 });
+    TEX.bebidas = letrero('P2 · ZONA DE BEBIDAS', '#FFB347', '#120B18', 76);
+    TEX.filtro = [letrero('FILTRO 1 · VALIDA TU BOLETA', '#E879F9', '#0B0812', 58), letrero('FILTRO 2 · MANILLA', '#E879F9', '#0B0812', 66), letrero('FILTRO 3 · BIENVENIDO', '#E879F9', '#0B0812', 66)];
+    TEX.puesto = {};
+    ['BURGERS', 'AREPAS', 'PIZZA', 'TACOS', 'POSTRES', 'CAFÉ', 'JUGOS', 'HELADOS', 'WRAPS'].forEach(function (n) {
+      TEX.puesto[n] = texTexto([{ t: n, f: 'bold 86px Arial', c: '#FFF4E0', y: 0.56, g: '#FFB347' }], { fondo: '#120B18', w: 512, h: 128 });
+    });
+    TEX.muroSpeakers = lienzo(1024, 216, function (x, w, h) {
+      var g = x.createLinearGradient(0, 0, w, h); g.addColorStop(0, '#12052A'); g.addColorStop(1, '#2A0A4E');
+      x.fillStyle = g; x.fillRect(0, 0, w, h);
+      x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillStyle = 'rgba(201,174,255,.16)'; x.font = 'bold 26px Arial';
+      for (var fy = 22; fy < h; fy += 44) for (var fx = (fy / 44 % 2) * 70; fx < w + 70; fx += 140) x.fillText('LABS SUMMIT', fx, fy);
+      x.shadowColor = '#22D3EE'; x.shadowBlur = 20; x.fillStyle = '#F0FDFF';
+      x.font = 'bold 34px Arial'; x.fillText('P1', w / 2, 62);
+      x.font = 'bold 74px Arial'; x.fillText('ZONA SPEAKERS', w / 2, 122);
+      x.shadowBlur = 0; x.fillStyle = '#C9AEFF'; x.font = '600 24px Arial'; x.fillText('29 DE OCTUBRE · TULUÁ', w / 2, 176);
+    });
     TEX.arcoLabs = texTexto([{ t: 'LABS SUMMIT 2026', f: 'bold 96px Arial', c: '#E9D8FF', y: 0.55, g: '#A855F7' }], { fondo: '#0B0812', w: 1024, h: 128 });
     TEX.columna = lienzo(128, 512, function (x) {
       x.fillStyle = '#0B0812'; x.fillRect(0, 0, 128, 512);
@@ -1113,11 +1406,13 @@
 
   /* ---------------- API ---------------- */
   var CONSTRUCTORES = {
-    auditorio: auditorio, expositores: expositores, marcas: marcas, podcast: podcast,
-    workshops: workshops, foto: foto, cafe: cafe, taquillas: taquillas, info: info
+    // zonas del plano oficial del 29 de octubre
+    auditorio: auditorio, gastrolabs: gastrolabs, expositores: expositores, workshops: workshops, cowork: cowork,
+    taquillas: taquillas, kits: kits, speakers: speakers, bebidas: bebidas,
+    // espacios de versiones anteriores del mapa (se conservan por si vuelven)
+    marcas: marcas, podcast: podcast, foto: foto, cafe: cafe, info: info
   };
-  // Zonas del plano oficial que reutilizan un recorrido 3D existente.
-  var ALIAS = { gastrolabs: 'cafe' };
+  var ALIAS = {};
   function base(id) { return ALIAS[id] || id; }
 
   function crear(THREE, id, opciones) {
@@ -1138,7 +1433,9 @@
     var r = CONSTRUCTORES[id]();
     if (id === 'taquillas') respirar(M.verdeLed, 0x22C55E, 0x0E4D27, 3.2);
     if (id === 'expositores' || id === 'info') respirar(M.neonV, 0xA855F7, 0xE879F9, 1.4);
-    if (id === 'cafe') respirar(M.calido, 0xFFC46B, 0xFF9A3C, 1.0);
+    if (id === 'cafe' || id === 'gastrolabs' || id === 'bebidas') respirar(M.calido, 0xFFC46B, 0xFF9A3C, 1.0);
+    if (id === 'cowork' || id === 'speakers') respirar(M.neonC, 0x22D3EE, 0x7DD3FC, 1.2);
+    if (id === 'taquillas') respirar(M.neonR, 0xE879F9, 0xA855F7, 1.4);
     var lista = ANIM.slice();
     r.animar = lista.length ? function (t) { for (var i = 0; i < lista.length; i++) lista[i](t); } : null;
     r.liberar = function () {
