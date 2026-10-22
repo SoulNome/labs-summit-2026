@@ -2624,3 +2624,39 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .me-plano{border-radius:14px}
   .me-lupa{right:10px;bottom:10px;font-size:.62rem;padding:.35rem .7rem}
 }
+
+/* ══════════════════════════════════════════════════════
+   SPEAKERS (inicio) · fichas más pequeñas, más por fila,
+   sin las franjas oscuras a los lados y con más aire.
+   Al tocar una ficha se abre su perfil en /speakers.
+   ══════════════════════════════════════════════════════ */
+.sp-carousel-wrapper::before,.sp-carousel-wrapper::after{display:none}
+.sp-carousel-wrapper{padding:.7rem 0;margin:0 calc(50% - 50vw) 1.6rem}   /* de borde a borde de la pantalla */
+.sp-carousel-wrapper:last-child{margin-bottom:0}
+.sp-carousel-track .sp-category{max-width:calc(100% - 4.4rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-carousel-track{gap:1.1rem}
+.sp-carousel-track .sp-card{width:clamp(196px,16vw,258px);aspect-ratio:3/4.15}
+/* la foto se ve con su color real (antes llevaba un velo morado encima) */
+.sp-card.featured .sp-tint{opacity:.1}
+.sp-card.featured:hover .sp-tint{opacity:.32}
+.sp-card:not(.mystery-locked):not(.flipped) .sp-name::after{content:none}
+.sp-carousel-track .sp-card{box-shadow:0 14px 34px -18px rgba(0,0,0,.9)}
+.sp-carousel-track .sp-card:focus-visible{outline:2px solid #E879F9;outline-offset:3px}
+
+@media(max-width:768px){
+  .sp-carousel-wrapper{padding:.5rem 0;margin-bottom:1.25rem}
+  .sp-carousel-wrapper:last-child{margin-bottom:0}
+  .sp-carousel-track{gap:.7rem}
+  .sp-carousel-track .sp-card{width:clamp(148px,41vw,200px);aspect-ratio:3/4.2}
+  .sp-carousel-track .sp-card,.sp-carousel-track .sp-inner,.sp-carousel-track .sp-front,.sp-carousel-track .sp-back{border-radius:14px}
+  .sp-carousel-track .sp-info{padding:1.3rem .65rem .75rem;gap:.22rem}
+  .sp-carousel-track .sp-info::before{left:.65rem;bottom:.75rem;max-height:38px;width:2px}
+  .sp-carousel-track .sp-info > *{padding-left:.5rem}
+  .sp-carousel-track .sp-name{font-size:.86rem;letter-spacing:-.02em}
+  .sp-carousel-track .sp-subtitle{font-size:.5rem;letter-spacing:.05em;line-height:1.3;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .sp-carousel-track .sp-category{top:.5rem;left:.5rem;right:.5rem;width:max-content;max-width:calc(100% - 1rem);
+    font-size:.42rem;letter-spacing:.08em;padding:.2rem .42rem;border-radius:6px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sp-carousel-track .sp-front::after{display:none}
+}

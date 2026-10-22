@@ -39,7 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css?v=20261021"/>
+<link rel="stylesheet" href="css/styles.css?v=20261022"/>
 <style>
 /* ══ EXPERIENCIA INMERSIVA — BOTÓN ÉPICO ══ */
 
@@ -1530,7 +1530,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   </div><!-- /speakers-grid -->
 
   <!-- Pista de interacción -->
-  <p class="sp-hint">Se mueve solo · pasa el cursor para pausar · toca una ficha para su perfil</p>
+  <p class="sp-hint">Se mueve solo · pasa el cursor para pausar · toca una ficha para ver su perfil</p>
 
   <!-- Botón: ver todos los speakers -->
   <div class="sp-all-cta">
@@ -3291,7 +3291,24 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAlia
     });
   }
 
-  document.querySelectorAll('.sp-card:not(.mystery-locked)').forEach(function(card){
+  // Cada ficha lleva a su perfil completo en /speakers (foto grande, biografía y temas)
+  function slugDe(n){
+    return n.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  }
+  document.querySelectorAll('.sp-carousel-track .sp-card:not(.mystery-locked)').forEach(function(card){
+    var el = card.querySelector('.sp-name'); if(!el) return;
+    var nombre = el.textContent.trim(), url = '/speakers#' + slugDe(nombre);
+    if(!card.hasAttribute('aria-hidden')){
+      card.setAttribute('tabindex','0');
+      card.setAttribute('aria-label','Ver el perfil de ' + nombre);
+    }
+    card.addEventListener('click', function(){
+      try { if(window.clarity) window.clarity('event','perfil_desde_inicio'); } catch(e){}
+      location.href = url;
+    });
+    card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); location.href = url; } });
+  });
+  document.querySelectorAll('.sp-card:not(.mystery-locked):not(.sp-carousel-track .sp-card)').forEach(function(card){
     card.addEventListener('click', function(){
       card.classList.toggle('flipped');
       syncPause();
