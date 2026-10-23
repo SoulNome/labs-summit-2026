@@ -346,21 +346,41 @@ class Pt {
   step(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>W||this.y<0||this.y>H) this.reset(); }
   draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fillStyle=`rgba(168,85,247,${this.a})`; ctx.fill(); }
 }
-for(let i=0;i<70;i++) pts.push(new Pt());
-
-function anim(){
+/* Menos puntos y a ~30 cuadros: el fondo no compite con el carrusel ni con el scroll.
+   Las líneas se dibujan por lotes (3 trazos en vez de cientos). */
+const _movil = window.innerWidth < 769;
+const _quieto = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+const N_PTS = _movil ? 24 : 46, DIST = 110;
+for(let i=0;i<N_PTS;i++) pts.push(new Pt());
+let _ult = 0;
+function anim(t){
+  requestAnimationFrame(anim);
+  if(_quieto || document.hidden || t-_ult < 32) return;
+  _ult = t;
   ctx.clearRect(0,0,W,H);
-  pts.forEach(p=>{ p.step(); p.draw(); });
+  ctx.fillStyle='rgba(168,85,247,.32)';
+  ctx.beginPath();
+  pts.forEach(p=>{ p.step(); ctx.moveTo(p.x+p.r,p.y); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); });
+  ctx.fill();
+  const lotes=[[],[],[]];
   for(let i=0;i<pts.length;i++){
     for(let j=i+1;j<pts.length;j++){
       const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
-      const d=Math.sqrt(dx*dx+dy*dy);
-      if(d<110){ ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y); ctx.strokeStyle=`rgba(168,85,247,${(1-d/110)*.1})`; ctx.lineWidth=.7; ctx.stroke(); }
+      const d2=dx*dx+dy*dy;
+      if(d2<DIST*DIST){ const f=1-Math.sqrt(d2)/DIST; lotes[f>.66?2:f>.33?1:0].push(i,j); }
     }
   }
-  requestAnimationFrame(anim);
+  ctx.lineWidth=.7;
+  for(let k=0;k<3;k++){
+    if(!lotes[k].length) continue;
+    ctx.strokeStyle='rgba(168,85,247,'+[.03,.065,.1][k]+')';
+    ctx.beginPath();
+    const L=lotes[k];
+    for(let n=0;n<L.length;n+=2){ ctx.moveTo(pts[L[n]].x,pts[L[n]].y); ctx.lineTo(pts[L[n+1]].x,pts[L[n+1]].y); }
+    ctx.stroke();
+  }
 }
-anim();
+requestAnimationFrame(anim);
 
 /* ─────────────────────────────────
    HERO MOUSE PARALLAX
