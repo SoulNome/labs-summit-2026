@@ -2724,3 +2724,234 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .logo-tile.prime:hover img{filter:drop-shadow(0 0 18px rgba(255,150,50,.65))}
 }
 @media (prefers-reduced-motion:reduce){.logo-tile.prime .brillo{animation:none;opacity:0}}
+
+/* ══════════════════════════════════════════════════════
+   INICIO · marca + agenda de los 3 días
+   - El marco decorativo vive dentro de .hero-marca (siempre enmarca el título).
+   - El título se ajusta al alto de la pantalla para que las fechas y los
+     botones se vean sin hacer scroll, también en portátiles bajos.
+   - Todo lo que se mueve usa transform/opacity (lo hace la tarjeta gráfica).
+   ══════════════════════════════════════════════════════ */
+.hero-marca{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;max-width:880px}
+.hero-marca .hero-frame{top:clamp(1.6rem,5.2vw,4.4rem);bottom:-1.2rem;left:50%;height:auto;width:min(72vw,780px);transform:translateX(-50%)}
+#hero .hero-quote-area{margin-top:2.2rem;animation:fadeUp 1s ease .8s both}
+#hero .hero-quote{font-size:clamp(.85rem,1.9vw,1.1rem);color:rgba(240,234,255,.82)}
+@media (min-width:769px){
+  #hero{padding-top:6.4rem}
+  #hero .hero-title{font-size:clamp(3.5rem,min(13vw,13.4vh),11rem)}
+  #hero .hero-year{font-size:clamp(2.2rem,min(7vw,7.4vh),6rem)}
+  .hero-agenda{margin-top:clamp(1.4rem,2.4vh,2.4rem)}
+  #hero .hero-summit{font-size:clamp(.9rem,min(3.5vw,4.6vh),2.8rem)}
+}
+@media (min-width:769px) and (max-height:820px){
+  #hero{padding-top:6rem}
+  #hero .hero-title{font-size:clamp(3.5rem,min(13vw,12.4vh),11rem)}
+  #hero .hero-year{font-size:clamp(2.2rem,min(7vw,6.8vh),6rem)}
+  .hero-badge{margin-bottom:.5rem}
+  .hero-city{display:none}
+}
+
+/* ── Contenedor ── */
+.hero-agenda{width:min(100%,1080px);margin-top:clamp(1.6rem,3.2vh,2.6rem);animation:fadeUp 1s ease .6s both}
+.ha-label{display:inline-flex;align-items:center;gap:.6rem;margin:0 0 1.35rem;
+  font-size:.7rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#C9AEFF}
+.ha-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#A855F7}
+.ha-dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:inherit;animation:ha-onda 1.8s ease-out infinite}
+.hero-agenda.en-vivo .ha-dot{background:#ef4444}
+@keyframes ha-onda{from{transform:scale(1);opacity:.7}to{transform:scale(3.2);opacity:0}}
+
+/* ── Rejilla: el día 29 al centro, más grande ── */
+.ha-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.32fr) minmax(0,1fr);gap:1.1rem;align-items:center}
+
+/* ── Tarjeta base ── */
+.ha-day{
+  --ac:168,85,247;--rx:0deg;--ry:0deg;--ty:0px;--mx:50%;--my:0%;
+  position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;text-align:left;
+  padding:1.15rem 1.25rem 1.1rem;border-radius:20px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(var(--ac),.13),rgba(255,255,255,.02) 45%),rgba(12,5,24,.78);
+  border:1px solid rgba(var(--ac),.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 22px 44px -28px rgba(0,0,0,.95);
+  transform:perspective(900px) translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry));
+  transition:transform .5s cubic-bezier(.16,1,.3,1),border-color .35s,box-shadow .35s,opacity .35s;
+  animation:ha-entra .9s cubic-bezier(.16,1,.3,1) both;
+}
+.ha-day:nth-child(1){animation-delay:.65s}
+.ha-day:nth-child(2){animation-delay:.5s}
+.ha-day:nth-child(3){animation-delay:.8s}
+@keyframes ha-entra{from{opacity:0;translate:0 26px}to{opacity:1;translate:0 0}}
+.ha-gala{--ac:242,196,109}
+.ha-mm{--ac:232,121,249}
+
+.ha-top{display:flex;align-items:center;justify-content:space-between;gap:.5rem;width:100%;margin-bottom:.35rem}
+.ha-fecha{display:inline-flex;align-items:baseline;gap:.32rem;padding:.26rem .65rem;border-radius:100px;
+  font-size:.64rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.78);
+  background:rgba(var(--ac),.14);border:1px solid rgba(var(--ac),.38)}
+.ha-fecha b{font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:900;letter-spacing:0;color:#fff;line-height:1}
+.ha-fecha .m{font:inherit}
+.ha-estado{padding:.22rem .6rem;border-radius:100px;white-space:nowrap;
+  font-size:.58rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;line-height:1.3;
+  color:rgba(255,255,255,.62);background:rgba(255,255,255,.07)}
+.ha-hora{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.5rem;
+  font-family:'Inter',sans-serif;font-size:clamp(2.3rem,3.4vw,2.9rem);font-weight:900;line-height:1;letter-spacing:-.035em;color:#fff;
+  font-variant-numeric:tabular-nums;text-shadow:0 0 34px rgba(var(--ac),.45)}
+.ha-hora small{font-size:.4em;font-weight:800;letter-spacing:.04em;margin-left:.2rem;color:rgb(var(--ac));text-shadow:none}
+.ha-hasta{font-size:.36em;font-weight:700;letter-spacing:.02em;color:rgba(240,234,255,.6);text-shadow:none}
+.ha-nombre{font-size:1rem;font-weight:800;color:#F4EEFF;line-height:1.25;margin-top:.2rem}
+.ha-sub{font-size:.76rem;color:rgba(240,234,255,.58)}
+.ha-acceso{display:inline-flex;align-items:center;gap:.35rem;margin-top:.35rem;font-size:.7rem;font-weight:600;color:rgba(var(--ac),.95)}
+.ha-acceso svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* luz que sigue el cursor (main.js pone --mx/--my) */
+.ha-luz{position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .4s;
+  background:radial-gradient(260px circle at var(--mx) var(--my),rgba(var(--ac),.22),transparent 70%)}
+/* destello que cruza Gala y Mastermind */
+.ha-brillo{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.10) 47%,rgba(var(--ac),.16) 52%,transparent 64%);
+  transform:translateX(-120%);animation:ha-barrido 7s cubic-bezier(.4,0,.2,1) infinite}
+.ha-mm .ha-brillo{animation-delay:3.5s}
+@keyframes ha-barrido{0%,62%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+
+/* ── Día principal (29) ── */
+.ha-principal{--ac:192,132,252;overflow:visible;padding:1.3rem 1.4rem 1.1rem;border-color:transparent;background:none;
+  box-shadow:0 30px 70px -26px rgba(168,85,247,.85),0 0 0 1px rgba(192,132,252,.10)}
+.ha-borde{position:absolute;inset:0;z-index:-2;border-radius:inherit;overflow:hidden;pointer-events:none}
+.ha-borde::before{content:'';position:absolute;left:50%;top:50%;width:max(220%,640px);aspect-ratio:1;
+  background:conic-gradient(from 0deg,rgba(168,85,247,.35) 0 40%,rgba(232,121,249,1) 60%,#fff 70%,rgba(168,85,247,1) 80%,rgba(168,85,247,.35) 95%);
+  transform:translate(-50%,-50%) rotate(0deg);animation:ha-giro 5s linear infinite}
+@keyframes ha-giro{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.ha-fondo{position:absolute;inset:2px;border-radius:18px;overflow:hidden;background:linear-gradient(160deg,#25104a,#110620 65%)}
+.ha-fondo i{position:absolute;width:70%;aspect-ratio:1;border-radius:50%;filter:blur(38px);opacity:.55}
+.ha-fondo i:nth-child(1){left:-15%;top:-35%;background:#9333EA;animation:ha-aurora1 9s ease-in-out infinite alternate}
+.ha-fondo i:nth-child(2){right:-20%;bottom:-45%;background:#E879F9;opacity:.35;animation:ha-aurora2 11s ease-in-out infinite alternate}
+@keyframes ha-aurora1{to{transform:translate(45%,30%) scale(1.15)}}
+@keyframes ha-aurora2{to{transform:translate(-40%,-25%) scale(.9)}}
+.ha-principal .ha-luz{border-radius:inherit;overflow:hidden}
+.ha-tag{position:absolute;top:0;left:50%;z-index:3;transform:translate(-50%,-55%);white-space:nowrap;
+  padding:.3rem .85rem;border-radius:100px;font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;
+  background:linear-gradient(90deg,#9333EA,#E879F9);box-shadow:0 8px 20px -6px rgba(232,121,249,.85),inset 0 1px 0 rgba(255,255,255,.35)}
+.ha-principal .ha-hora{font-size:clamp(2.8rem,4.4vw,3.7rem);text-shadow:0 0 36px rgba(232,121,249,.6),0 0 70px rgba(168,85,247,.35)}
+.ha-principal .ha-nombre{font-size:1.12rem}
+.ha-fila{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem .9rem;width:100%;margin-top:.6rem;padding-top:.65rem;border-top:1px solid rgba(255,255,255,.08)}
+.ha-fila .ha-acceso{margin-top:0}
+.ha-sp-txt .ver{color:#C9AEFF;font-weight:700}
+.ha-speakers{display:flex;align-items:center;gap:.55rem;text-decoration:none;color:#E9DDFF;min-width:0}
+.ha-caras{display:flex;align-items:center}
+.ha-caras img,.ha-mas{width:30px;height:30px;border-radius:50%;border:2px solid #1a0a33;margin-left:-9px;object-fit:cover;background:#2a1050;flex:0 0 auto}
+.ha-caras img:first-child{margin-left:0}
+.ha-mas{display:grid;place-items:center;font-size:.6rem;font-weight:800;color:#fff;background:linear-gradient(135deg,#9333EA,#E879F9)}
+.ha-sp-txt{font-size:.74rem;white-space:nowrap}
+.ha-sp-txt b{font-size:.9rem;color:#fff}
+.ha-speakers:hover .ha-sp-txt{color:#fff;text-decoration:underline}
+.ha-cuenta{display:flex;flex-direction:column;align-items:flex-end;gap:.15rem;flex:0 0 auto;margin-left:auto}
+.ha-principal .ha-estado{display:none}
+.ha-principal.vivo .ha-estado,.ha-principal.fin .ha-estado{display:inline-block}
+.ha-principal.vivo .ha-cuenta,.ha-principal.fin .ha-cuenta{display:none}
+.hc-l{font-size:.56rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,234,255,.5)}
+.hc-n{display:flex;align-items:baseline;gap:.12rem;font-variant-numeric:tabular-nums}
+.hc-n b{min-width:1.55em;padding:.12rem .2rem;border-radius:6px;text-align:center;font-family:'Inter',sans-serif;font-size:.95rem;font-weight:900;color:#fff;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}
+.hc-n i{font-style:normal;font-size:.6rem;font-weight:700;color:rgba(240,234,255,.55);margin-right:.18rem}
+
+/* ── Estados (los pone main.js) ── */
+.ha-day.prox{--ty:-4px;border-color:rgba(var(--ac),.75);box-shadow:0 0 0 1px rgba(var(--ac),.2),0 26px 54px -24px rgba(var(--ac),.65),inset 0 1px 0 rgba(255,255,255,.08)}
+.ha-day.prox .ha-estado{color:#12061f;background:rgb(var(--ac))}
+.ha-principal.prox{border-color:transparent}
+.ha-day.vivo{border-color:rgba(239,68,68,.75)}
+.ha-day.vivo .ha-estado{color:#fff;background:#ef4444}
+.ha-day.vivo .ha-estado::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;margin-right:.4rem;vertical-align:1px;animation:blink 1.2s ease-in-out infinite}
+.ha-principal.vivo .ha-borde::before{background:conic-gradient(from 0deg,rgba(239,68,68,.35) 0 40%,rgba(248,113,113,1) 60%,#fff 70%,rgba(239,68,68,1) 80%,rgba(239,68,68,.35) 95%)}
+.ha-day.fin{opacity:.42}
+.ha-day.fin .ha-brillo,.ha-principal.fin .ha-borde::before,.ha-principal.fin .ha-fondo i{animation:none}
+
+/* ── Hover con mouse: inclinación 3D + luz ── */
+@media (hover:hover) and (pointer:fine){
+  .ha-day:hover{--ty:-6px}
+  .ha-day:hover .ha-luz{opacity:1}
+}
+
+/* ── Botones ── */
+.ha-ctas{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.8rem 1.1rem;margin-top:1.6rem}
+.ha-cta{display:inline-flex;align-items:center;justify-content:center;gap:.55rem;text-decoration:none;font-size:.95rem;padding:.95rem 2.4rem}
+.ha-cta-mapa{border-radius:100px;font-weight:700;letter-spacing:.05em;color:#fff;
+  background:rgba(168,85,247,.12);border:1.5px solid rgba(168,85,247,.6);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:transform .25s,background .25s,border-color .25s,box-shadow .25s}
+.ha-cta-mapa svg{color:#C9AEFF}
+.ha-cta-mapa:hover{transform:translateY(-3px);background:rgba(168,85,247,.22);border-color:#C084FC;box-shadow:0 0 30px rgba(168,85,247,.35)}
+
+/* ── Qué vas a aprender: fila compacta ── */
+.hero-temas{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:.5rem;margin-top:2rem;max-width:920px;animation:fadeUp 1s ease .9s both}
+.ht-label{width:100%;margin-bottom:.2rem;font-size:.62rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:rgba(168,85,247,.9)}
+.ht-chip{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .95rem;border-radius:100px;
+  font-size:.78rem;font-weight:600;color:#E9DDFF;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.22)}
+
+/* ── Tablet ── */
+@media (max-width:1020px) and (min-width:769px){
+  .ha-grid{grid-template-columns:1fr 1fr;row-gap:1.6rem}
+  .ha-principal{grid-column:1 / -1;order:-1}
+}
+
+/* ── Celular: el 29 arriba a lo ancho; Gala y Mastermind (exclusivos) debajo ── */
+@media (max-width:768px){
+  #hero{padding-top:6.2rem;padding-bottom:3rem}
+  .hero-badge{margin-bottom:.8rem}
+  .hero-marca .hero-frame{width:min(92vw,780px);top:1.4rem;bottom:-.9rem}
+  .hero-agenda{margin-top:1.7rem}
+  .ha-label{font-size:.6rem;letter-spacing:.16em;margin-bottom:1.1rem}
+  .ha-grid{grid-template-columns:1fr 1fr;gap:.55rem;row-gap:.55rem}
+  .ha-principal{grid-column:1 / -1;order:-1;padding:1.15rem 1rem 1rem}
+  .ha-day{padding:.8rem .75rem .8rem;border-radius:16px;gap:.2rem}
+  .ha-fondo{border-radius:14px}
+  .ha-top{margin-bottom:.25rem}
+  .ha-fecha{font-size:.56rem;letter-spacing:.1em;padding:.2rem .5rem}
+  .ha-fecha b{font-size:.9rem}
+  .ha-estado{font-size:.5rem;letter-spacing:.06em;padding:.18rem .45rem}
+  .ha-hora{font-size:1.75rem}
+  .ha-principal .ha-hora{font-size:2.35rem}
+  .ha-nombre{font-size:.82rem}
+  .ha-principal .ha-nombre{font-size:.95rem}
+  .ha-sub{display:none}
+  .ha-acceso{font-size:.62rem;margin-top:.15rem}
+  .ha-fila .ha-acceso{display:none}
+  .ha-grid{align-items:stretch}
+  .ha-fecha .m,.ha-nombre .m,.ha-sp-txt .ver{display:none}
+  .ha-top{gap:.3rem}
+  .ha-principal .ha-fecha .m{display:inline}
+  .ha-principal .ha-top{margin-bottom:.15rem}
+  .ha-principal{padding:1.05rem .95rem .9rem}
+  .hc-n i{margin-right:.1rem}
+  .ha-fila{margin-top:.55rem;padding-top:.6rem;gap:.5rem}
+  .ha-caras img,.ha-mas{width:26px;height:26px;margin-left:-8px}
+  .ha-caras img:nth-child(n+5){display:none}
+  .ha-sp-txt{font-size:.66rem}
+  .hc-l{font-size:.5rem}
+  .hc-n b{font-size:.82rem}
+  .ha-tag{font-size:.52rem;padding:.24rem .65rem}
+  .ha-day.prox{--ty:0px}
+  /* los dos botones lado a lado: Comprar y Mapa visibles sin scroll */
+  .ha-ctas{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:1rem}
+  .ha-cta{width:100%;padding:.9rem .6rem;font-size:.84rem;letter-spacing:.02em}
+  .ha-cta-mapa svg{width:16px;height:16px}
+  #hero .hero-quote-area{margin-top:1.8rem}
+  .hero-temas{margin-top:1.5rem;gap:.4rem}
+  .ht-chip{font-size:.72rem;padding:.4rem .8rem}
+}
+@media (max-width:360px){
+  .ha-cuenta .hc-l{display:none}
+  .ha-caras img:nth-child(n+4){display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .ha-dot::after,.ha-brillo,.ha-borde::before,.ha-fondo i,.ha-day.vivo .ha-estado::before{animation:none}
+  .ha-day{animation:none}
+}
+
+/* Barra fija: estado en vivo */
+#sticky-cd .badge-live.vivo{background:#ef4444;border-color:#ef4444;color:#fff}
+#sticky-cd .badge-live.fin{opacity:.6}
+
+.ha-cta-mapa .corto{display:none}
+@media (max-width:768px){.ha-cta-mapa .largo{display:none}.ha-cta-mapa .corto{display:inline}}
+/* En celular el botón de WhatsApp se aparta mientras los botones del inicio están en pantalla */
+@media (max-width:768px){
+  .fab-area{transition:transform .35s ease,opacity .35s ease}
+  body.cta-hero .fab-area{transform:translateY(140%);opacity:0;pointer-events:none}
+}

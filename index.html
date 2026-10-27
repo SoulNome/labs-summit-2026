@@ -39,7 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css?v=20261022f"/>
+<link rel="stylesheet" href="css/styles.css?v=20261027h"/>
 <style>
 /* ══ EXPERIENCIA INMERSIVA — BOTÓN ÉPICO ══ */
 
@@ -700,8 +700,8 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     </div>
   </div>
   <div class="scd-right">
-    <span>28 29 30 Oct 2026</span>
-    <span class="badge-live">EN VIVO PRONTO</span>
+    <span id="scd-sesion">Noche de Gala · Mié 28 Oct · 7:30 PM</span>
+    <span class="badge-live" id="scd-badge">PRÓXIMO</span>
   </div>
 </div>
 
@@ -723,6 +723,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   <div class="nav-brand">TULUÁ <span>LABS</span> SUMMIT</div>
   <ul class="nav-links">
     <li><a href="#tickets">Tickets</a></li>
+    <li><a href="/mapa">Mapa</a></li>
     <li><a href="#days">Días</a></li>
     <li><a href="#speakers">Speakers</a></li>
     <!-- <li><a href="#videos">Videos</a></li> -->
@@ -737,13 +738,66 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 <section id="hero" role="banner">
   <div class="hero-glow g1" aria-hidden="true"></div>
   <div class="hero-glow g2" aria-hidden="true"></div>
-  <div class="hero-frame" aria-hidden="true"></div>
 
   <div class="hero-badge"><div class="dot"></div>El evento de ecommerce más exclusivo del Valle del cauca</div>
   <p class="hero-city">Tuluá · Valle del Cauca · Colombia</p>
+  <div class="hero-marca">
+  <div class="hero-frame" aria-hidden="true"></div>
   <h1 class="hero-title">LABS</h1>
   <p class="hero-summit">S U M M I T</p>
   <p class="hero-year">2026</p>
+
+  </div><!-- /hero-marca -->
+
+  <!-- ══ AGENDA EN EL INICIO ══
+       Lo primero que la gente necesita: qué día, a qué hora y qué pasa.
+       main.js marca cada día como «Mañana», «Hoy», «En vivo» o «Finalizado»
+       según la hora de Colombia, y resalta el próximo bloque. -->
+  <div class="hero-agenda" aria-label="Fechas y horarios de Labs Summit 2026">
+    <p class="ha-label"><span class="ha-dot" aria-hidden="true"></span><span id="ha-titulo">Tres días · 28, 29 y 30 de octubre</span></p>
+    <ol class="ha-grid">
+      <li class="ha-day ha-gala" data-ini="2026-10-28T19:30:00-05:00" data-fin="2026-10-29T00:30:00-05:00">
+        <span class="ha-luz" aria-hidden="true"></span><span class="ha-brillo" aria-hidden="true"></span>
+        <div class="ha-top"><span class="ha-fecha">Mié <b>28</b> <span class="m">Oct</span></span><span class="ha-estado">Día 1</span></div>
+        <span class="ha-hora">7:30<small>PM</small></span>
+        <span class="ha-nombre">Noche de Gala</span>
+        <span class="ha-sub">Cóctel · networking VIP · keynote</span>
+        <span class="ha-acceso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>Diamante Black</span>
+      </li>
+      <li class="ha-day ha-principal" data-ini="2026-10-29T08:00:00-05:00" data-fin="2026-10-29T19:00:00-05:00">
+        <span class="ha-borde" aria-hidden="true"><span class="ha-fondo"><i></i><i></i></span></span>
+        <span class="ha-luz" aria-hidden="true"></span>
+        <span class="ha-tag">★ Día principal</span>
+        <div class="ha-top"><span class="ha-fecha">Jue <b>29</b> <span class="m">Oct</span></span><span class="ha-estado">Día 2</span>
+          <div class="ha-cuenta" aria-hidden="true">
+            <span class="hc-l">Empieza en</span>
+            <span class="hc-n"><b data-u="d">00</b><i>d</i><b data-u="h">00</b><i>h</i><b data-u="m">00</b><i>m</i><b data-u="s">00</b><i>s</i></span>
+          </div>
+        </div>
+        <span class="ha-hora">8:00<small>AM</small><span class="ha-hasta">a 7:00 PM</span></span>
+        <span class="ha-nombre">Conferencias · Ecommerce &amp; IA</span>
+        <div class="ha-fila">
+          <a class="ha-speakers" href="/speakers" aria-label="Ver los 24 speakers">
+            <span class="ha-caras" aria-hidden="true"><img src="/speakers/opt/av/jose-aguirre.webp" alt="" width="56" height="56" decoding="async"><img src="/speakers/opt/av/juan-david-carmona.webp" alt="" width="56" height="56" decoding="async"><img src="/speakers/opt/av/laura-sanchez.webp" alt="" width="56" height="56" decoding="async"><img src="/speakers/opt/av/julian-lago.webp" alt="" width="56" height="56" decoding="async"><img src="/speakers/opt/av/sara-montoya.webp" alt="" width="56" height="56" decoding="async"><img src="/speakers/opt/av/victor-heras.webp" alt="" width="56" height="56" decoding="async"><span class="ha-mas">+18</span></span>
+            <span class="ha-sp-txt"><b>24</b> speakers <span class="ver">· ver todos →</span></span>
+          </a>
+          <span class="ha-acceso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Coliseo de Ferias · Tuluá</span>
+        </div>
+      </li>
+      <li class="ha-day ha-mm" data-ini="2026-10-30T07:30:00-05:00" data-fin="2026-10-30T18:00:00-05:00">
+        <span class="ha-luz" aria-hidden="true"></span><span class="ha-brillo" aria-hidden="true"></span>
+        <div class="ha-top"><span class="ha-fecha">Vie <b>30</b> <span class="m">Oct</span></span><span class="ha-estado">Día 3</span></div>
+        <span class="ha-hora">7:30<small>AM</small></span>
+        <span class="ha-nombre">Mastermind <span class="m">Exclusivo</span></span>
+        <span class="ha-sub">3 metodologías · 50 cupos</span>
+        <span class="ha-acceso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/></svg>Diamante Black</span>
+      </li>
+    </ol>
+    <div class="ha-ctas">
+      <a class="btn-pri ha-cta" href="#tickets">Comprar entrada</a>
+      <a class="ha-cta ha-cta-mapa" href="/mapa"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span class="largo">Mapa del evento</span><span class="corto">Ver mapa</span></a>
+    </div>
+  </div>
 
   <!-- Quote + Audio (autoplay) -->
   <audio id="jose-audio" src="https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev/Dise%C3%B1o%20sin%20t%C3%ADtulo(1).mp4" preload="none"></audio>
@@ -758,28 +812,14 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <div class="jose-wave" id="jose-wave" aria-hidden="true">
       <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
-  </div>
+  </div><!-- /hero-quote-area -->
 
-  <!-- Qué vas a aprender -->
-  <div class="hero-learn" aria-label="Qué vas a aprender">
-    <p class="hero-learn-label">Tres días para dominar</p>
-    <div class="hero-learn-grid">
-      <div class="hero-learn-item">
-        <span class="hl-ico">📈</span>
-        <span class="hl-title">Meta Ads &amp; E-Commerce</span>
-        <span class="hl-desc">Vende más con estrategias reales</span>
-      </div>
-      <div class="hero-learn-item">
-        <span class="hl-ico">🤖</span>
-        <span class="hl-title">Inteligencia Artificial &amp; Bots</span>
-        <span class="hl-desc">Automatiza y escala tu negocio</span>
-      </div>
-      <div class="hero-learn-item">
-        <span class="hl-ico">🧠</span>
-        <span class="hl-title">Mentalidad &amp; Negocios Escalables</span>
-        <span class="hl-desc">Construye para el largo plazo</span>
-      </div>
-    </div>
+  <!-- Qué vas a aprender (versión compacta) -->
+  <div class="hero-temas" aria-label="Qué vas a aprender">
+    <span class="ht-label">Tres días para dominar</span>
+    <span class="ht-chip"><span aria-hidden="true">📈</span> Meta Ads &amp; E-Commerce</span>
+    <span class="ht-chip"><span aria-hidden="true">🤖</span> Inteligencia Artificial &amp; Bots</span>
+    <span class="ht-chip"><span aria-hidden="true">🧠</span> Mentalidad &amp; Negocios Escalables</span>
   </div>
 </section>
 
@@ -921,7 +961,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <div class="dsc-name">Conferencias</div>
       <div class="dsc-eyebrow">Día</div>
       <div class="dsc-num">02</div>
-      <div class="dsc-date">📅 29 de octubre · 9:30 AM</div>
+      <div class="dsc-date">📅 29 de octubre · 8:00 AM – 7:00 PM</div>
       <span class="dsc-badge">Acceso Exploradores</span>
       <div class="dsc-glow"></div>
     </div>
@@ -929,7 +969,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
       <div class="dsc-name">Mastermind Exclusivo</div>
       <div class="dsc-eyebrow">Día</div>
       <div class="dsc-num">03</div>
-      <div class="dsc-date">📅 30 de octubre · 8:00 AM</div>
+      <div class="dsc-date">📅 30 de octubre · 7:30 AM</div>
       <span class="dsc-badge lock">🔒 Diamante Black</span>
       <div class="dsc-glow"></div>
     </div>
@@ -971,13 +1011,14 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <!-- DÍA 2 -->
     <div id="panel-2" class="day-panel" role="tabpanel">
       <div class="day-info">
-        <h3>Conferencias de Ecommerce &amp; IA · 9:30 AM</h3>
+        <h3>Conferencias de Ecommerce &amp; IA · 8:00 AM – 7:00 PM</h3>
         <p>El día de mayor densidad de contenido. Speakers nacionales e internacionales enfocados en ecommerce e inteligencia artificial, con sesiones prácticas y aplicadas al ecosistema de negocios digitales.</p>
         <ul class="day-detail-list">
-          <li><span class="ddl-icon">🌅</span><div><div class="ddl-text">9:30 AM — Apertura de puertas</div><div class="ddl-sub">Check-in y apertura de áreas</div></div></li>
+          <li><span class="ddl-icon">🌅</span><div><div class="ddl-text">8:00 AM — Ingreso</div><div class="ddl-sub">Check-in, entrega de manillas y apertura de áreas</div></div></li>
           <li><span class="ddl-icon">🛒</span><div><div class="ddl-text">Conferencias de Ecommerce</div><div class="ddl-sub">Estrategias, tendencias y casos de éxito en ventas digitales</div></div></li>
           <li><span class="ddl-icon">🤖</span><div><div class="ddl-text">Conferencias de IA Aplicada</div><div class="ddl-sub">Inteligencia artificial para escalar negocios y automatizar procesos</div></div></li>
           <li><span class="ddl-icon">💬</span><div><div class="ddl-text">Q&amp;A en vivo</div><div class="ddl-sub">Interacción directa con los speakers</div></div></li>
+          <li><span class="ddl-icon">🌇</span><div><div class="ddl-text">7:00 PM — Salida</div><div class="ddl-sub">Cierre del día de conferencias</div></div></li>
         </ul>
       </div>
       <div class="day-atmo day-atmo-2">
@@ -993,7 +1034,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <div id="panel-3" class="day-panel" role="tabpanel">
       <div class="day-info">
         <div class="high-ticket-badge">🔒 Solo Diamante Black</div>
-        <h3>Mastermind · 3 Metodologías · 8:00 AM</h3>
+        <h3>Mastermind · 3 Metodologías · 7:30 AM</h3>
         <p>El día más exclusivo de Labs Summit. Solo disponible para titulares de Diamante Black. Un formato de mastermind paso a paso con las 3 metodologías clave del ecosistema de innovación.</p>
         <div class="day3-methods">
           <div class="method-step" id="ms1">
@@ -1615,7 +1656,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <span class="rdh-num">02</span>
         <div class="rdh-txt">
           <h3>Conferencias &amp; Ecommerce</h3>
-          <p>29 de octubre · 9:30 AM</p>
+          <p>29 de octubre · 8:00 AM – 7:00 PM</p>
         </div>
         <span class="rdh-badge">Acceso general</span>
       </div>
@@ -1666,7 +1707,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <span class="rdh-num">03</span>
         <div class="rdh-txt">
           <h3>Mastermind Exclusivo</h3>
-          <p>30 de octubre · 8:00 AM</p>
+          <p>30 de octubre · 7:30 AM</p>
         </div>
         <span class="rdh-badge lock">🔒 Diamante Black</span>
       </div>
@@ -2066,7 +2107,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     </div>
     <div class="faq-item" role="listitem">
       <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Cuándo se realizan los 3 días?<span class="faq-arrow">+</span></button>
-      <div class="faq-a">Día 1 (Gala): 28 de octubre, 7:30 PM. Día 2 (Conferencias): 29 de octubre, 9:30 AM. Día 3 (Mastermind Diamante Black): 30 de octubre, 8:00 AM.</div>
+      <div class="faq-a">Día 1 (Gala): 28 de octubre, 7:30 PM. Día 2 (Conferencias): 29 de octubre, ingreso 8:00 AM y salida 7:00 PM. Día 3 (Mastermind Diamante Black): 30 de octubre, 7:30 AM.</div>
     </div>
     <div class="faq-item" role="listitem">
       <button class="faq-q" onclick="toggleFaq(this)" aria-expanded="false">¿Qué incluye el Diamante Black del Día 3?<span class="faq-arrow">+</span></button>
@@ -2187,14 +2228,14 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
         <div class="a0b-eye">Día</div>
         <div class="a0b-num">02</div>
         <div class="a0b-name">Conferencias</div>
-        <div class="a0b-date">29 Oct · 9:30 AM</div>
+        <div class="a0b-date">29 Oct · 8:00 AM</div>
       </div>
       <div class="a0b-sep" id="a0b-s2"></div>
       <div class="a0b-panel" id="a0b-p3">
         <div class="a0b-eye">Día</div>
         <div class="a0b-num">03</div>
         <div class="a0b-name">Mastermind Exclusivo</div>
-        <div class="a0b-date">30 Oct · 8:00 AM</div>
+        <div class="a0b-date">30 Oct · 7:30 AM</div>
       </div>
     </div>
     <button class="a0-enter" id="a0b-skip" onclick="IMX.goScroll()">Ver el evento →</button>
@@ -2374,7 +2415,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
 
 </div>
 
-<script src="js/main.js?v=20261022d" defer></script>
+<script src="js/main.js?v=20261027h" defer></script>
 <script>
 /* ══ EXPERIENCIA INMERSIVA — 3 ACTOS ══ */
 var IMX = {

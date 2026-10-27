@@ -1,33 +1,111 @@
 /* ─────────────────────────────────
-   COUNTDOWN TIMER (hero + sticky bar)
+   AGENDA + CUENTA REGRESIVA (hora de Colombia, UTC-5)
+   La cuenta regresiva apunta siempre al PRÓXIMO bloque:
+   Gala → Conferencias → Mastermind. Para cambiar un horario,
+   se cambia aquí y en las tarjetas del inicio (index.html, data-ini).
 ───────────────────────────────── */
+const SESIONES = [
+  { n:'Noche de Gala', c:'Mié 28 Oct · 7:30 PM', ini:'2026-10-28T19:30:00-05:00', fin:'2026-10-29T00:30:00-05:00' },
+  { n:'Conferencias',  c:'Jue 29 Oct · 8:00 AM', ini:'2026-10-29T08:00:00-05:00', fin:'2026-10-29T19:00:00-05:00' },
+  { n:'Mastermind',    c:'Vie 30 Oct · 7:30 AM', ini:'2026-10-30T07:30:00-05:00', fin:'2026-10-30T18:00:00-05:00' }
+].map(s => ({ ...s, ini:new Date(s.ini).getTime(), fin:new Date(s.fin).getTime() }));
+const ahora = () => (window.__LS_AHORA ? window.__LS_AHORA() : Date.now());   // __LS_AHORA solo para pruebas
+
 function updateCountdown(){
-  const target = new Date('2026-10-28T19:30:00-05:00').getTime();
-  const now    = new Date().getTime();
-  const diff   = target - now;
-  const zero   = ['00','00','00','00'];
-  if(diff <= 0){
-    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=zero[i]; });
-    ['scd-d','scd-h','scd-m','scd-s'].forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=zero[i]; });
-    return;
+  const now  = ahora();
+  const vivo = SESIONES.find(s => now >= s.ini && now < s.fin);
+  const prox = SESIONES.find(s => now < s.ini);
+  const pad  = n => String(n).padStart(2,'0');
+  const diff = prox ? prox.ini - now : 0;
+  const d = Math.floor(diff/864e5), h = Math.floor(diff%864e5/36e5), m = Math.floor(diff%36e5/6e4), s = Math.floor(diff%6e4/1e3);
+  const vals = prox ? [d,h,m,s].map(pad) : ['00','00','00','00'];
+  ['cd-days','cd-hours','cd-mins','cd-secs'].forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=vals[i]; });
+  ['scd-d','scd-h','scd-m','scd-s'].forEach((id,i)=>{ const el=document.getElementById(id); if(el) el.textContent=vals[i]; });
+  const ses = document.getElementById('scd-sesion'), bad = document.getElementById('scd-badge');
+  if(ses && bad){
+    bad.classList.toggle('vivo', !!vivo); bad.classList.toggle('fin', !vivo && !prox);
+    if(vivo){ ses.textContent = vivo.n + ' · en vivo ahora' + (prox ? ' · sigue ' + prox.n : ''); bad.textContent = 'EN VIVO'; }
+    else if(prox){ ses.textContent = prox.n + ' · ' + prox.c; bad.textContent = 'PRÓXIMO'; }
+    else { ses.textContent = 'Labs Summit 2026 · ¡Gracias por venir!'; bad.textContent = 'FINALIZADO'; }
+    const bar = document.getElementById('sticky-cd');
+    if(bar) bar.setAttribute('aria-label', prox ? 'Cuenta regresiva: ' + prox.n : 'Labs Summit 2026');
   }
-  const d = Math.floor(diff/(1000*60*60*24));
-  const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
-  const m = Math.floor((diff%(1000*60*60))/(1000*60));
-  const s = Math.floor((diff%(1000*60))/1000);
-  const pad = n => String(n).padStart(2,'0');
-  // Hero countdown
-  const ids = ['cd-days','cd-hours','cd-mins','cd-secs'];
-  [d,h,m,s].forEach((v,i)=>{ const el=document.getElementById(ids[i]); if(el) el.textContent=pad(v); });
-  // Sticky bar countdown
-  const sids = ['scd-d','scd-h','scd-m','scd-s'];
-  [d,h,m,s].forEach((v,i)=>{ const el=document.getElementById(sids[i]); if(el) el.textContent=pad(v); });
-  // Animate seconds tick
+  // cuenta regresiva dentro de la tarjeta del día principal (29)
+  const hc = document.querySelector('.ha-cuenta');
+  if(hc){
+    const dp = SESIONES[1], lab = hc.querySelector('.hc-l');
+    hc.classList.toggle('vivo', now >= dp.ini);
+    if(now < dp.ini){
+      const f = dp.ini - now, v = { d:Math.floor(f/864e5), h:Math.floor(f%864e5/36e5), m:Math.floor(f%36e5/6e4), s:Math.floor(f%6e4/1e3) };
+      hc.querySelectorAll('b[data-u]').forEach(b => { const x = pad(v[b.dataset.u]); if(b.textContent !== x) b.textContent = x; });
+      if(lab.textContent !== 'Empieza en') lab.textContent = 'Empieza en';
+    } else {
+      const txt = now < dp.fin ? 'En vivo · hasta 7:00 PM' : '¡Gracias por venir!';
+      if(lab.textContent !== txt) lab.textContent = txt;
+    }
+  }
   const sEl = document.getElementById('scd-s');
-  if(sEl){ sEl.style.transform='scale(1.2)'; setTimeout(()=>sEl.style.transform='',120); }
+  if(sEl && prox){ sEl.style.transform='scale(1.2)'; setTimeout(()=>sEl.style.transform='',120); }
 }
 updateCountdown();
 setInterval(updateCountdown, 1000);
+
+/* Tarjetas de la agenda del inicio: «Mañana», «Hoy», «En vivo», «Finalizado» */
+(function(){
+  const cards = [...document.querySelectorAll('.ha-day[data-ini]')];
+  if(!cards.length) return;
+  const caja = document.querySelector('.hero-agenda');
+  const titulo = document.getElementById('ha-titulo');
+  const diaCol = ms => new Date(ms).toLocaleDateString('en-CA', { timeZone:'America/Bogota' });   // AAAA-MM-DD en Colombia
+  const diasEntre = (a,b) => Math.round((new Date(diaCol(b)) - new Date(diaCol(a))) / 864e5);
+  const relativo = (now, ini) => { const n = diasEntre(now, ini); return n<=0 ? 'Hoy' : n===1 ? 'Mañana' : 'En ' + n + ' días'; };
+  const poner = (el, txt) => { if(el.textContent !== txt) el.textContent = txt; };   // solo toca el DOM si cambió
+  function pintar(){
+    const now = ahora();
+    let marcadoProx = false, hayVivo = false;
+    cards.forEach((c, i) => {
+      const ini = new Date(c.dataset.ini).getTime(), fin = new Date(c.dataset.fin).getTime();
+      const est = c.querySelector('.ha-estado');
+      c.classList.remove('prox','vivo','fin');
+      if(now >= fin){ c.classList.add('fin'); poner(est, 'Finalizado'); }
+      else if(now >= ini){ c.classList.add('vivo'); poner(est, 'En vivo'); hayVivo = true; }
+      else {
+        const rel = relativo(now, ini), falta = ini - now;
+        if(!marcadoProx){ marcadoProx = true; c.classList.add('prox'); }
+        // etiqueta corta (cabe en celular): «Mañana», «En 2 días», «Hoy · en 3 h», «Hoy · en 25 min»
+        if(rel === 'Hoy'){ poner(est, 'Hoy · en ' + (falta >= 36e5 ? Math.round(falta/36e5) + ' h' : Math.max(1, Math.ceil(falta/6e4)) + ' min')); }
+        else poner(est, rel);
+      }
+    });
+    if(caja) caja.classList.toggle('en-vivo', hayVivo);
+    if(titulo){
+      const prox = SESIONES.find(s => now < s.ini), vivo = SESIONES.find(s => now >= s.ini && now < s.fin);
+      poner(titulo, vivo ? '¡Estamos en vivo! · ' + vivo.n
+        : prox ? 'Tres días · 28, 29 y 30 de octubre'
+        : 'Gracias por ser parte de Labs Summit 2026');
+    }
+  }
+  pintar();
+  setInterval(pintar, 20000);
+
+  // Celular: mientras «Comprar / Ver mapa» estén a la vista, el botón de WhatsApp no los tapa
+  const ctas = document.querySelector('.ha-ctas');
+  if(ctas && 'IntersectionObserver' in window){
+    new IntersectionObserver(es => document.body.classList.toggle('cta-hero', es[0].isIntersecting), { threshold:.2 }).observe(ctas);
+  }
+
+  // Con mouse: la tarjeta se inclina hacia el cursor y una luz lo sigue
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    cards.forEach(c => {
+      let raf = 0, ev = null;
+      const mover = () => { raf = 0; const r = c.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+        c.style.setProperty('--ry', ((x - .5) * 9).toFixed(2) + 'deg'); c.style.setProperty('--rx', ((.5 - y) * 7).toFixed(2) + 'deg');
+        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%'); c.style.setProperty('--my', (y * 100).toFixed(1) + '%'); };
+      c.addEventListener('pointermove', e => { ev = e; if(!raf) raf = requestAnimationFrame(mover); });
+      c.addEventListener('pointerleave', () => { c.style.setProperty('--rx','0deg'); c.style.setProperty('--ry','0deg'); });
+    });
+  }
+})();
 
 /* ─────────────────────────────────
    SCROLL PROGRESS BAR + NAV
@@ -304,7 +382,7 @@ const timeToast = document.getElementById('time-toast');
 const milestones = [
   {t:30,  msg:'🔥 ¡Casi te convencemos! Mira los tickets'},
   {t:90,  msg:'🚀 Los cupos High Ticket se agotan rápido'},
-  {t:180, msg:'⏰ Faltan '+Math.ceil((new Date('2026-10-28T19:30:00-05:00')-new Date())/(1000*60*60*24))+' días para el evento'},
+  {t:180, msg:'⏰ Noche de Gala: miércoles 28 · 7:30 PM. Conferencias: jueves 29 · 8:00 AM a 7:00 PM'},
 ];
 let shownMilestones = new Set();
 const startTime = Date.now();

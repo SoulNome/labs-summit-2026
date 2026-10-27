@@ -16,7 +16,7 @@
      logística; se ve con ?dev=1 en la URL.
    ========================================================================== */
 window.LS_EVENTO = {
-  version: '2026-10-21.1',
+  version: '2026-10-27.2',
   fecha: '2026-10-29',
   abre: '08:00',
   cierra: '19:00',
@@ -70,8 +70,8 @@ window.LS_EVENTO = {
     gastrolabs:  ['08:00', '19:00'],
     expositores: ['08:00', '19:00'],
     cowork:      ['08:00', '19:00'],
-    taquillas:   ['07:00', '14:00'],
-    kits:        ['07:00', '14:00'],
+    taquillas:   ['08:00', '14:00'],
+    kits:        ['08:00', '14:00'],
     speakers:    ['08:00', '19:00'],
     bebidas:     ['08:00', '19:00'],
     banos:       ['07:00', '19:30'],
@@ -98,7 +98,7 @@ window.LS_EVENTO = {
 
   // Agenda del 29. Mientras agendaDeEjemplo sea true son horarios de ejemplo.
   agenda: [
-    { zona: 'auditorio', inicio: '09:30', fin: '10:00', titulo: 'Apertura oficial Labs Summit 2026' },
+    { zona: 'auditorio', inicio: '09:00', fin: '10:00', titulo: 'Apertura oficial Labs Summit 2026' },
     { zona: 'auditorio', inicio: '10:00', fin: '10:40', titulo: 'Ecommerce en Colombia: lo que viene' },
     { zona: 'auditorio', inicio: '10:50', fin: '11:30', titulo: 'IA aplicada a ventas' },
     { zona: 'auditorio', inicio: '11:40', fin: '12:20', titulo: 'Meta Ads que sí venden' },
