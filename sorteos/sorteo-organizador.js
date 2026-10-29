@@ -26,7 +26,7 @@
 
   /* ---------------- ganadores de hoy (no vuelven a participar) ---------------- */
   // Se guardan en este navegador: solo el identificador normalizado y la etiqueta pública.
-  var CLAVE_GANADORES = 'lsSorteoGanadores', CLAVE_DIA = 'lsSorteosDelDia';
+  var CLAVE_GANADORES = 'lsSorteoGanadores', CLAVE_DIA = 'lsSorteosDelDia', CLAVE_HISTORIAL = 'lsSorteoHistorial';
   function leerLocal(clave) { try { var x = JSON.parse(localStorage.getItem(clave) || '[]'); return Array.isArray(x) ? x : []; } catch (e) { return []; } }
   function guardarLocal(clave, x) { try { localStorage.setItem(clave, JSON.stringify(x)); } catch (e) { /* sin almacenamiento: no se recuerdan */ } }
   function idBase(id) { return String(id).split('#')[0]; }
@@ -37,6 +37,17 @@
     guardarLocal(CLAVE_GANADORES, lista);
     pintarExcluidos();
     if (est.filas.length) pintarMuestra();
+  }
+  // Cada ganador que sale en esta pantalla queda anotado en este computador (aunque el sorteo no se publique)
+  function guardarEnHistorial(pub, priv, ganadores) {
+    if (!pub || !priv || priv.huella !== pub.huella || !ganadores || !ganadores.length) return;
+    var lista = leerLocal(CLAVE_HISTORIAL).filter(function (x) { return !(x.id === pub.id && x.huella === pub.huella); });
+    lista.unshift({ id: pub.id, huella: pub.huella, titulo: pub.titulo, ensayo: !!pub.ensayo, ronda: pub.azar.ronda, participantes: pub.participantes.length,
+      ganadores: ganadores.map(function (g) {
+        var p = priv.participantes[g.posicion - 1] || {};
+        return { premio: g.premio, etiqueta: g.etiqueta, nombre: p.nombre || '', celular: p.idOriginal || '' };
+      }) });
+    guardarLocal(CLAVE_HISTORIAL, lista.slice(0, 60));
   }
   function pintarExcluidos() {
     var lista = leerLocal(CLAVE_GANADORES), caja = vaciar($('o-lista-excluidos'));
@@ -159,7 +170,7 @@
     if (r === null) return;
     if (N.limpiar(r).toUpperCase() !== 'REINICIAR') return texto('o-qr-msg', 'No se borró nada.', 'estado-o');
     conClave(this, '/api/registros', { accion: 'reiniciar', confirmar: 'REINICIAR' }, function () {
-      [CLAVE_GANADORES, CLAVE_DIA, CLAVE_DIA + '.marcados', CLAVE_ULTIMO].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* nada */ } });
+      [CLAVE_GANADORES, CLAVE_DIA, CLAVE_DIA + '.marcados', CLAVE_ULTIMO, CLAVE_HISTORIAL].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* nada */ } });
       try { sessionStorage.setItem('lsSorteoReiniciado', '1'); } catch (e) { /* nada */ }
       location.reload();
     });
@@ -463,7 +474,9 @@
       // con pocos inscritos sobran suplentes: se quitan los que no alcanzan
       while (premios.length > prep.participantes.length && premios.length > 1 && /^suplente\b/i.test(premios[premios.length - 1])) premios.pop();
       if (prep.participantes.length < premios.length) throw new Error('Hay ' + prep.participantes.length + ' participantes y ' + premios.length + ' premios: debe haber al menos un participante por premio.');
-      var datos = { id: N.idSorteo(titulo, horaMs) + (ensayo ? '-ensayo' : ''), titulo: titulo, ensayo: ensayo, cierre: isoCol(Date.now()), premios: premios, ronda: ronda };
+      var id = N.idSorteo(titulo, horaMs);
+      if (op.ronda) id = id.slice(0, 15) + isoCol(horaMs).slice(17, 19) + id.slice(15);   // «2026-10-29-1551» → «2026-10-29-155112»
+      var datos = { id: id + (ensayo ? '-ensayo' : ''), titulo: titulo, ensayo: ensayo, cierre: isoCol(Date.now()), premios: premios, ronda: ronda };
       return N.armarPublico(datos, prep.participantes).then(function (pub) {
         var problemas = N.validar(pub);
         if (problemas.length) throw new Error(problemas[0]);
@@ -704,7 +717,8 @@
         return generar({ ronda: PRUEBA_VIVO.rondaVivo || N.rondaEn(Date.now() + desfase + 10000) });
       }).then(function (pub) {
         pararVivo();
-        est.control = V.mostrar($('o-vista'), pub, { pantalla: true, nombres: nombreCompleto });
+        var priv = est.privado;
+        est.control = V.mostrar($('o-vista'), pub, { pantalla: true, nombres: nombreCompleto, alTerminar: function (r) { guardarEnHistorial(pub, priv, r.ganadores); } });
         $('o-vista').appendChild(h('p', { class: 'sv-pie-pantalla', text: 'Verifícalo en tu celular: labssummit.com/sorteos' }));
       }, function (e) {
         if (!vivo) return;
@@ -725,7 +739,8 @@
     $('o-pasos').hidden = true;
     $('o-vista-sec').hidden = false;
     document.body.classList.add('modo-pantalla');
-    est.control = V.mostrar($('o-vista'), est.publico, { pantalla: true, nombres: est.privado && est.privado.huella === est.publico.huella ? nombreCompleto : null });
+    var pub = est.publico, priv = est.privado && est.privado.huella === est.publico.huella ? est.privado : null;
+    est.control = V.mostrar($('o-vista'), pub, { pantalla: true, nombres: priv ? nombreCompleto : null, alTerminar: function (r) { guardarEnHistorial(pub, priv, r.ganadores); } });
     $('o-vista').appendChild(h('p', { class: 'sv-pie-pantalla', text: 'Verifícalo en tu celular: labssummit.com/sorteos' }));
   });
   $('o-cerrar-vista').addEventListener('click', function () {
@@ -792,6 +807,7 @@
     var todosOk = xs.every(function (x) { return x.ok; });
     var marcados = Object.create(null);
     leerLocal(CLAVE_DIA + '.marcados').forEach(function (id) { marcados[id] = true; });
+    if (todosOk) guardarEnHistorial(pub, priv, xs.map(function (x) { return x.g; }));
     if (todosOk && !pub.ensayo && !marcados[pub.id]) {   // solo la primera vez que se ven los ganadores de este sorteo
       xs.forEach(function (x) { if (!/suplente/i.test(x.g.premio)) marcarGanador(x.p, x.g.premio, pub.titulo, true); });
       guardarLocal(CLAVE_DIA + '.marcados', Object.keys(marcados).concat([pub.id]));
@@ -831,26 +847,47 @@
     b.disabled = true;
     vaciar($('o-historial-lista'));
     texto('o-historial-estado', 'Buscando los sorteos…', 'estado-o');
-    Promise.all([api('/api/sorteos'), api('/api/registros')]).then(function (xs) {
-      var sorteos = (xs[0].sorteos || []).slice(0, 30), porEtiqueta = Object.create(null);
+    var locales = leerLocal(CLAVE_HISTORIAL), local = Object.create(null);
+    locales.forEach(function (l) { local[l.id + '|' + l.huella] = l; });
+    Promise.all([api('/api/sorteos').catch(function () { return null; }), api('/api/registros').catch(function () { return {}; })]).then(function (xs) {
+      var servidor = xs[0] ? (xs[0].sorteos || []).slice(0, 30) : [], porEtiqueta = Object.create(null), enServidor = Object.create(null);
       (xs[1].registros || []).forEach(function (r) { var e = N.etiquetaDe(r.nombre, r.celular); (porEtiqueta[e] = porEtiqueta[e] || []).push(r); });
-      if (!sorteos.length) return texto('o-historial-estado', 'No hay sorteos publicados.', 'estado-o');
-      texto('o-historial-estado', miles(sorteos.length) + (sorteos.length === 1 ? ' sorteo' : ' sorteos') + ', del más reciente al más antiguo:', 'estado-o bien');
-      return sorteos.reduce(function (cadena, x) { return cadena.then(function () { return tarjetaHistorial(x, porEtiqueta); }); }, Promise.resolve());
+      servidor.forEach(function (x) { enServidor[x.id + '|' + x.huella] = true; });
+      var todos = servidor.map(function (x) { return { x: x, local: local[x.id + '|' + x.huella] || null }; })
+        .concat(locales.filter(function (l) { return !enServidor[l.id + '|' + l.huella]; }).map(function (l) { return { x: l, local: l, soloAqui: true }; }));
+      todos.sort(function (a, b) { return b.x.ronda - a.x.ronda; });
+      if (!todos.length) return texto('o-historial-estado', xs[0] ? 'No hay sorteos publicados.' : 'No se pudo consultar labssummit.com.', 'estado-o');
+      texto('o-historial-estado', miles(todos.length) + (todos.length === 1 ? ' sorteo' : ' sorteos') + ', del más reciente al más antiguo' + (xs[0] ? ':' : ' (sin conexión: solo los de este computador):'), 'estado-o bien');
+      return todos.reduce(function (cadena, t) { return cadena.then(function () { return tarjetaHistorial(t, porEtiqueta); }); }, Promise.resolve());
     }).catch(function (e) { texto('o-historial-estado', e.message || String(e), 'estado-o mal'); })
       .finally(function () { b.disabled = false; });
   });
-  function tarjetaHistorial(x, porEtiqueta) {
-    var hora = N.horaDeRonda(x.ronda), nota = h('p', { class: 'ayuda', text: 'Calculando el resultado…' });
-    var tarjeta = h('article', { class: 'tarjeta-historial' }, [
+  function filaHistorial(premio, quien, etiqueta) {
+    return h('li', null, [
+      h('span', { class: 'pr', text: premio }),
+      h('b', { text: quien.length ? quien.map(function (q) { return nombreBonito(q.nombre) + ' · ' + q.celular; }).join(' / ') : etiqueta }),
+      quien.length === 1 ? null : h('small', { text: quien.length ? '(' + quien.length + ' inscritos tienen esa misma etiqueta)' : '(ya no está en los registros: ' + etiqueta + ')' })
+    ]);
+  }
+  function tarjetaHistorial(t, porEtiqueta) {
+    var x = t.x, hora = N.horaDeRonda(x.ronda), nota = h('p', { class: 'ayuda', text: 'Calculando el resultado…' });
+    var tarjeta = h('article', { class: 'tarjeta-historial' + (t.soloAqui ? ' solo-aqui' : '') }, [
       h('div', { class: 'th-cab' }, [
         x.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo' }) : null,
         h('b', { text: x.titulo }),
-        h('small', { text: V.fechaCol(hora) + ' · ' + V.horaCol(hora, true) + ' · ' + miles(x.participantes) + ' participantes' })
+        h('small', { text: V.fechaCol(hora) + ' · ' + V.horaCol(hora, true) + ' · ' + miles(x.participantes) + ' participantes' }),
+        t.soloAqui ? h('small', { class: 'th-aviso', text: 'No quedó publicado en labssummit.com: está anotado en este computador.' }) : null
       ]),
       nota
     ]);
     $('o-historial-lista').appendChild(tarjeta);
+    // lo anotado en este computador trae el nombre exacto de quien salió en la pantalla
+    if (t.local) {
+      tarjeta.replaceChild(h('ul', { class: 'th-ganadores' }, t.local.ganadores.map(function (g) {
+        return filaHistorial(g.premio, g.nombre ? [{ nombre: g.nombre, celular: g.celular }] : [], g.etiqueta);
+      })), nota);
+      return Promise.resolve();
+    }
     if (Date.now() < hora) { nota.textContent = 'Todavía no sale: es a las ' + V.horaCol(hora, true) + '.'; return Promise.resolve(); }
     return api('/api/sorteos?id=' + encodeURIComponent(x.id)).then(function (pub) {
       return N.pedirRonda(pub.azar.ronda).then(function (ronda) { return N.verificar(pub, ronda); }).then(function (r) {
@@ -858,12 +895,7 @@
         var privado = est.privado && est.privado.huella === pub.huella ? est.privado : null;
         tarjeta.replaceChild(h('ul', { class: 'th-ganadores' }, r.ganadores.map(function (g) {
           var p = privado ? privado.participantes[g.posicion - 1] : null;
-          var quien = p ? [{ nombre: p.nombre, celular: p.idOriginal }] : porEtiqueta[g.etiqueta] || [];
-          return h('li', null, [
-            h('span', { class: 'pr', text: g.premio }),
-            h('b', { text: quien.length ? quien.map(function (q) { return nombreBonito(q.nombre) + ' · ' + q.celular; }).join(' / ') : g.etiqueta }),
-            quien.length === 1 ? null : h('small', { text: quien.length ? '(' + quien.length + ' inscritos tienen esa misma etiqueta)' : '(ya no está en los registros: ' + g.etiqueta + ')' })
-          ]);
+          return filaHistorial(g.premio, p ? [{ nombre: p.nombre, celular: p.idOriginal }] : porEtiqueta[g.etiqueta] || [], g.etiqueta);
         })), nota);
       });
     }).catch(function (e) { nota.textContent = 'No se pudo calcular: ' + (e.message || e); });
