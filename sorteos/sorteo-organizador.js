@@ -220,7 +220,8 @@
     filtrosActivos().forEach(function (g) {
       Object.keys(g.ok).forEach(function (v) { if (/cortes/.test(sinTildes(v))) cortesias += r.filter(function (x) { return N.limpiar(celda(x.fila, g.columna)) === v; }).length; });
     });
-    if (cortesias) aviso(miles(cortesias) + ' boletas que participan están marcadas como «Cortesía». Si en taquilla registran así las ventas en efectivo, déjalas. Si son invitaciones y el sorteo es solo para quienes compraron, desmárcalas arriba.');
+    // Decisión del organizador: participan todos los asistentes, también los de cortesía
+    if (cortesias) aviso(miles(cortesias) + ' boletas son de cortesía («Cortesía») y también participan: cuentan todos los asistentes. Desmárcalas solo si un sorteo es exclusivo para quienes compraron.', 'ayuda');
   }
 
   /* ---------------- 3 · datos del sorteo ---------------- */
