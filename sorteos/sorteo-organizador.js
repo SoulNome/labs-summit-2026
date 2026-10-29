@@ -366,6 +366,39 @@
   }
 
   /* ---------------- 3 · datos del sorteo ---------------- */
+  // Los premios de Labs Summit 2026, en el orden en que se sortean
+  var PREMIOS_EVENTO = [
+    { boton: 'Bono $500.000', titulo: 'Sorteo del bono de $500.000', premio: 'Bono de $500.000 para arreglos de dispositivos tecnológicos' },
+    { boton: 'iPad', titulo: 'Sorteo del iPad', premio: 'iPad' },
+    { boton: 'Hospedaje', titulo: 'Sorteo del hospedaje', premio: 'Hospedaje' },
+    { boton: 'Reloj', titulo: 'Sorteo del reloj', premio: 'Reloj' },
+    { boton: 'iPhone 17', titulo: 'Sorteo del iPhone 17', premio: 'iPhone 17' }
+  ];
+  var premioElegido = null;
+  function ponerPremio() {
+    if (!premioElegido) return;
+    $('o-titulo').value = premioElegido.titulo;
+    $('o-premios').value = premioElegido.premio + ($('o-con-suplentes').checked ? '\nSuplente 1\nSuplente 2' : '');
+  }
+  // Un botón por premio; los que ya se sortearon hoy (oficiales) llevan ✓
+  function pintarPremiosEvento() {
+    var hechos = Object.create(null), caja = vaciar($('o-premios-evento'));
+    leerLocal(CLAVE_DIA).forEach(function (x) { if (x && !x.ensayo) hechos[x.titulo] = true; });
+    PREMIOS_EVENTO.forEach(function (p, i) {
+      var activo = premioElegido === p;
+      caja.appendChild(h('button', { type: 'button', class: 'btn sec chip' + (activo ? ' activo' : '') + (hechos[p.titulo] ? ' hecho' : ''), 'aria-pressed': activo ? 'true' : 'false',
+        title: hechos[p.titulo] ? 'Ya se sorteó hoy' : null, text: (i + 1) + '. ' + p.boton + (hechos[p.titulo] ? ' ✓' : ''),
+        onclick: function () { premioElegido = p; ponerPremio(); pintarPremiosEvento(); } }));
+    });
+  }
+  $('o-con-suplentes').addEventListener('change', ponerPremio);
+  pintarPremiosEvento();
+
+  function textoGenerar() { return $('o-ensayo').checked ? 'Cerrar la lista y generar el ENSAYO' : 'Cerrar la lista y generar el sorteo'; }
+  $('o-ensayo').addEventListener('change', function () {
+    $('o-1min').hidden = !$('o-ensayo').checked;
+    $('o-generar').textContent = textoGenerar();
+  });
   $('o-hora').addEventListener('input', pintarRonda);
   $('o-ensayo').addEventListener('change', pintarRonda);
   function pintarRonda() {
@@ -421,6 +454,7 @@
           var dia = leerLocal(CLAVE_DIA).filter(function (x) { return x.id !== pub.id; });
           dia.push(entradaIndice(pub));
           guardarLocal(CLAVE_DIA, dia);
+          pintarPremiosEvento();
         }
         guardarUltimo();
         pintarResumen(pub, prep, reg);
@@ -428,7 +462,7 @@
         buscarGanadores();
       });
     }).catch(function (e) { mostrarError(e.message || String(e)); })
-      .finally(function () { boton.disabled = false; boton.textContent = 'Cerrar la lista y generar el sorteo'; });
+      .finally(function () { boton.disabled = false; boton.textContent = textoGenerar(); });
   });
 
   function pintarResumen(pub, prep, reg, sinMover) {

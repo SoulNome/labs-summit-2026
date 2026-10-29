@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
-<link rel="stylesheet" href="/sorteos/sorteos.css?v=3">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=4">
 </head>
 <body class="sorteos organizador">
 
@@ -101,6 +101,11 @@
 
     <section class="paso" id="paso3" aria-labelledby="t-p3" hidden>
       <h2 id="t-p3"><span class="num">3</span> Datos del sorteo</h2>
+      <div class="premios-evento">
+        <p class="ayuda">Premio de este sorteo, en el orden del evento:</p>
+        <div class="fila-botones" id="o-premios-evento"></div>
+        <label class="check"><input type="checkbox" id="o-con-suplentes" checked> Con 2 suplentes, por si el ganador no está en el evento</label>
+      </div>
       <div class="rejilla-campos">
         <label class="campo">Título
           <input id="o-titulo" maxlength="80" placeholder="Gran sorteo de cierre">
@@ -114,12 +119,13 @@
       </label>
       <div class="fila-botones" id="o-rapido">
         <span class="ayuda">Sorteo rápido:</span>
+        <button type="button" class="btn sec" data-min="1" id="o-1min" hidden>En 1 min (ensayo)</button>
         <button type="button" class="btn sec" data-min="3">En 3 min</button>
         <button type="button" class="btn sec" data-min="5">En 5 min</button>
         <button type="button" class="btn sec" data-min="10">En 10 min</button>
       </div>
       <p id="o-ronda" class="ayuda"></p>
-      <label class="check"><input type="checkbox" id="o-ensayo"> Es un ensayo: se marca como «no oficial» y permite una hora que ya pasó</label>
+      <label class="check"><input type="checkbox" id="o-ensayo"> Es un ensayo (prueba): no cuenta como sorteo oficial ni saca a nadie de los próximos sorteos</label>
       <button type="button" id="o-generar" class="btn pri">Cerrar la lista y generar el sorteo</button>
       <p id="o-error" class="aviso-error" role="alert" hidden></p>
     </section>
@@ -174,6 +180,6 @@
 <script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
 <script src="/sorteos/sorteo-nucleo.js?v=3" defer></script>
 <script src="/sorteos/sorteo-vista.js?v=3" defer></script>
-<script src="/sorteos/sorteo-organizador.js?v=4" defer></script>
+<script src="/sorteos/sorteo-organizador.js?v=5" defer></script>
 </body>
 </html>

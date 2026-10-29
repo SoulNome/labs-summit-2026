@@ -210,6 +210,11 @@ body.modo-pantalla .sv-suplentes-nota{text-align:center;font-size:clamp(.9rem,1.
 .excluidos ul{padding-left:1.1rem;color:rgba(240,234,255,.85)}
 .excluidos li{margin:.35rem 0}
 #o-rapido{margin:.2rem 0 .4rem}
+.premios-evento{margin:0 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid var(--borde)}
+.premios-evento .ayuda{margin:0}
+.premios-evento .fila-botones{margin:.6rem 0 .3rem}
+.btn.chip.activo{background:linear-gradient(90deg,#9333EA,#C026D3);border-color:transparent}
+.btn.chip.hecho:not(.activo){color:var(--bien);border-color:rgba(74,222,128,.4)}
 .caja-qr{margin:.4rem 0 1.6rem;padding:1.1rem 1.2rem .6rem;border-radius:18px;border:1px solid rgba(232,121,249,.4);
   background:linear-gradient(160deg,rgba(124,58,237,.18),rgba(13,5,25,.6))}
 .qr-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
