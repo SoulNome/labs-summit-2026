@@ -67,3 +67,13 @@
 
 /sorteos/vendor/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Registro para los sorteos (el QR del evento): la misma política estricta de /sorteos.
+# Solo habla con /api del propio sitio y no tiene analítica.
+/participa
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; require-trusted-types-for 'script'
+  X-Robots-Tag: noindex, nofollow
+
+/participa.html
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; require-trusted-types-for 'script'
+  X-Robots-Tag: noindex, nofollow

@@ -1,5 +1,5 @@
 /* Labs Summit 2026 · página pública de sorteos (/sorteos/)
-   /sorteos/                  → lista de sorteos (sorteos/datos/indice.json)
+   /sorteos/                  → lista de sorteos (los publicados en /api/sorteos y en sorteos/datos/indice.json)
    /sorteos/?id=<id>          → un sorteo con su verificación
    /sorteos/?id=<id>&pantalla → versión para la pantalla grande del evento */
 (function () {
@@ -19,12 +19,20 @@
     });
   }
 
-  function mostrarSorteo(s, origen) {
+  // Lo que publica la herramienta del organizador al generar un sorteo (con la hora en que se publicó)
+  function pedirAPI(url) {
+    return fetch(url, { cache: 'no-cache', credentials: 'same-origin' }).then(function (r) {
+      if (!r.ok) throw new Error('api ' + r.status);
+      return r.json().then(function (d) { return { d: d, publicado: r.headers.get('X-Sorteo-Publicado') }; });
+    });
+  }
+
+  function mostrarSorteo(s, origen, publicado) {
     if (control) control.detener();
     $('sorteos').hidden = true;
     $('detalle').hidden = false;
     document.body.classList.toggle('modo-pantalla', pantalla);
-    control = V.mostrar($('vista'), s, { pantalla: pantalla, origen: origen });
+    control = V.mostrar($('vista'), s, { pantalla: pantalla, origen: origen, publicado: publicado });
     if (pantalla) $('vista').appendChild(h('p', { class: 'sv-pie-pantalla', text: 'Verifícalo en tu celular: labssummit.com/sorteos' }));
     if (s && typeof s.titulo === 'string') document.title = s.titulo + ' · Sorteos Labs Summit 2026';
     if (!pantalla) $('detalle').scrollIntoView({ block: 'start' });
@@ -48,11 +56,15 @@
   }
 
   function listar() {
-    pedirJSON('/sorteos/datos/indice.json').then(function (ind) {
-      var caja = V.vaciar($('lista-sorteos'));
-      var lista = (ind && Array.isArray(ind.sorteos) ? ind.sorteos : []).filter(function (x) {
-        return x && N.RE_ID.test(x.id) && typeof x.titulo === 'string' && Number.isSafeInteger(x.ronda) && x.ronda > 0;
+    var archivos = pedirJSON('/sorteos/datos/indice.json').then(function (ind) { return ind && Array.isArray(ind.sorteos) ? ind.sorteos : []; }, function () { return null; });
+    var enVivo = pedirAPI('/api/sorteos').then(function (x) { return x.d && Array.isArray(x.d.sorteos) ? x.d.sorteos : []; }, function () { return null; });
+    Promise.all([archivos, enVivo]).then(function (xs) {
+      if (xs[0] === null && xs[1] === null) throw new Error('sin lista');
+      var caja = V.vaciar($('lista-sorteos')), porId = Object.create(null);
+      (xs[0] || []).concat(xs[1] || []).forEach(function (x) {
+        if (x && typeof x.id === 'string' && N.RE_ID.test(x.id) && typeof x.titulo === 'string' && Number.isSafeInteger(x.ronda) && x.ronda > 0) porId[x.id] = x;
       });
+      var lista = Object.keys(porId).map(function (k) { return porId[k]; });
       if (!lista.length) {
         caja.appendChild(h('p', { class: 'vacio', text: 'Aún no hay sorteos publicados. Cuando cerremos la lista de un sorteo, aparecerá aquí con su huella y la hora exacta.' }));
         return;
@@ -64,16 +76,18 @@
         return pa ? ha - hb : hb - ha;
       });
       lista.forEach(function (x) { caja.appendChild(tarjeta(x)); });
-    }, function () {
+    }).catch(function () {
       V.vaciar($('lista-sorteos')).appendChild(h('p', { class: 'vacio', text: 'No se pudo cargar la lista de sorteos. Revisa tu conexión y recarga la página.' }));
     });
   }
 
   if (id !== null) {
     if (!N.RE_ID.test(id)) errorDetalle('Ese enlace de sorteo no es válido.');
-    else pedirJSON('/sorteos/datos/' + id + '.json').then(function (s) {
-      if (!s || s.id !== id) throw new Error('El archivo no corresponde a este sorteo.');
-      mostrarSorteo(s, null);
+    else pedirAPI('/api/sorteos?id=' + encodeURIComponent(id)).catch(function () {
+      return pedirJSON('/sorteos/datos/' + id + '.json').then(function (d) { return { d: d, publicado: null }; });
+    }).then(function (x) {
+      if (!x.d || x.d.id !== id) throw new Error('El archivo no corresponde a este sorteo.');
+      mostrarSorteo(x.d, null, x.publicado);
     }).catch(function (e) { errorDetalle(e.message || 'No se pudo cargar el sorteo.'); });
   } else listar();
 

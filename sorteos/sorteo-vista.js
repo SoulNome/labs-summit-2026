@@ -42,6 +42,29 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
   function marca(ok) { return h('span', { class: 'visto ' + (ok === true ? 'si' : ok === false ? 'no' : 'espera'), 'aria-hidden': 'true', text: ok === true ? '✓' : ok === false ? '✕' : '…' }); }
+  // «Suplente 1», «Suplente 2»…: por si el ganador no aparece. En pantalla van aparte y más pequeños.
+  function esSuplente(premio) { return /^suplente\b/i.test(N.limpiar(premio)); }
+  function minutos(ms) { var m = Math.round(ms / 6e4); return m < 1 ? 'menos de un minuto' : m === 1 ? '1 minuto' : m.toLocaleString('es-CO') + ' minutos'; }
+
+  // Confeti para la pantalla grande: piezas con CSS (las variables se ponen por CSSOM, que la CSP permite)
+  function confeti() {
+    if (REDUCIDO) return;
+    var capa = h('div', { class: 'confeti', 'aria-hidden': 'true' });
+    var colores = ['#A855F7', '#E879F9', '#F2C46D', '#C9AEFF', '#4ADE80', '#FFFFFF'];
+    for (var i = 0; i < 140; i++) {
+      var p = document.createElement('i');
+      p.style.setProperty('--x', (Math.random() * 100).toFixed(2) + 'vw');
+      p.style.setProperty('--dx', ((Math.random() - 0.5) * 30).toFixed(2) + 'vw');
+      p.style.setProperty('--w', (6 + Math.random() * 9).toFixed(1) + 'px');
+      p.style.setProperty('--r', Math.floor(Math.random() * 360) + 'deg');
+      p.style.setProperty('--d', (2.6 + Math.random() * 2.4).toFixed(2) + 's');
+      p.style.setProperty('--t', (Math.random() * 0.9).toFixed(2) + 's');
+      p.style.setProperty('--c', colores[i % colores.length]);
+      capa.appendChild(p);
+    }
+    document.body.appendChild(capa);
+    setTimeout(function () { capa.remove(); }, 6500);
+  }
 
   /* ---------------- vista ---------------- */
   /**
@@ -68,14 +91,18 @@
 
     var hora = N.horaDeRonda(s.azar.ronda);
     var abiertoAntes = Date.now() < hora;   // ¿llegamos antes del sorteo? (entonces se anima la revelación)
+    var publicado = op.publicado ? Date.parse(op.publicado) : NaN;
+    var principales = s.premios.filter(function (p) { return !esSuplente(p); }), suplentes = s.premios.length - principales.length;
+    if (!principales.length) { principales = s.premios; suplentes = 0; }
 
     /* encabezado */
     var cab = h('header', { class: 'sv-cab' }, [
       s.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo · no es un sorteo oficial' }) : null,
       h('h1', { class: 'sv-titulo', text: s.titulo }),
-      h('ol', { class: 'sv-premios' }, s.premios.map(function (p, i) {
-        return h('li', null, [h('span', { class: 'n', text: s.premios.length > 1 ? (i + 1) + '.º' : 'Premio' }), ' ', p]);
-      }))
+      h('ol', { class: 'sv-premios' }, principales.map(function (p, i) {
+        return h('li', null, [h('span', { class: 'n', text: principales.length > 1 ? (i + 1) + '.º' : 'Premio' }), ' ', p]);
+      })),
+      suplentes ? h('p', { class: 'sv-suplentes-nota', text: '+ ' + suplentes + (suplentes === 1 ? ' suplente' : ' suplentes') + ', por si el ganador no reclama el premio' }) : null
     ]);
     caja.appendChild(cab);
 
@@ -88,7 +115,7 @@
     var huellaMarca = h('span', { class: 'sv-huella-ok' }, [marca(null), ' comprobando…']);
     caja.appendChild(h('section', { class: 'sv-datos' }, [
       h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Participan' }), h('b', { text: s.participantes.length.toLocaleString('es-CO') }), h('small', { text: s.participantes.length === 1 ? 'participación' : 'participaciones' })]),
-      h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Lista cerrada' }), h('b', { text: horaCol(Date.parse(s.cierre)) }), h('small', { text: fechaCol(Date.parse(s.cierre)) })]),
+      h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Lista cerrada' }), h('b', { text: horaCol(Date.parse(s.cierre)) }), h('small', { text: !isNaN(publicado) && publicado < hora ? 'publicada ' + minutos(hora - publicado) + ' antes del sorteo' : fechaCol(Date.parse(s.cierre)) })]),
       h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Azar de drand' }), h('b', { text: horaCol(hora, true) }), h('small', { text: 'ronda ' + s.azar.ronda.toLocaleString('es-CO') })]),
       h('div', { class: 'dato ancho' }, [
         h('span', { class: 'l', text: 'Huella del acta' }),
@@ -103,6 +130,12 @@
     }
     var verif = h('section', { class: 'sv-verif' });
     if (!op.pantalla) caja.appendChild(verif);
+
+    // En la pantalla grande, el QR para que se registren los que aún no participan
+    if (op.pantalla) caja.appendChild(h('aside', { class: 'sv-qr' }, [
+      h('img', { src: '/sorteos/qr-participa.svg', alt: 'QR para registrarse en los sorteos', width: 180, height: 180 }),
+      h('p', null, ['¿Aún no participas?', h('br'), 'Escanea para los próximos sorteos'])
+    ]));
 
     var acciones = h('div', { class: 'sv-acciones' }, [
       h('button', { type: 'button', class: 'btn', text: 'Descargar acta (.txt)', onclick: function () { descargar(s.id + '-acta.txt', N.textoActa(s)); } }),
@@ -161,7 +194,11 @@
       function dos(n) { return (n < 10 ? '0' : '') + n; }
       var txt = d ? d + 'd ' + hh + 'h ' + dos(m) + 'min' : hh ? hh + 'h ' + dos(m) + 'min ' + dos(sg) + 's' : dos(m) + ':' + dos(sg);
       var actual = estado.querySelector('.sv-cuenta-num');
-      if (actual) { if (actual.textContent !== txt) actual.textContent = txt; return; }
+      if (actual) {
+        if (actual.textContent !== txt) actual.textContent = txt;
+        actual.classList.toggle('final', falta < 10500);
+        return;
+      }
       vaciar(estado).appendChild(h('div', { class: 'sv-cuenta' }, [
         h('span', { class: 'l', text: 'El sorteo se hace en' }),
         h('b', { class: 'sv-cuenta-num', text: txt }),
@@ -176,15 +213,25 @@
       vaciar(estado).appendChild(h('div', { class: 'aviso-error', role: 'alert' }, [h('b', { text: 'No se puede dar este sorteo por válido' }), h('p', { text: txt })]));
     }
 
-    /* ganadores, con animación solo si la gente estaba esperando */
+    /* ganadores, con animación solo si la gente estaba esperando; los suplentes van aparte */
     function revelar(g) {
-      var lista = h('ol', { class: 'sv-ganadores' });
-      vaciar(estado).appendChild(h('div', { class: 'sv-resultado' }, [h('span', { class: 'l', text: g.length > 1 ? 'Ganadores' : 'Ganador' }), lista]));
+      var gp = g.filter(function (x) { return !esSuplente(x.premio); }), gs = g.filter(function (x) { return esSuplente(x.premio); });
+      if (!gp.length) { gp = g; gs = []; }
+      var lista = h('ol', { class: 'sv-ganadores' }), listaSup = h('ol', { class: 'sv-suplentes' });
+      var cajaSup = h('div', { class: 'sv-suplentes-caja', hidden: true }, [h('span', { class: 'l', text: gs.length > 1 ? 'Suplentes, en orden' : 'Suplente' }), listaSup]);
+      vaciar(estado).appendChild(h('div', { class: 'sv-resultado' }, [h('span', { class: 'l', text: gp.length > 1 ? 'Ganadores' : 'Ganador' }), lista, gs.length ? cajaSup : null]));
       var animar = abiertoAntes && !REDUCIDO && op.pantalla;
       var i = 0;
       (function siguiente() {
-        if (i >= g.length || !vivo) return;
-        var x = g[i++], fila = filaGanador(x);
+        if (!vivo) return;
+        if (i >= gp.length) {
+          if (animar) confeti();
+          if (!gs.length) return;
+          gs.forEach(function (x) { listaSup.appendChild(filaGanador(x, true)); });
+          if (animar) despues(function () { cajaSup.hidden = false; }, 2500); else cajaSup.hidden = false;
+          return;
+        }
+        var x = gp[i++], fila = filaGanador(x);
         lista.appendChild(fila);
         if (!animar) { siguiente(); return; }
         var nombre = fila.querySelector('.et'), t0 = Date.now(), dur = 2600;
@@ -192,13 +239,14 @@
         (function rodar() {
           if (!vivo) return;
           var p = (Date.now() - t0) / dur;
-          if (p >= 1) { nombre.textContent = x.etiqueta; fila.classList.remove('girando'); fila.classList.add('listo'); despues(siguiente, 1100); return; }
+          if (p >= 1) { nombre.textContent = x.etiqueta; fila.classList.remove('girando'); fila.classList.add('listo'); despues(siguiente, i < gp.length ? 1600 : 150); return; }
           nombre.textContent = s.participantes[Math.floor(Math.random() * s.participantes.length)][0];
           despues(rodar, 40 + 260 * p * p);
         })();
       })();
     }
-    function filaGanador(x) {
+    function filaGanador(x, suplente) {
+      if (suplente) return h('li', { class: 'sv-suplente' }, [h('b', { class: 'et', text: x.etiqueta }), h('small', { text: ' · ' + x.premio + ' · n.º ' + x.posicion.toLocaleString('es-CO') })]);
       return h('li', { class: 'sv-ganador' }, [
         h('span', { class: 'pr', text: x.premio }),
         h('b', { class: 'et', text: x.etiqueta }),
@@ -223,7 +271,8 @@
       verif.appendChild(h('ol', { class: 'pasos' }, [
         h('li', null, [marca(res.huellaOk), h('div', null, [
           h('b', { text: 'La lista no cambió' }),
-          h('p', { text: 'Tu navegador recalculó la huella (SHA-256) del acta con los ' + s.participantes.length.toLocaleString('es-CO') + ' participantes. Debe ser la misma que mostramos antes del sorteo: ' + corta(s.huella) + '…' })
+          h('p', { text: 'Tu navegador recalculó la huella (SHA-256) del acta con los ' + s.participantes.length.toLocaleString('es-CO') + ' participantes. Debe ser la misma que mostramos antes del sorteo: ' + corta(s.huella) + '…' }),
+          !isNaN(publicado) && publicado < hora ? h('p', { text: 'Esta lista se publicó en labssummit.com a las ' + horaCol(publicado, true) + ', ' + minutos(hora - publicado) + ' antes de que saliera el número de drand.' }) : null
         ])]),
         h('li', null, [marca(r ? true : null), h('div', null, [
           h('b', { text: 'El azar no lo eligió nadie del evento' }),

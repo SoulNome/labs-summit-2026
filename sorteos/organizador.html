@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
-<link rel="stylesheet" href="/sorteos/sorteos.css?v=2">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=3">
 </head>
 <body class="sorteos organizador">
 
@@ -24,12 +24,42 @@
   <div id="o-pasos">
     <section class="intro">
       <h1>Preparar un <span class="ac">sorteo</span></h1>
-      <p>Todo se procesa en este computador: la lista de compradores <b>no se envía a ningún servidor</b> y esta página no tiene analítica. Al final obtienes un archivo público (sin datos personales) y uno privado (para contactar a los ganadores).</p>
+      <p>La lista se arma en este computador y esta página no tiene analítica. Al servidor solo va el archivo público del sorteo, sin datos personales; los datos de contacto de los ganadores quedan aquí.</p>
     </section>
 
     <section class="paso" id="paso1" aria-labelledby="t-p1">
       <h2 id="t-p1"><span class="num">1</span> Lista de participantes</h2>
-      <p>Sube el archivo con los registros del QR: en Google Forms, <b>Respuestas → Vincular con Hojas de cálculo</b> y en la hoja <b>Archivo → Descargar → Microsoft Excel (.xlsx)</b>. También sirven el Excel de Coccoa, uno o varios CSV con las mismas columnas, o las celdas copiadas y pegadas aquí con la fila de títulos.</p>
+      <div class="caja-qr" id="o-qr">
+        <div class="qr-cab">
+          <div>
+            <h3>Registros del QR <small>labssummit.com/participa</small></h3>
+            <p id="o-qr-estado" class="estado-o" aria-live="polite">Consultando el registro…</p>
+          </div>
+          <a class="btn sec mini" href="/participa?pantalla" target="_blank" rel="noopener">Proyectar el QR ↗</a>
+        </div>
+        <div class="rejilla-campos">
+          <label class="campo">Clave del sorteo
+            <input type="password" id="o-clave" autocomplete="current-password" spellcheck="false" placeholder="La misma de SORTEO_CLAVE en Cloudflare">
+          </label>
+          <label class="check abajo"><input type="checkbox" id="o-recordar"> Recordarla en este computador</label>
+        </div>
+        <div class="fila-botones">
+          <button type="button" id="o-traer" class="btn pri">Traer los registros</button>
+          <button type="button" id="o-abrir-cerrar" class="btn sec" hidden>Cerrar el registro</button>
+        </div>
+        <p id="o-qr-msg" class="estado-o" aria-live="polite"></p>
+        <details class="mas">
+          <summary>Quitar registros</summary>
+          <div class="fila-botones">
+            <input id="o-quitar-cel" class="entrada" inputmode="tel" autocomplete="off" placeholder="Celular a quitar" aria-label="Celular a quitar">
+            <button type="button" id="o-quitar" class="btn sec">Quitar ese registro</button>
+          </div>
+          <p class="ayuda">Para borrar los registros de prueba antes de abrir el registro al público:</p>
+          <button type="button" id="o-vaciar" class="btn peligro">Vaciar todos los registros</button>
+        </details>
+      </div>
+      <h3>O sube un archivo</h3>
+      <p class="ayuda">El Excel de un Formulario de Google (<b>Archivo → Descargar → Microsoft Excel</b>), el de Coccoa, uno o varios CSV con las mismas columnas, o las celdas copiadas y pegadas aquí con la fila de títulos.</p>
       <div class="fila-botones">
         <label class="btn">Subir Excel o CSV<input type="file" id="o-archivo" accept=".xlsx,.csv,.tsv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain" multiple class="oculto"></label>
         <span id="o-archivos" class="ayuda"></span>
@@ -95,20 +125,27 @@
     </section>
 
     <section class="paso" id="paso4" aria-labelledby="t-p4" hidden>
-      <h2 id="t-p4"><span class="num">4</span> Publicar antes de la hora del sorteo</h2>
+      <h2 id="t-p4"><span class="num">4</span> Sorteo listo: a proyectarlo</h2>
       <div id="o-resumen" class="resumen"></div>
+      <p id="o-publicado" class="estado-o publicado" aria-live="polite"></p>
+      <div class="fila-botones">
+        <button type="button" id="o-pantalla" class="btn pri">Abrir pantalla del sorteo</button>
+        <a id="o-enlace-pantalla" class="btn" target="_blank" rel="noopener" hidden>Pantalla en otra pestaña ↗</a>
+        <button type="button" id="o-publicar" class="btn" hidden>Publicar otra vez</button>
+        <button type="button" id="o-despublicar" class="btn sec" hidden>Quitar de la página</button>
+      </div>
       <ol class="instrucciones">
-        <li>Abre la <b>pantalla del sorteo</b> en el proyector: muestra la huella y la cuenta regresiva. Si el sorteo es ya, no esperes a publicar.</li>
-        <li>Descarga los tres archivos. Guarda el <b>archivo privado</b> fuera de la carpeta del sitio: tiene los datos de los participantes, no lo subas ni lo compartas.</li>
-        <li>Publica el archivo del sorteo y <code>indice.json</code> en <code>sorteos/datos/</code> (en GitHub: Add file → Upload files), antes o después del sorteo.</li>
-        <li>Cuando salga el número, abajo en el paso 5 verás los datos de contacto de los ganadores.</li>
+        <li>Proyecta la <b>pantalla del sorteo</b>: muestra la huella y la cuenta regresiva, y revela al ganador cuando sale el número de drand.</li>
+        <li>Si pusiste la clave en el paso 1, el sorteo ya quedó publicado en <b>labssummit.com/sorteos</b> y cualquiera puede revisarlo desde su celular antes de que salga el número.</li>
+        <li>Guarda el <b>archivo privado</b> fuera de la carpeta del sitio: tiene los datos de los participantes. No lo subas ni lo compartas.</li>
+        <li>Cuando salga el número, en el paso 5 verás los datos de contacto de los ganadores.</li>
       </ol>
       <div class="fila-botones">
-        <button type="button" id="o-bajar-publico" class="btn pri">Archivo del sorteo (.json)</button>
-        <button type="button" id="o-bajar-indice" class="btn">indice.json actualizado</button>
         <button type="button" id="o-bajar-privado" class="btn peligro">Archivo PRIVADO</button>
-        <button type="button" id="o-pantalla" class="btn">Abrir pantalla del sorteo</button>
+        <button type="button" id="o-bajar-publico" class="btn sec">Archivo del sorteo (.json)</button>
+        <button type="button" id="o-bajar-indice" class="btn sec">indice.json actualizado</button>
       </div>
+      <p class="ayuda">Si no se pudo publicar solo, sube el archivo del sorteo e <code>indice.json</code> a <code>sorteos/datos/</code> en GitHub (Add file → Upload files).</p>
     </section>
 
     <section class="paso" id="paso5" aria-labelledby="t-p5">
@@ -135,8 +172,8 @@
 </main>
 
 <script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
-<script src="/sorteos/sorteo-nucleo.js?v=2" defer></script>
-<script src="/sorteos/sorteo-vista.js?v=2" defer></script>
-<script src="/sorteos/sorteo-organizador.js?v=2" defer></script>
+<script src="/sorteos/sorteo-nucleo.js?v=3" defer></script>
+<script src="/sorteos/sorteo-vista.js?v=3" defer></script>
+<script src="/sorteos/sorteo-organizador.js?v=3" defer></script>
 </body>
 </html>

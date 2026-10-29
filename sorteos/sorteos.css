@@ -96,6 +96,22 @@ h2{font-size:1.5rem}
 .sv-ganador.listo{animation:brillo 1.2s ease-out}
 .sv-ganador .revelado{color:var(--bien)}
 @keyframes brillo{from{box-shadow:0 0 0 0 rgba(232,121,249,.9)}to{box-shadow:0 0 0 22px rgba(232,121,249,0)}}
+.sv-ganador.listo .et{animation:aparece .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes aparece{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.sv-suplentes-nota{margin:.5rem 0 0;color:var(--gris);font-size:.92rem}
+.sv-suplentes-caja{margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(192,132,252,.25)}
+.sv-suplentes{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:.4rem 1.4rem}
+.sv-suplente{font-size:1.05rem;color:rgba(240,234,255,.88)}
+.sv-suplente .et{font-family:'Space Grotesk','Inter',sans-serif}
+.sv-suplente small{color:var(--gris)}
+.sv-cuenta-num.final{color:#fff;animation:late-num 1s ease-in-out infinite}
+@keyframes late-num{50%{transform:scale(1.06);text-shadow:0 0 60px rgba(232,121,249,.95)}}
+
+/* confeti al revelar (solo en la pantalla grande) */
+.confeti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:60}
+.confeti i{position:absolute;top:-6vh;left:var(--x);width:var(--w);height:calc(var(--w) * .45);background:var(--c);border-radius:2px;
+  transform:rotate(var(--r));animation:cae var(--d) cubic-bezier(.3,.7,.4,1) var(--t) forwards}
+@keyframes cae{to{transform:translate(var(--dx),112vh) rotate(calc(var(--r) + 900deg))}}
 
 .sv-datos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-bottom:1.5rem}
 .dato{display:flex;flex-direction:column;gap:.15rem;padding:1rem;border-radius:16px;background:rgba(13,5,25,.85);border:1px solid var(--borde)}
@@ -148,6 +164,13 @@ body.modo-pantalla .sv-acciones,body.modo-pantalla .sv-origen{justify-content:ce
 body.modo-pantalla .dato b{font-size:clamp(1.2rem,2.1vw,1.8rem);white-space:nowrap}
 body.modo-pantalla .dato b.sv-huella-corta{font-size:clamp(1.05rem,1.7vw,1.5rem);white-space:normal}
 body.modo-pantalla .barra-vista{margin-bottom:1rem}
+.sv-qr{display:none}
+body.modo-pantalla .sv-qr{display:flex;flex-direction:column;align-items:center;gap:.5rem;position:fixed;right:1.6vw;bottom:2.5vh;width:min(12.5vw,200px);z-index:5;text-align:center}
+body.modo-pantalla .sv-qr img{width:100%;height:auto;padding:8px;border-radius:14px;background:#fff;box-shadow:0 18px 40px -18px rgba(217,70,239,.8)}
+body.modo-pantalla .sv-qr p{margin:0;font-size:clamp(.7rem,.85vw,.95rem);line-height:1.3;color:var(--morado-cl);font-weight:600}
+body.modo-pantalla .sv-suplente{font-size:clamp(1rem,1.6vw,1.5rem)}
+body.modo-pantalla .sv-suplentes-nota{text-align:center;font-size:clamp(.9rem,1.2vw,1.15rem)}
+@media (max-width:1100px){body.modo-pantalla .sv-qr{display:none}}
 
 /* ---------- herramienta del organizador ---------- */
 .paso{padding:clamp(1.1rem,3vw,1.8rem);border-radius:22px;background:rgba(13,5,25,.85);border:1px solid var(--borde)}
@@ -187,6 +210,18 @@ body.modo-pantalla .barra-vista{margin-bottom:1rem}
 .excluidos ul{padding-left:1.1rem;color:rgba(240,234,255,.85)}
 .excluidos li{margin:.35rem 0}
 #o-rapido{margin:.2rem 0 .4rem}
+.caja-qr{margin:.4rem 0 1.6rem;padding:1.1rem 1.2rem .6rem;border-radius:18px;border:1px solid rgba(232,121,249,.4);
+  background:linear-gradient(160deg,rgba(124,58,237,.18),rgba(13,5,25,.6))}
+.qr-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.qr-cab h3{margin:0 0 .2rem;color:#fff;font-size:1.1rem}
+.qr-cab h3 small{display:block;color:var(--gris);font:500 .82rem 'Inter',sans-serif;margin-top:.15rem}
+.qr-cab .estado-o{margin:.2rem 0 0;font-weight:600}
+.check.abajo{align-self:end;margin-bottom:1.15rem}
+.entrada{padding:.62rem .85rem;border-radius:10px;border:1px solid var(--borde);background:#0b0418;color:#fff;font:500 .95rem 'Inter',sans-serif;min-width:0;flex:1 1 200px}
+details.mas{margin:.2rem 0 .6rem;border-top:1px solid var(--borde);padding-top:.6rem}
+details.mas summary{cursor:pointer;color:var(--gris);font-size:.88rem;font-weight:600}
+.estado-o.publicado{font-weight:600;padding:.7rem .9rem;border-radius:12px;background:rgba(7,2,15,.5);border:1px solid var(--borde)}
+.estado-o.publicado:empty{display:none}
 
 @media (max-width:560px){
   .sv-datos{grid-template-columns:1fr 1fr}
@@ -195,5 +230,6 @@ body.modo-pantalla .barra-vista{margin-bottom:1rem}
   .barra{padding:.8rem 1rem}
 }
 @media (prefers-reduced-motion:reduce){
-  .giro,.sv-ganador.listo{animation:none}
+  .giro,.sv-ganador.listo,.sv-ganador.listo .et,.sv-cuenta-num.final{animation:none}
+  .confeti{display:none}
 }

@@ -1,13 +1,14 @@
 /* Labs Summit 2026 · herramienta del organizador (/sorteos/organizador.html)
-   Lee la lista de boletas (el Excel de Coccoa, CSV o filas pegadas desde Excel),
-   cierra la lista, genera el archivo público (sin datos personales) y el privado,
-   y al final muestra los datos de contacto de los ganadores. Nada sale de este computador. */
+   Trae los registros del QR (/api/registros, con la clave del sorteo) o lee un archivo
+   (Excel, CSV o filas pegadas), cierra la lista, genera el archivo público (sin datos
+   personales) y lo publica en /api/sorteos, y al final muestra los datos de contacto de
+   los ganadores. Los datos personales y las sales nunca salen de este computador. */
 (function () {
   'use strict';
 
   var N = window.LSSorteo, V = window.LSVista, h = V.h, vaciar = V.vaciar;
   var $ = function (s) { return document.getElementById(s); };
-  var est = { cabeceras: [], filas: [], archivos: [], publico: null, privado: null, control: null, fechas: -1 };
+  var est = { cabeceras: [], filas: [], archivos: [], publico: null, privado: null, control: null, fechas: -1, fuente: '' };
   var cargado = { privado: null, publico: null }, reintento = null;
 
   function sinTildes(s) { return N.limpiar(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
@@ -47,10 +48,111 @@
   });
   pintarExcluidos();
 
+  /* ---------------- 1 · registros del QR (labssummit.com/participa) ---------------- */
+  // La clave se queda en esta pestaña; en el computador solo si se marca «Recordarla»
+  var CLAVE_API = 'lsSorteoClave';
+  function clave() { return $('o-clave').value.trim(); }
+  function guardarClave() {
+    try {
+      sessionStorage.setItem(CLAVE_API, clave());
+      if ($('o-recordar').checked) localStorage.setItem(CLAVE_API, clave()); else localStorage.removeItem(CLAVE_API);
+    } catch (e) { /* sin almacenamiento: hay que escribirla cada vez */ }
+  }
+  try {
+    $('o-clave').value = sessionStorage.getItem(CLAVE_API) || localStorage.getItem(CLAVE_API) || '';
+    $('o-recordar').checked = !!localStorage.getItem(CLAVE_API);
+  } catch (e) { /* nada */ }
+  $('o-recordar').addEventListener('change', function () { if (clave()) guardarClave(); else try { localStorage.removeItem(CLAVE_API); } catch (e) { /* nada */ } });
+
+  function api(ruta, cuerpo) {
+    var op = { method: cuerpo ? 'POST' : 'GET', headers: {}, cache: 'no-store', credentials: 'same-origin' };
+    if (clave()) op.headers.Authorization = 'Bearer ' + clave();
+    if (cuerpo) { op.headers['Content-Type'] = 'application/json'; op.body = typeof cuerpo === 'string' ? cuerpo : JSON.stringify(cuerpo); }
+    return fetch(ruta, op).then(function (r) {
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        if (r.ok) return d;
+        var e = new Error(d.error || 'El servidor respondió con el error ' + r.status + '.');
+        e.status = r.status;
+        throw e;
+      });
+    }, function () { throw new Error('No hay conexión con labssummit.com.'); });
+  }
+
+  var qrAbierto = null;
+  function pintarEstadoQR(abierto, total) {
+    qrAbierto = abierto;
+    texto('o-qr-estado', (abierto ? '● Registro abierto' : '● Registro cerrado') + ' · ' + miles(total) + (total === 1 ? ' persona registrada' : ' personas registradas'), 'estado-o ' + (abierto ? 'bien' : 'mal'));
+    $('o-abrir-cerrar').textContent = abierto ? 'Cerrar el registro' : 'Abrir el registro';
+    $('o-abrir-cerrar').hidden = false;
+  }
+  function consultarQR() {
+    fetch('/api/participa', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) {
+      return r.json().then(function (d) { return { status: r.status, d: d }; });
+    }).then(function (x) {
+      if (x.status === 503) return texto('o-qr-estado', 'El registro del QR todavía no está activado en Cloudflare (falta enlazar la base de datos SORTEO_DB).', 'estado-o mal');
+      if (x.status !== 200) throw new Error();
+      pintarEstadoQR(x.d.abierto, x.d.total);
+    }).catch(function () { texto('o-qr-estado', 'No se pudo consultar el registro del QR.', 'estado-o mal'); });
+  }
+  consultarQR();
+
+  function conClave(boton, ruta, cuerpo, listo) {
+    if (!clave()) { texto('o-qr-msg', 'Escribe la clave del sorteo.', 'estado-o mal'); $('o-clave').focus(); return; }
+    boton.disabled = true;
+    texto('o-qr-msg', 'Un momento…', 'estado-o');
+    api(ruta, cuerpo).then(function (d) {
+      guardarClave();
+      if (typeof d.abierto === 'boolean') pintarEstadoQR(d.abierto, d.total);
+      listo(d);
+    }, function (e) { texto('o-qr-msg', e.message, 'estado-o mal'); })
+      .finally(function () { boton.disabled = false; });
+  }
+  // «2026-10-29T15:04:05Z» → «2026-10-29 10:04» (hora de Colombia)
+  function fechaRegistro(iso) { var ms = Date.parse(iso); return isNaN(ms) ? '' : valorLocal(ms).replace('T', ' '); }
+
+  $('o-traer').addEventListener('click', function () {
+    conClave(this, '/api/registros', null, function (d) {
+      var lista = Array.isArray(d.registros) ? d.registros : [];
+      if (!lista.length) return texto('o-qr-msg', 'Todavía no hay nadie registrado.', 'estado-o mal');
+      est.archivos = [{ nombre: 'Registros del QR', tabla: [['Fecha de registro', 'Nombre completo', 'Celular']].concat(lista.map(function (x) { return [fechaRegistro(x.creado), x.nombre, x.celular]; })) }];
+      est.fuente = 'qr';
+      $('o-pegar').value = '';
+      $('o-encabezado').checked = true;
+      texto('o-archivos', '');
+      texto('o-qr-msg', '✓ ' + miles(lista.length) + (lista.length === 1 ? ' registro traído' : ' registros traídos') + ' (' + V.horaCol(Date.now(), true) + '). Quienes se registren después entran en el próximo sorteo.', 'estado-o bien');
+      leer();
+    });
+  });
+  $('o-abrir-cerrar').addEventListener('click', function () {
+    var cerrar = qrAbierto !== false;
+    if (cerrar && !confirm('¿Cerrar el registro? Nadie más podrá registrarse hasta que lo abras otra vez.')) return;
+    conClave(this, '/api/registros', { accion: cerrar ? 'cerrar' : 'abrir' }, function (d) {
+      texto('o-qr-msg', d.abierto ? 'El registro quedó abierto.' : 'El registro quedó cerrado.', 'estado-o bien');
+    });
+  });
+  $('o-quitar').addEventListener('click', function () {
+    var cel = N.limpiar($('o-quitar-cel').value);
+    if (!cel) return $('o-quitar-cel').focus();
+    if (!confirm('¿Quitar el registro del celular ' + cel + '?')) return;
+    conClave(this, '/api/registros', { accion: 'quitar', celular: cel }, function () {
+      $('o-quitar-cel').value = '';
+      texto('o-qr-msg', 'Registro quitado.', 'estado-o bien');
+    });
+  });
+  $('o-vaciar').addEventListener('click', function () {
+    var r = prompt('Esto borra TODOS los registros del QR. Úsalo solo para limpiar las pruebas antes de abrir el registro al público.\n\nEscribe VACIAR para confirmar:');
+    if (r === null) return;
+    if (N.limpiar(r).toUpperCase() !== 'VACIAR') return texto('o-qr-msg', 'No se borró nada.', 'estado-o');
+    conClave(this, '/api/registros', { accion: 'vaciar', confirmar: 'VACIAR' }, function () {
+      texto('o-qr-msg', 'Se borraron todos los registros.', 'estado-o bien');
+    });
+  });
+
   /* ---------------- 1 · leer la lista ---------------- */
   $('o-archivo').addEventListener('change', function (e) {
     var fs = Array.prototype.slice.call(e.target.files || []);
     est.archivos = [];
+    est.fuente = 'archivo';
     texto('o-archivos', '');
     if (!fs.length) return;
     texto('o-leido', 'Leyendo…', 'estado-o');
@@ -217,6 +319,11 @@
     return N.etiquetaDe(x.nombre, x.visible === null ? '' : N.limpiar(x.visible) ? x.visible : x.id);
   }
   function idDeEnlace() { return /^codigo del enlace/.test(sinTildes(est.cabeceras[col('o-col-id')] || '')); }
+  // Solo un código de boleta u orden se puede revelar en público; nunca un celular, una cédula o un correo
+  function idRevelable() {
+    var c = sinTildes(est.cabeceras[col('o-col-id')] || '');
+    return !idDeEnlace() && /codigo|cod\.|boleta|ticket|orden|order|pedido|referencia|localizador/.test(c) && !/\btel|celular|\bcel\b|movil|cedula|documento|correo|e-?mail/.test(c);
+  }
 
   function pintarMuestra() {
     var reg = registros(), r = reg.lista, caja = vaciar($('o-muestra'));
@@ -228,12 +335,12 @@
   function pintarAvisos(reg) {
     var caja = vaciar($('o-avisos')), r = reg.lista;
     function aviso(t, clase) { caja.appendChild(h('p', { class: clase || 'aviso', text: t })); }
-    aviso(miles(r.length) + ' de ' + miles(est.filas.length) + ' filas participan con estos filtros. Compara el total con tu fuente (el formulario del QR o Coccoa).', 'ayuda');
+    aviso(est.fuente === 'qr' && r.length === est.filas.length ? miles(r.length) + (r.length === 1 ? ' persona registrada participa.' : ' personas registradas participan.') : miles(r.length) + ' de ' + miles(est.filas.length) + ' filas participan con estos filtros. Compara el total con tu fuente.', 'ayuda');
     if (reg.yaGanaron) aviso(miles(reg.yaGanaron) + (reg.yaGanaron === 1 ? ' fila es de alguien que ya ganó hoy y no participa' : ' filas son de personas que ya ganaron hoy y no participan') + ' (lista en el paso 5).', 'ayuda');
     // rango de ventas: confirma que el archivo se bajó a la hora de cierre y trae las ventas de hoy
     if (est.fechas >= 0) {
       var fechas = r.map(function (x) { return String(celda(x.fila, est.fechas)); }).filter(function (v) { return /^\d{4}-\d{2}-\d{2}/.test(v); }).sort();
-      if (fechas.length) aviso('El archivo trae registros desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Si llegaron más después, vuelve a descargarlo.', 'ayuda');
+      if (fechas.length) aviso((est.fuente === 'qr' ? 'Registros desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Para incluir a los que lleguen después, vuelve a pulsar «Traer los registros».' : 'El archivo trae registros desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Si llegaron más después, vuelve a descargarlo.'), 'ayuda');
     }
     if (idDeEnlace()) aviso('El identificador es el código del enlace de cada boleta. En la lista pública solo aparecen sus últimos 4 dígitos y nunca se publica completo: con él se puede abrir la boleta.', 'ayuda');
     else {
@@ -265,7 +372,7 @@
     var ms = msDeLocal($('o-hora').value), e = $('o-ronda');
     if (isNaN(ms)) { e.textContent = ''; return; }
     var r = N.rondaEn(ms), hora = N.horaDeRonda(r);
-    var txt = 'Se usará la ronda ' + r.toLocaleString('es-CO') + ' de drand quicknet, que sale el ' + V.fechaCol(hora) + ' a las ' + V.horaCol(hora, true) + '.';
+    var txt = 'Se usará la ronda ' + r.toLocaleString('es-CO') + ' de drand quicknet, que sale el ' + V.fechaCol(hora) + ' a las ' + V.horaCol(hora, true);
     if (!$('o-ensayo').checked && hora < Date.now() + 3 * 60e3) txt += ' ⚠ Debe ser al menos 3 minutos en el futuro.';
     e.textContent = txt;
   }
@@ -303,7 +410,7 @@
           formato: N.FORMATO + '-privado',
           aviso: 'ARCHIVO PRIVADO: tiene datos personales y las sales de los compromisos. No lo publiques ni lo subas al repositorio.',
           id: pub.id, huella: pub.huella, columnas: est.cabeceras,
-          revelable: !idDeEnlace(),   // el código del enlace abre la boleta: nunca se revela
+          revelable: idRevelable(),   // el código del enlace abre la boleta y el celular es un dato personal: no se revelan
           participantes: prep.participantes.map(function (p) {
             return { posicion: p.posicion, etiqueta: p.etiqueta, id: p.id, idOriginal: p.idOriginal, nombre: p.nombre, sal: p.sal, fila: p.fila };
           })
@@ -315,14 +422,16 @@
           dia.push(entradaIndice(pub));
           guardarLocal(CLAVE_DIA, dia);
         }
+        guardarUltimo();
         pintarResumen(pub, prep, reg);
+        publicar(pub);
         buscarGanadores();
       });
     }).catch(function (e) { mostrarError(e.message || String(e)); })
       .finally(function () { boton.disabled = false; boton.textContent = 'Cerrar la lista y generar el sorteo'; });
   });
 
-  function pintarResumen(pub, prep, reg) {
+  function pintarResumen(pub, prep, reg, sinMover) {
     var hora = N.horaDeRonda(pub.azar.ronda), caja = vaciar($('o-resumen'));
     var url = location.origin + '/sorteos/?id=' + pub.id;
     var fuera = [];
@@ -341,8 +450,12 @@
       h('p', null, ['Enlace público: ', h('code', { text: url })]),
       h('p', null, ['Pantalla del evento: ', h('code', { text: url + '&pantalla' })])
     ]));
+    $('o-enlace-pantalla').href = '/sorteos/?id=' + encodeURIComponent(pub.id) + '&pantalla';
+    $('o-enlace-pantalla').hidden = true;
+    $('o-publicar').hidden = true;
+    $('o-despublicar').hidden = true;
     $('paso4').hidden = false;
-    $('paso4').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!sinMover) $('paso4').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   /* ---------------- 4 · archivos ---------------- */
@@ -372,6 +485,56 @@
   });
 
   function entradaIndice(p) { return { id: p.id, titulo: p.titulo, ensayo: p.ensayo, ronda: p.azar.ronda, participantes: p.participantes.length, huella: p.huella }; }
+
+  /* ---------------- publicar en labssummit.com/sorteos (/api/sorteos) ---------------- */
+  // Va solo el archivo público: la huella, la ronda y las etiquetas. Nada del archivo privado.
+  function publicar(pub) {
+    if (!clave()) {
+      texto('o-publicado', 'No se publicó solo porque falta la clave del sorteo (paso 1). Escríbela y pulsa «Publicar otra vez», o descarga los archivos y súbelos a GitHub.', 'estado-o mal');
+      mostrarBoton('o-publicar', true);
+      return;
+    }
+    texto('o-publicado', 'Publicando en labssummit.com/sorteos…', 'estado-o');
+    mostrarBoton('o-publicar', false);
+    api('/api/sorteos', jsonPublico(pub)).then(function () {
+      if (est.publico !== pub) return;
+      guardarClave();
+      texto('o-publicado', '✓ Publicado en labssummit.com/sorteos (' + V.horaCol(Date.now(), true) + ')' + (pub.ensayo ? ', marcado como ensayo.' : '. Cualquiera puede revisarlo desde su celular antes de que salga el número.'), 'estado-o bien');
+      mostrarBoton('o-enlace-pantalla', true);
+      mostrarBoton('o-despublicar', !!pub.ensayo);
+    }, function (e) {
+      if (est.publico !== pub) return;
+      var porque = e.status === 503 ? 'la publicación automática todavía no está activada en Cloudflare.' : e.message;
+      texto('o-publicado', 'No se pudo publicar: ' + porque + ' El sorteo sigue siendo válido: proyecta la pantalla desde aquí y luego sube los archivos a GitHub.', 'estado-o mal');
+      mostrarBoton('o-publicar', e.status !== 409);
+    });
+  }
+  function mostrarBoton(id, si) { $(id).hidden = !si; }
+  $('o-publicar').addEventListener('click', function () { if (est.publico) publicar(est.publico); });
+  $('o-despublicar').addEventListener('click', function () {
+    var pub = est.publico;
+    if (!pub || !confirm('¿Quitar «' + pub.titulo + '» de labssummit.com/sorteos?')) return;
+    api('/api/sorteos', { accion: 'borrar', id: pub.id }).then(function () {
+      texto('o-publicado', 'Se quitó de la página.', 'estado-o');
+      mostrarBoton('o-despublicar', false);
+      mostrarBoton('o-enlace-pantalla', false);
+      mostrarBoton('o-publicar', true);
+    }, function (e) { texto('o-publicado', e.message, 'estado-o mal'); });
+  });
+
+  // El último sorteo generado se guarda en este navegador (2 días): si la página se recarga, el paso 5 sigue funcionando
+  var CLAVE_ULTIMO = 'lsSorteoUltimo';
+  function guardarUltimo() {
+    try { localStorage.setItem(CLAVE_ULTIMO, JSON.stringify({ guardado: Date.now(), publico: est.publico, privado: est.privado })); } catch (e) { try { localStorage.removeItem(CLAVE_ULTIMO); } catch (e2) { /* nada */ } }
+  }
+  function recuperarUltimo() {
+    try {
+      var u = JSON.parse(localStorage.getItem(CLAVE_ULTIMO) || 'null');
+      if (u && !(Date.now() - u.guardado < 2 * 864e5)) { localStorage.removeItem(CLAVE_ULTIMO); return false; }
+      if (u && u.publico && u.privado && u.privado.huella === u.publico.huella && !N.validar(u.publico).length) { est.publico = u.publico; est.privado = u.privado; return true; }
+    } catch (e) { /* nada */ }
+    return false;
+  }
 
   /* ---------------- pantalla (vista previa local) ---------------- */
   $('o-pantalla').addEventListener('click', function () {
@@ -412,7 +575,7 @@
     if (problemas.length) return texto('o-estado-ganadores', problemas[0], 'estado-o mal');
     var hora = N.horaDeRonda(pub.azar.ronda);
     if (Date.now() < hora) {
-      texto('o-estado-ganadores', 'El sorteo es a las ' + V.horaCol(hora, true) + '. Deja esta página abierta: los ganadores aparecen solos.', 'estado-o');
+      texto('o-estado-ganadores', 'El sorteo es a las ' + V.horaCol(hora, true) + ': deja esta página abierta y los ganadores aparecen solos.', 'estado-o');
       reintento = setTimeout(buscarGanadores, Math.min(hora - Date.now() + 1500, 60e3));
       return;
     }
@@ -461,8 +624,8 @@
         x.p && x.ok && !pub.ensayo ? botonGanador(x, pub) : null
       ]));
     });
-    if (todosOk && priv.revelable === false) {
-      caja.appendChild(h('p', { class: 'ayuda', text: 'La revelación pública no está disponible: el identificador es el código del enlace de la boleta y con él se podría abrir.' }));
+    if (todosOk && priv.revelable !== true) {
+      caja.appendChild(h('p', { class: 'ayuda', text: 'Este sorteo no tiene revelación pública: el identificador es un dato personal (como el celular) o el código que abre la boleta.' }));
     } else if (todosOk) {
       caja.appendChild(h('p', { class: 'ayuda', text: 'Opcional: publica la revelación para que cualquiera compruebe que el ganador corresponde a esa boleta. Hazlo solo si el identificador es el código de la boleta o de la orden, nunca una cédula, un teléfono o un correo.' }));
       caja.appendChild(h('button', { type: 'button', class: 'btn', text: 'Descargar archivo público con la revelación', onclick: function () {
@@ -471,5 +634,16 @@
         V.descargar(pub.id + '.json', jsonPublico(conRev), 'application/json');
       } }));
     }
+  }
+
+  // Si el último sorteo aún no sale (o salió hace poco), vuelve a quedar a mano la pantalla
+  if (recuperarUltimo()) {
+    if (N.horaDeRonda(est.publico.azar.ronda) > Date.now() - 30 * 60e3) {
+      pintarResumen(est.publico, {}, {}, true);
+      texto('o-publicado', 'Es el último sorteo que generaste en este computador. Si no alcanzó a publicarse, pulsa «Publicar otra vez».', 'estado-o');
+      mostrarBoton('o-publicar', true);
+      mostrarBoton('o-enlace-pantalla', true);
+    }
+    buscarGanadores();
   }
 })();

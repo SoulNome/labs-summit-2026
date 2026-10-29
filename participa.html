@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Participa en los sorteos · Labs Summit 2026</title>
+<meta name="description" content="Regístrate con tu nombre y celular para participar en los sorteos en vivo de Labs Summit 2026.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07020F">
+<meta property="og:title" content="Participa en los sorteos · Labs Summit 2026">
+<meta property="og:description" content="Regístrate una vez y entras en todos los sorteos del evento.">
+<meta property="og:image" content="https://labssummit.com/bannerInferior/imgg.jpg?v=3">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/sorteos/participa.css?v=1">
+</head>
+<body class="participa">
+
+<div class="fondo" aria-hidden="true"><span class="orbe o1"></span><span class="orbe o2"></span></div>
+
+<header class="p-barra">
+  <a class="p-marca" href="/">TULUÁ <span>LABS</span> SUMMIT</a>
+  <span class="p-vivo"><span class="punto" aria-hidden="true"></span>En vivo</span>
+</header>
+
+<main class="p-main" id="principal">
+  <section class="p-hero">
+    <p class="p-etiqueta">Sorteos Labs Summit 2026</p>
+    <h1>Participa en los <span class="ac">sorteos</span></h1>
+    <p class="p-sub">Regístrate una vez y entras en todos los sorteos del evento.</p>
+  </section>
+
+  <ul class="p-premios" aria-label="Premios">
+    <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="M14 25h4"/></svg><span>Celular</span></li>
+    <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="6" width="24" height="20" rx="3"/><path d="M15 22h2"/></svg><span>Tablet</span></li>
+    <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25V9M3 21h26v4M29 21v-5a4 4 0 0 0-4-4H14v9"/><circle cx="8.5" cy="15.5" r="2.5"/></svg><span>Hospedaje</span></li>
+    <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M16 12.5V16l2.2 1.6M12 9.8 13 3h6l1 6.8M12 22.2 13 29h6l1-6.8"/></svg><span>Reloj</span></li>
+  </ul>
+
+  <p class="p-contador" id="p-contador" hidden><span class="punto" aria-hidden="true"></span><span id="p-contador-txt"></span></p>
+
+  <!-- formulario -->
+  <section class="p-tarjeta" id="p-form" aria-labelledby="t-form">
+    <h2 id="t-form">Tus datos</h2>
+    <form id="p-formulario" novalidate>
+      <div class="p-campo">
+        <label for="p-nombre">Nombre completo</label>
+        <input id="p-nombre" name="nombre" type="text" autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="80" required aria-describedby="p-nombre-error">
+        <p class="p-error-campo" id="p-nombre-error" hidden></p>
+      </div>
+      <div class="p-campo">
+        <label for="p-celular">Celular</label>
+        <input id="p-celular" name="celular" type="tel" inputmode="tel" autocomplete="tel" enterkeyhint="done" maxlength="20" placeholder="300 123 4567" required aria-describedby="p-celular-ayuda p-celular-error">
+        <p class="p-ayuda" id="p-celular-ayuda">Si ganas, te llamamos a este número.</p>
+        <p class="p-error-campo" id="p-celular-error" hidden></p>
+      </div>
+      <div class="p-trampa" aria-hidden="true">
+        <label for="p-sitio">No llenes este campo</label>
+        <input id="p-sitio" name="sitio" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="p-campo">
+        <label class="p-check">
+          <input id="p-autoriza" name="autoriza" type="checkbox" required aria-describedby="p-autoriza-error">
+          <span>Autorizo a TECHNO LABS GROUPS S.A.S. a usar mi nombre y celular para los sorteos del evento, según la <a href="/politica.html" target="_blank" rel="noopener">política de datos</a>. En la lista pública solo aparecen mi nombre abreviado y los últimos 4 dígitos.</span>
+        </label>
+        <p class="p-error-campo" id="p-autoriza-error" hidden></p>
+      </div>
+      <button type="submit" class="p-boton" id="p-enviar"><span class="p-boton-txt">Quiero participar</span></button>
+      <p class="p-error" id="p-error" role="alert" hidden></p>
+    </form>
+  </section>
+
+  <!-- registrado -->
+  <section class="p-tarjeta p-listo" id="p-listo" aria-labelledby="t-listo" tabindex="-1" hidden>
+    <div class="p-chulo" aria-hidden="true"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-16"/></svg></div>
+    <h2 id="t-listo">¡Listo, ya participas!</h2>
+    <p id="p-listo-ya" class="p-nota" hidden></p>
+    <p class="p-l">Así apareces en la lista del sorteo</p>
+    <p class="p-etiqueta-persona" id="p-etiqueta"></p>
+    <ul class="p-claves">
+      <li>Entras en todos los sorteos que se cierren desde ahora. No tienes que volver a registrarte.</li>
+      <li>Atento a la pantalla: anunciamos a los ganadores en vivo y te llamamos a tu celular.</li>
+      <li>Puedes comprobar cada sorteo en labssummit.com/sorteos.</li>
+    </ul>
+    <a class="p-boton sec" href="/sorteos/">Ver los sorteos</a>
+    <button type="button" class="p-enlace" id="p-otra">Registrar a otra persona</button>
+  </section>
+
+  <!-- cerrado / aún no abre -->
+  <section class="p-tarjeta p-aviso" id="p-cerrado" hidden>
+    <h2>El registro está cerrado</h2>
+    <p>Por ahora no estamos recibiendo registros. Si ya te registraste, sigues participando.</p>
+    <a class="p-boton sec" href="/sorteos/">Ver los sorteos</a>
+  </section>
+  <section class="p-tarjeta p-aviso" id="p-pronto" hidden>
+    <h2>El registro abre en unos minutos</h2>
+    <p>Estamos terminando de prepararlo. Vuelve a intentarlo en un momento.</p>
+    <button type="button" class="p-boton sec" id="p-reintentar">Intentar de nuevo</button>
+  </section>
+
+  <noscript><p class="p-tarjeta p-aviso">Para registrarte necesitas activar JavaScript en tu navegador.</p></noscript>
+
+  <p class="p-pie-nota">Cada celular participa una vez. <b>Nunca te pediremos dinero, recargas ni claves para entregarte un premio.</b></p>
+</main>
+
+<!-- pantalla grande: QR para proyectar (/participa?pantalla) -->
+<section class="p-pantalla" id="p-pantalla" hidden aria-labelledby="t-pantalla">
+  <div class="pp-texto">
+    <p class="p-etiqueta">Sorteos Labs Summit 2026</p>
+    <h1 id="t-pantalla">Escanea y <span class="ac">participa</span></h1>
+    <p class="pp-sub">Regístrate una vez y entras en todos los sorteos del evento.</p>
+    <ul class="p-premios grandes" aria-label="Premios">
+      <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="9" y="3" width="14" height="26" rx="3"/><path d="M14 25h4"/></svg><span>Celular</span></li>
+      <li><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="6" width="24" height="20" rx="3"/><path d="M15 22h2"/></svg><span>Tablet</span></li>
+      <li><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M3 25V9M3 21h26v4M29 21v-5a4 4 0 0 0-4-4H14v9"/><circle cx="8.5" cy="15.5" r="2.5"/></svg><span>Hospedaje</span></li>
+      <li><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M16 12.5V16l2.2 1.6M12 9.8 13 3h6l1 6.8M12 22.2 13 29h6l1-6.8"/></svg><span>Reloj</span></li>
+    </ul>
+    <p class="pp-cuenta" id="pp-cuenta" hidden><b id="pp-total">0</b> <span id="pp-total-txt">personas ya participan</span></p>
+  </div>
+  <figure class="pp-qr">
+    <img src="/sorteos/qr-participa.svg" alt="Código QR para registrarse: labssummit.com/participa" width="330" height="330">
+    <figcaption>labssummit.com/<b>participa</b></figcaption>
+  </figure>
+</section>
+
+<script src="/sorteos/participa.js?v=1" defer></script>
+</body>
+</html>
