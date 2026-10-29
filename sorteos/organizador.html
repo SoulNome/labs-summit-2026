@@ -82,6 +82,12 @@
       <label class="campo">Premios, uno por línea y en orden
         <textarea id="o-premios" rows="3" placeholder="Bono de $500.000&#10;Kit Labs Summit"></textarea>
       </label>
+      <div class="fila-botones" id="o-rapido">
+        <span class="ayuda">Sorteo rápido:</span>
+        <button type="button" class="btn sec" data-min="3">En 3 min</button>
+        <button type="button" class="btn sec" data-min="5">En 5 min</button>
+        <button type="button" class="btn sec" data-min="10">En 10 min</button>
+      </div>
       <p id="o-ronda" class="ayuda"></p>
       <label class="check"><input type="checkbox" id="o-ensayo"> Es un ensayo: se marca como «no oficial» y permite una hora que ya pasó</label>
       <button type="button" id="o-generar" class="btn pri">Cerrar la lista y generar el sorteo</button>
@@ -92,10 +98,10 @@
       <h2 id="t-p4"><span class="num">4</span> Publicar antes de la hora del sorteo</h2>
       <div id="o-resumen" class="resumen"></div>
       <ol class="instrucciones">
-        <li>Descarga los tres archivos.</li>
-        <li>Guarda el <b>archivo privado</b> fuera de la carpeta del sitio. Tiene los datos de los compradores: no lo subas ni lo compartas.</li>
-        <li>Copia el archivo del sorteo y <code>indice.json</code> en la carpeta <code>sorteos/datos/</code> del sitio y publica.</li>
-        <li>Antes de la hora del sorteo, muestra en pantalla la huella y el enlace del sorteo.</li>
+        <li>Abre la <b>pantalla del sorteo</b> en el proyector: muestra la huella y la cuenta regresiva. Si el sorteo es ya, no esperes a publicar.</li>
+        <li>Descarga los tres archivos. Guarda el <b>archivo privado</b> fuera de la carpeta del sitio: tiene los datos de los participantes, no lo subas ni lo compartas.</li>
+        <li>Publica el archivo del sorteo y <code>indice.json</code> en <code>sorteos/datos/</code> (en GitHub: Add file → Upload files), antes o después del sorteo.</li>
+        <li>Cuando salga el número, abajo en el paso 5 verás los datos de contacto de los ganadores.</li>
       </ol>
       <div class="fila-botones">
         <button type="button" id="o-bajar-publico" class="btn pri">Archivo del sorteo (.json)</button>
@@ -106,14 +112,19 @@
     </section>
 
     <section class="paso" id="paso5" aria-labelledby="t-p5">
-      <h2 id="t-p5"><span class="num">5</span> Después del sorteo: contactar a los ganadores</h2>
-      <p>Carga el archivo privado y, si no es el sorteo que acabas de generar, también el archivo público. Cuando salga la ronda de drand verás los datos completos de los ganadores.</p>
+      <h2 id="t-p5"><span class="num">5</span> Ganadores y sus datos de contacto</h2>
+      <p>Los del sorteo que acabas de generar aparecen solos cuando sale la ronda de drand. Para un sorteo anterior, carga su archivo privado y su archivo público.</p>
       <div class="fila-botones">
         <label class="btn">Archivo privado<input type="file" id="o-privado" accept=".json,application/json" class="oculto"></label>
         <label class="btn sec">Archivo público<input type="file" id="o-publico" accept=".json,application/json" class="oculto"></label>
       </div>
       <p id="o-estado-ganadores" class="estado-o" aria-live="polite"></p>
       <div id="o-ganadores"></div>
+      <div id="o-excluidos" class="excluidos" hidden>
+        <h3>Ya ganaron hoy: no vuelven a participar</h3>
+        <ul id="o-lista-excluidos"></ul>
+        <button type="button" id="o-borrar-excluidos" class="btn sec">Vaciar la lista</button>
+      </div>
     </section>
   </div>
 

@@ -18,6 +18,34 @@
   function msDeLocal(v) { return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v || '') ? Date.parse(v + ':00-05:00') : NaN; }
   function isoCol(ms) { return new Date(ms - 5 * 3600e3).toISOString().slice(0, 19) + '-05:00'; }
   function miles(n) { return n.toLocaleString('es-CO'); }
+  // «en N minutos», redondeado al minuto siguiente (el campo de hora va de minuto en minuto)
+  function enMinutos(n) { return valorLocal(Math.ceil((Date.now() + n * 60e3 + 20e3) / 6e4) * 6e4); }
+
+  /* ---------------- ganadores de hoy (no vuelven a participar) ---------------- */
+  // Se guardan en este navegador: solo el identificador normalizado y la etiqueta pública.
+  var CLAVE_GANADORES = 'lsSorteoGanadores', CLAVE_DIA = 'lsSorteosDelDia';
+  function leerLocal(clave) { try { var x = JSON.parse(localStorage.getItem(clave) || '[]'); return Array.isArray(x) ? x : []; } catch (e) { return []; } }
+  function guardarLocal(clave, x) { try { localStorage.setItem(clave, JSON.stringify(x)); } catch (e) { /* sin almacenamiento: no se recuerdan */ } }
+  function idBase(id) { return String(id).split('#')[0]; }
+  function yaGano(id) { return leerLocal(CLAVE_GANADORES).some(function (g) { return g.id === idBase(id); }); }
+  function marcarGanador(p, premio, sorteo, si) {
+    var lista = leerLocal(CLAVE_GANADORES).filter(function (g) { return g.id !== idBase(p.id); });
+    if (si) lista.push({ id: idBase(p.id), etiqueta: p.etiqueta, premio: premio, sorteo: sorteo });
+    guardarLocal(CLAVE_GANADORES, lista);
+    pintarExcluidos();
+    if (est.filas.length) pintarMuestra();
+  }
+  function pintarExcluidos() {
+    var lista = leerLocal(CLAVE_GANADORES), caja = vaciar($('o-lista-excluidos'));
+    $('o-excluidos').hidden = !lista.length;
+    lista.forEach(function (g) {
+      caja.appendChild(h('li', null, [g.etiqueta + ' · ' + g.premio + ' ', h('button', { type: 'button', class: 'btn sec mini', text: 'Quitar', onclick: function () { marcarGanador(g, '', '', false); } })]));
+    });
+  }
+  $('o-borrar-excluidos').addEventListener('click', function () {
+    if (confirm('¿Vaciar la lista? Quienes ya ganaron podrían volver a ganar.')) { guardarLocal(CLAVE_GANADORES, []); pintarExcluidos(); if (est.filas.length) pintarMuestra(); }
+  });
+  pintarExcluidos();
 
   /* ---------------- 1 · leer la lista ---------------- */
   $('o-archivo').addEventListener('change', function (e) {
@@ -67,7 +95,7 @@
     llenarColumnas();
     $('paso2').hidden = false;
     $('paso3').hidden = false;
-    if (!$('o-hora').value) $('o-hora').value = valorLocal(Math.ceil((Date.now() + 20 * 60e3) / 3e5) * 3e5);
+    if (!$('o-hora').value) $('o-hora').value = enMinutos(10);
     pintarRonda();
   }
 
@@ -174,14 +202,16 @@
   }
   function registros() {
     var ci = col('o-col-id'), cn = col('o-col-nombre'), cc = col('o-col-cantidad'), cv = colVisible(), filtros = filtrosActivos();
-    var r = [], fuera = 0;
+    var r = [], fuera = 0, ganaron = 0, excluir = Object.create(null);
+    leerLocal(CLAVE_GANADORES).forEach(function (g) { excluir[g.id] = true; });
     est.filas.forEach(function (f) {
       for (var g = 0; g < filtros.length; g++) {
         if (!filtros[g].ok[N.limpiar(celda(f, filtros[g].columna)) || '(vacío)']) { fuera++; return; }
       }
+      if (excluir[N.normalizarId(celda(f, ci))]) { ganaron++; return; }
       r.push({ id: celda(f, ci), nombre: cn >= 0 ? celda(f, cn) : '', visible: cv === -2 ? null : celda(f, cv), cantidad: cc >= 0 ? celda(f, cc) : 1, fila: f });
     });
-    return { lista: r, filtradas: fuera };
+    return { lista: r, filtradas: fuera, yaGanaron: ganaron };
   }
   function etiquetaPrevia(x) {
     return N.etiquetaDe(x.nombre, x.visible === null ? '' : N.limpiar(x.visible) ? x.visible : x.id);
@@ -199,6 +229,7 @@
     var caja = vaciar($('o-avisos')), r = reg.lista;
     function aviso(t, clase) { caja.appendChild(h('p', { class: clase || 'aviso', text: t })); }
     aviso(miles(r.length) + ' de ' + miles(est.filas.length) + ' filas participan con estos filtros. Compara el total con tu fuente (el formulario del QR o Coccoa).', 'ayuda');
+    if (reg.yaGanaron) aviso(miles(reg.yaGanaron) + (reg.yaGanaron === 1 ? ' fila es de alguien que ya ganó hoy y no participa' : ' filas son de personas que ya ganaron hoy y no participan') + ' (lista en el paso 5).', 'ayuda');
     // rango de ventas: confirma que el archivo se bajó a la hora de cierre y trae las ventas de hoy
     if (est.fechas >= 0) {
       var fechas = r.map(function (x) { return String(celda(x.fila, est.fechas)); }).filter(function (v) { return /^\d{4}-\d{2}-\d{2}/.test(v); }).sort();
@@ -239,6 +270,11 @@
     e.textContent = txt;
   }
 
+  // «En 3 / 5 / 10 min»: para un sorteo que se decide en el momento
+  Array.prototype.forEach.call(document.querySelectorAll('#o-rapido [data-min]'), function (b) {
+    b.addEventListener('click', function () { $('o-hora').value = enMinutos(parseInt(b.getAttribute('data-min'), 10)); pintarRonda(); });
+  });
+
   $('o-generar').addEventListener('click', function () {
     mostrarError('');
     var titulo = N.limpiar($('o-titulo').value);
@@ -273,7 +309,14 @@
           })
         };
         cargado.publico = null;
+        cargado.privado = null;
+        if (!pub.ensayo) {
+          var dia = leerLocal(CLAVE_DIA).filter(function (x) { return x.id !== pub.id; });
+          dia.push(entradaIndice(pub));
+          guardarLocal(CLAVE_DIA, dia);
+        }
         pintarResumen(pub, prep, reg);
+        buscarGanadores();
       });
     }).catch(function (e) { mostrarError(e.message || String(e)); })
       .finally(function () { boton.disabled = false; boton.textContent = 'Cerrar la lista y generar el sorteo'; });
@@ -286,6 +329,7 @@
     if (reg.filtradas) fuera.push(reg.filtradas.toLocaleString('es-CO') + ' filas quedaron fuera por el filtro');
     if (prep.sinId) fuera.push(prep.sinId.toLocaleString('es-CO') + ' filas sin identificador');
     if (prep.duplicados) fuera.push(prep.duplicados.toLocaleString('es-CO') + ' repetidas (se contaron una vez)');
+    if (reg.yaGanaron) fuera.push(reg.yaGanaron.toLocaleString('es-CO') + ' de quienes ya ganaron hoy');
     caja.appendChild(h('div', null, [
       pub.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo · no oficial' }) : null,
       h('p', { class: 'grande' }, [h('b', { text: pub.participantes.length.toLocaleString('es-CO') }), ' participaciones en «' + pub.titulo + '»']),
@@ -317,11 +361,17 @@
     fetch('/sorteos/datos/indice.json', { cache: 'no-store', credentials: 'same-origin' })
       .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
       .then(function (ind) {
-        var lista = ind && Array.isArray(ind.sorteos) ? ind.sorteos.filter(function (x) { return x && x.id !== p.id; }) : [];
-        lista.push({ id: p.id, titulo: p.titulo, ensayo: p.ensayo, ronda: p.azar.ronda, participantes: p.participantes.length, huella: p.huella });
+        var lista = ind && Array.isArray(ind.sorteos) ? ind.sorteos.filter(function (x) { return x && x.id; }) : [];
+        // también los sorteos de hoy generados en este computador que aún no se publicaron
+        leerLocal(CLAVE_DIA).concat([entradaIndice(p)]).forEach(function (x) {
+          lista = lista.filter(function (y) { return y.id !== x.id; });
+          lista.push(x);
+        });
         V.descargar('indice.json', JSON.stringify({ formato: N.FORMATO, sorteos: lista }, null, 2) + '\n', 'application/json');
       });
   });
+
+  function entradaIndice(p) { return { id: p.id, titulo: p.titulo, ensayo: p.ensayo, ronda: p.azar.ronda, participantes: p.participantes.length, huella: p.huella }; }
 
   /* ---------------- pantalla (vista previa local) ---------------- */
   $('o-pantalla').addEventListener('click', function () {
@@ -353,9 +403,9 @@
 
   function buscarGanadores() {
     clearTimeout(reintento);
-    var priv = cargado.privado, pub = cargado.publico || est.publico;
+    var priv = cargado.privado || est.privado, pub = cargado.publico || est.publico;
     vaciar($('o-ganadores'));
-    if (!priv || !Array.isArray(priv.participantes)) return texto('o-estado-ganadores', 'Carga el archivo privado del sorteo.', 'estado-o');
+    if (!priv || !Array.isArray(priv.participantes)) return texto('o-estado-ganadores', 'Genera un sorteo o carga el archivo privado de uno anterior.', 'estado-o');
     if (!pub) return texto('o-estado-ganadores', 'Carga también el archivo público del sorteo.', 'estado-o');
     if (priv.huella !== pub.huella) return texto('o-estado-ganadores', 'El archivo privado no corresponde a ese sorteo: las huellas son distintas.', 'estado-o mal');
     var problemas = N.validar(pub);
@@ -380,9 +430,24 @@
     });
   }
 
+  // Quien gana un premio (no un puesto de suplente) queda fuera de los próximos sorteos del día.
+  // Si un suplente recibe el premio, se marca con su botón; si un ganador no lo recibió, se quita.
+  function botonGanador(x, pub) {
+    var b = h('button', { type: 'button', class: 'btn sec' });
+    function pintar() { b.textContent = yaGano(x.p.id) ? 'Recibió el premio ✓ (quitar)' : 'Marcar que recibió el premio'; }
+    b.addEventListener('click', function () { marcarGanador(x.p, x.g.premio, pub.titulo, !yaGano(x.p.id)); pintar(); });
+    pintar();
+    return b;
+  }
   function pintarGanadores(pub, priv, xs) {
     var caja = vaciar($('o-ganadores'));
     var todosOk = xs.every(function (x) { return x.ok; });
+    var marcados = Object.create(null);
+    leerLocal(CLAVE_DIA + '.marcados').forEach(function (id) { marcados[id] = true; });
+    if (todosOk && !pub.ensayo && !marcados[pub.id]) {   // solo la primera vez que se ven los ganadores de este sorteo
+      xs.forEach(function (x) { if (!/suplente/i.test(x.g.premio)) marcarGanador(x.p, x.g.premio, pub.titulo, true); });
+      guardarLocal(CLAVE_DIA + '.marcados', Object.keys(marcados).concat([pub.id]));
+    }
     texto('o-estado-ganadores', todosOk ? 'Sorteo verificado. Estos son los datos de contacto (privados) de los ganadores:' : 'Atención: algún ganador no coincide con el archivo privado. Revisa que sean los archivos correctos.', todosOk ? 'estado-o bien' : 'estado-o mal');
     xs.forEach(function (x) {
       var filas = [];
@@ -392,7 +457,8 @@
         h('b', { text: x.g.etiqueta + ' · n.º ' + x.g.posicion }),
         h('p', { text: x.ok ? '✓ Coincide con el compromiso publicado.' : '✕ No coincide con el compromiso publicado.' }),
         x.p ? h('p', { text: 'Identificador: ' + x.p.idOriginal + (x.p.nombre ? ' · ' + x.p.nombre : '') }) : null,
-        filas.length ? h('table', { class: 'datos-fila' }, [h('tbody', null, filas)]) : null
+        filas.length ? h('table', { class: 'datos-fila' }, [h('tbody', null, filas)]) : null,
+        x.p && x.ok && !pub.ensayo ? botonGanador(x, pub) : null
       ]));
     });
     if (todosOk && priv.revelable === false) {
