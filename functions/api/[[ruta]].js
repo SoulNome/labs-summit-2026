@@ -169,7 +169,7 @@ async function sinPermiso(request, env, db) {
   if (!mismoOrigen(request)) return json({ error: 'Origen no permitido.' }, 403);
   await preparar(db);
   const p = await permiso(request, env, db);
-  if (p === 'sin-clave') return json({ error: 'Falta configurar la clave del sorteo (SORTEO_CLAVE) en Cloudflare.', configurado: false }, 503);
+  if (p === 'sin-clave') return json({ error: 'Falta la clave del sorteo: en Settings → Variables and Secrets, agrega un Secret llamado SORTEO_CLAVE (mínimo 12 caracteres) y vuelve a publicar.', configurado: false }, 503);
   if (p === 'bloqueado') return json({ error: 'Demasiados intentos con una clave incorrecta. Espera 10 minutos.' }, 429, { 'Retry-After': '600' });
   if (p !== 'si') return json({ error: 'Clave incorrecta.' }, 401);
   return null;
@@ -259,7 +259,13 @@ export async function onRequest(context) {
     if (ruta !== '/api/participa' && ruta !== '/api/registros' && ruta !== '/api/sorteos') return json({ error: 'No existe.' }, 404);
     if (request.method !== 'GET' && request.method !== 'HEAD' && request.method !== 'POST') return json({ error: 'Método no permitido.' }, 405, { Allow: 'GET, POST' });
     const db = env.SORTEO_DB;
-    if (!db || typeof db.prepare !== 'function') return json({ error: 'El registro todavía no está activado.', configurado: false }, 503);
+    if (!db || typeof db.prepare !== 'function') {
+      // Dice qué falta en Cloudflare, para arreglarlo sin adivinar (no revela nada secreto)
+      const motivo = db === undefined
+        ? 'Falta enlazar la base: en Settings → Bindings (entorno Production), Add → D1 database, con el nombre SORTEO_DB. Luego hay que volver a publicar (Deployments → Retry deployment).'
+        : 'SORTEO_DB está creada como variable de texto: bórrala de Variables and Secrets y agrégala en Settings → Bindings como «D1 database». Luego vuelve a publicar.';
+      return json({ error: 'El registro todavía no está activado.', configurado: false, motivo }, 503);
+    }
     const post = request.method === 'POST';
     if (ruta === '/api/registros') return await registros(request, env, db);
     if (ruta === '/api/sorteos') {

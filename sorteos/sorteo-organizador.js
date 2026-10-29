@@ -89,7 +89,7 @@
     fetch('/api/participa', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) {
       return r.json().then(function (d) { return { status: r.status, d: d }; });
     }).then(function (x) {
-      if (x.status === 503) return texto('o-qr-estado', 'El registro del QR todavía no está activado en Cloudflare (falta enlazar la base de datos SORTEO_DB).', 'estado-o mal');
+      if (x.status === 503) return texto('o-qr-estado', 'El registro del QR todavía no está activado en Cloudflare. ' + (x.d.motivo || 'Falta enlazar la base de datos SORTEO_DB.'), 'estado-o mal');
       if (x.status !== 200) throw new Error();
       pintarEstadoQR(x.d.abierto, x.d.total);
     }).catch(function () { texto('o-qr-estado', 'No se pudo consultar el registro del QR.', 'estado-o mal'); });
