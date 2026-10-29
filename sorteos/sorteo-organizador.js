@@ -601,16 +601,19 @@
 
   // Nombre completo de quien está en la posición n (sale del archivo privado: solo en esta pantalla, nunca en la web)
   var PARTICULAS = ['de', 'del', 'la', 'las', 'los', 'y', 'e', 'da', 'das', 'do', 'dos', 'van', 'von', 'di'];
-  function nombreCompleto(pos) {
-    var p = est.privado && Array.isArray(est.privado.participantes) ? est.privado.participantes[pos - 1] : null;
-    var n = p ? N.limpiar(p.nombre) : '';
+  function nombreBonito(nombre) {
+    var n = N.limpiar(nombre);
     if (!n || (n !== n.toUpperCase() && n !== n.toLowerCase())) return n;   // si ya viene bien escrito, se deja igual
     return n.toLocaleLowerCase('es').split(' ').map(function (w, i) {
       return i && PARTICULAS.indexOf(w) >= 0 ? w : w.charAt(0).toLocaleUpperCase('es') + w.slice(1);
     }).join(' ');
   }
+  function nombreCompleto(pos) {
+    var p = est.privado && Array.isArray(est.privado.participantes) ? est.privado.participantes[pos - 1] : null;
+    return p ? nombreBonito(p.nombre) : '';
+  }
 
-  /* ---------------- sorteo en vivo: N minutos para inscribirse y el ganador ~5 s después ---------------- */
+  /* ---------------- sorteo en vivo: N minutos para inscribirse y el ganador ~10 s después ---------------- */
   var PRUEBA_VIVO = window.__LS_SORTEO_PRUEBA || {};   // solo para las pruebas automáticas
   var vivo = null;
   function mostrarPantalla() {
@@ -676,7 +679,7 @@
     vivo = null;
     $('o-cerrar-ya').hidden = true;
   }
-  // Al llegar a cero: trae los inscritos, cierra la lista, elige una ronda de drand ~5 s después (con la hora del servidor) y la publica
+  // Al llegar a cero: trae los inscritos, cierra la lista, elige una ronda de drand ~10 s después (con la hora del servidor) y la publica
   function cerrarEnVivo() {
     if (!vivo || vivo.cerrando) return;
     vivo.cerrando = true;
@@ -698,7 +701,7 @@
         usarRegistros(lista);
         var desfase = d._fecha ? Date.parse(d._fecha) - Date.now() : 0;
         if (!(Math.abs(desfase) > 1500)) desfase = 0;   // la cabecera Date va de segundo en segundo
-        return generar({ ronda: PRUEBA_VIVO.rondaVivo || N.rondaEn(Date.now() + desfase + 5000) });
+        return generar({ ronda: PRUEBA_VIVO.rondaVivo || N.rondaEn(Date.now() + desfase + 10000) });
       }).then(function (pub) {
         pararVivo();
         est.control = V.mostrar($('o-vista'), pub, { pantalla: true, nombres: nombreCompleto });
@@ -819,6 +822,53 @@
   }
 
   // Si el último sorteo aún no sale (o salió hace poco), vuelve a quedar a mano la pantalla
+  /* ---------------- historial de ganadores (todos los sorteos publicados, también los ensayos) ---------------- */
+  // El ganador sale de la fórmula pública; su nombre completo y su celular, de los registros del QR
+  // (la etiqueta pública «Ana P. · …1234» se busca entre los inscritos) o del archivo privado si es el último de este computador.
+  $('o-ver-historial').addEventListener('click', function () {
+    var b = this;
+    if (!clave()) { texto('o-historial-estado', 'Escribe la clave del sorteo (paso 1).', 'estado-o mal'); return $('o-clave').focus(); }
+    b.disabled = true;
+    vaciar($('o-historial-lista'));
+    texto('o-historial-estado', 'Buscando los sorteos…', 'estado-o');
+    Promise.all([api('/api/sorteos'), api('/api/registros')]).then(function (xs) {
+      var sorteos = (xs[0].sorteos || []).slice(0, 30), porEtiqueta = Object.create(null);
+      (xs[1].registros || []).forEach(function (r) { var e = N.etiquetaDe(r.nombre, r.celular); (porEtiqueta[e] = porEtiqueta[e] || []).push(r); });
+      if (!sorteos.length) return texto('o-historial-estado', 'No hay sorteos publicados.', 'estado-o');
+      texto('o-historial-estado', miles(sorteos.length) + (sorteos.length === 1 ? ' sorteo' : ' sorteos') + ', del más reciente al más antiguo:', 'estado-o bien');
+      return sorteos.reduce(function (cadena, x) { return cadena.then(function () { return tarjetaHistorial(x, porEtiqueta); }); }, Promise.resolve());
+    }).catch(function (e) { texto('o-historial-estado', e.message || String(e), 'estado-o mal'); })
+      .finally(function () { b.disabled = false; });
+  });
+  function tarjetaHistorial(x, porEtiqueta) {
+    var hora = N.horaDeRonda(x.ronda), nota = h('p', { class: 'ayuda', text: 'Calculando el resultado…' });
+    var tarjeta = h('article', { class: 'tarjeta-historial' }, [
+      h('div', { class: 'th-cab' }, [
+        x.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo' }) : null,
+        h('b', { text: x.titulo }),
+        h('small', { text: V.fechaCol(hora) + ' · ' + V.horaCol(hora, true) + ' · ' + miles(x.participantes) + ' participantes' })
+      ]),
+      nota
+    ]);
+    $('o-historial-lista').appendChild(tarjeta);
+    if (Date.now() < hora) { nota.textContent = 'Todavía no sale: es a las ' + V.horaCol(hora, true) + '.'; return Promise.resolve(); }
+    return api('/api/sorteos?id=' + encodeURIComponent(x.id)).then(function (pub) {
+      return N.pedirRonda(pub.azar.ronda).then(function (ronda) { return N.verificar(pub, ronda); }).then(function (r) {
+        if (r.problemas.length) { nota.textContent = r.problemas[0]; return; }
+        var privado = est.privado && est.privado.huella === pub.huella ? est.privado : null;
+        tarjeta.replaceChild(h('ul', { class: 'th-ganadores' }, r.ganadores.map(function (g) {
+          var p = privado ? privado.participantes[g.posicion - 1] : null;
+          var quien = p ? [{ nombre: p.nombre, celular: p.idOriginal }] : porEtiqueta[g.etiqueta] || [];
+          return h('li', null, [
+            h('span', { class: 'pr', text: g.premio }),
+            h('b', { text: quien.length ? quien.map(function (q) { return nombreBonito(q.nombre) + ' · ' + q.celular; }).join(' / ') : g.etiqueta }),
+            quien.length === 1 ? null : h('small', { text: quien.length ? '(' + quien.length + ' inscritos tienen esa misma etiqueta)' : '(ya no está en los registros: ' + g.etiqueta + ')' })
+          ]);
+        })), nota);
+      });
+    }).catch(function (e) { nota.textContent = 'No se pudo calcular: ' + (e.message || e); });
+  }
+
   if (recuperarUltimo()) {
     if (N.horaDeRonda(est.publico.azar.ronda) > Date.now() - 30 * 60e3) {
       pintarResumen(est.publico, {}, {}, true);

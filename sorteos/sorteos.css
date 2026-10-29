@@ -209,6 +209,14 @@ body.modo-pantalla .sv-suplentes-nota{text-align:center;font-size:clamp(.9rem,1.
 .excluidos{margin-top:1.5rem;padding:1rem 1.2rem;border-radius:16px;border:1px dashed var(--borde)}
 .excluidos ul{padding-left:1.1rem;color:rgba(240,234,255,.85)}
 .excluidos li{margin:.35rem 0}
+.historial{margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--borde)}
+.tarjeta-historial{margin:.8rem 0;padding:1rem 1.1rem;border-radius:16px;border:1px solid var(--borde);background:rgba(7,2,15,.55)}
+.th-cab b{display:block;font-size:1.05rem;color:#fff}
+.th-cab small{color:var(--gris)}
+.th-ganadores{list-style:none;padding:0;margin:.6rem 0 0}
+.th-ganadores li{display:flex;flex-wrap:wrap;gap:.2rem .6rem;align-items:baseline;padding:.4rem 0;border-top:1px solid rgba(168,85,247,.15)}
+.th-ganadores .pr{min-width:7rem;color:var(--oro);font-weight:700;font-size:.85rem}
+.th-ganadores small{color:var(--gris)}
 #o-rapido{margin:.2rem 0 .4rem}
 .caja-vivo{margin:0 0 1.6rem;padding:1.1rem 1.2rem .8rem;border-radius:18px;border:1px solid rgba(242,196,109,.45);
   background:linear-gradient(160deg,rgba(242,196,109,.1),rgba(13,5,25,.6))}

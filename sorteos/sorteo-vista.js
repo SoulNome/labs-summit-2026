@@ -196,6 +196,7 @@
       var d = Math.floor(falta / 864e5), hh = Math.floor(falta % 864e5 / 36e5), m = Math.floor(falta % 36e5 / 6e4), sg = Math.floor(falta % 6e4 / 1e3);
       function dos(n) { return (n < 10 ? '0' : '') + n; }
       var txt = d ? d + 'd ' + hh + 'h ' + dos(m) + 'min' : hh ? hh + 'h ' + dos(m) + 'min ' + dos(sg) + 's' : dos(m) + ':' + dos(sg);
+      if (op.pantalla && falta < 60e3) txt = String(Math.ceil(falta / 1e3));   // en la pantalla grande, el último minuto cuenta 10, 9, 8…
       var actual = estado.querySelector('.sv-cuenta-num');
       if (actual) {
         if (actual.textContent !== txt) actual.textContent = txt;

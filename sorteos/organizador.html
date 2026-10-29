@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
-<link rel="stylesheet" href="/sorteos/sorteos.css?v=5">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=6">
 </head>
 <body class="sorteos organizador">
 
@@ -62,7 +62,7 @@
       </div>
       <div class="caja-vivo" id="o-vivo">
         <h3>▶ Sorteo en vivo</h3>
-        <p class="ayuda">Elige el premio y pulsa <b>Iniciar</b>. En la pantalla sale el QR con la cuenta regresiva para inscribirse; al llegar a cero la lista se cierra sola, se publica y el ganador sale unos 5 segundos después.</p>
+        <p class="ayuda">Elige el premio y pulsa <b>Iniciar</b>. En la pantalla sale el QR con la cuenta regresiva para inscribirse; al llegar a cero la lista se cierra sola, se publica y, tras una cuenta de 10 segundos, sale el ganador.</p>
         <div class="premios-evento">
           <div class="fila-botones" id="o-premios-evento"></div>
           <label class="check"><input type="checkbox" id="o-con-suplentes" checked> Con 2 suplentes, por si el ganador no está en el evento</label>
@@ -186,6 +186,13 @@
         <ul id="o-lista-excluidos"></ul>
         <button type="button" id="o-borrar-excluidos" class="btn sec">Vaciar la lista</button>
       </div>
+      <div class="historial" id="o-historial">
+        <h3>Historial de ganadores</h3>
+        <p class="ayuda">Todos los sorteos publicados, también los ensayos, del más reciente al más antiguo, con el nombre completo y el celular de quien ganó. Usa la clave del paso 1.</p>
+        <button type="button" id="o-ver-historial" class="btn">Ver historial</button>
+        <p id="o-historial-estado" class="estado-o" aria-live="polite"></p>
+        <div id="o-historial-lista"></div>
+      </div>
     </section>
   </div>
 
@@ -197,7 +204,7 @@
 
 <script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
 <script src="/sorteos/sorteo-nucleo.js?v=3" defer></script>
-<script src="/sorteos/sorteo-vista.js?v=4" defer></script>
-<script src="/sorteos/sorteo-organizador.js?v=7" defer></script>
+<script src="/sorteos/sorteo-vista.js?v=5" defer></script>
+<script src="/sorteos/sorteo-organizador.js?v=9" defer></script>
 </body>
 </html>
