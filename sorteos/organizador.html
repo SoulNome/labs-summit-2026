@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preparar sorteo · Labs Summit 2026</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#07020F">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=1">
+</head>
+<body class="sorteos organizador">
+
+<header class="barra">
+  <a class="marca" href="/sorteos/">TULUÁ <span>LABS</span> SUMMIT</a>
+  <span class="tag-org">Herramienta del organizador</span>
+</header>
+
+<main id="principal">
+  <div id="o-pasos">
+    <section class="intro">
+      <h1>Preparar un <span class="ac">sorteo</span></h1>
+      <p>Todo se procesa en este computador: la lista de compradores <b>no se envía a ningún servidor</b> y esta página no tiene analítica. Al final obtienes un archivo público (sin datos personales) y uno privado (para contactar a los ganadores).</p>
+    </section>
+
+    <section class="paso" id="paso1" aria-labelledby="t-p1">
+      <h2 id="t-p1"><span class="num">1</span> Lista de boletas</h2>
+      <p>Exporta desde Coccoa las boletas <b>pagadas</b> hasta la hora de cierre y agrega las de taquilla si van en otra planilla. Puedes subir uno o varios CSV con las mismas columnas, o copiar las celdas en Excel y pegarlas aquí con la fila de títulos.</p>
+      <div class="fila-botones">
+        <label class="btn">Subir CSV<input type="file" id="o-archivo" accept=".csv,.tsv,.txt,text/csv,text/plain" multiple class="oculto"></label>
+        <span id="o-archivos" class="ayuda"></span>
+      </div>
+      <label class="campo">o pega aquí las filas
+        <textarea id="o-pegar" rows="5" spellcheck="false" placeholder="Nombre	Cédula	Código boleta	Tipo	Estado"></textarea>
+      </label>
+      <label class="check"><input type="checkbox" id="o-encabezado" checked> La primera fila tiene los títulos de las columnas</label>
+      <button type="button" id="o-leer" class="btn pri">Leer lista</button>
+      <p id="o-leido" class="estado-o" aria-live="polite"></p>
+    </section>
+
+    <section class="paso" id="paso2" aria-labelledby="t-p2" hidden>
+      <h2 id="t-p2"><span class="num">2</span> Columnas</h2>
+      <div class="rejilla-campos">
+        <label class="campo">Identificador de cada participación <b>(obligatorio)</b>
+          <select id="o-col-id"></select>
+        </label>
+        <label class="campo">Nombre (opcional)
+          <select id="o-col-nombre"></select>
+        </label>
+        <label class="campo">Cantidad de boletas en la fila (opcional)
+          <select id="o-col-cantidad"></select>
+        </label>
+        <label class="campo">Filtrar por (opcional)
+          <select id="o-col-filtro"></select>
+        </label>
+      </div>
+      <p class="ayuda">Usa el código de la boleta o el número de orden: así cada boleta es una oportunidad. Si eliges la cédula o el correo, cada persona participa una sola vez. <b>No uses el código del QR de entrada.</b></p>
+      <p id="o-aviso-id" class="aviso" hidden></p>
+      <fieldset id="o-valores-filtro" class="valores" hidden>
+        <legend>Participan las filas con estos valores</legend>
+        <div id="o-valores"></div>
+      </fieldset>
+      <h3>Así se verán en la lista pública</h3>
+      <ul id="o-muestra" class="muestra"></ul>
+    </section>
+
+    <section class="paso" id="paso3" aria-labelledby="t-p3" hidden>
+      <h2 id="t-p3"><span class="num">3</span> Datos del sorteo</h2>
+      <div class="rejilla-campos">
+        <label class="campo">Título
+          <input id="o-titulo" maxlength="80" placeholder="Gran sorteo de cierre">
+        </label>
+        <label class="campo">Hora del sorteo (hora de Colombia)
+          <input type="datetime-local" id="o-hora" step="60">
+        </label>
+      </div>
+      <label class="campo">Premios, uno por línea y en orden
+        <textarea id="o-premios" rows="3" placeholder="Bono de $500.000&#10;Kit Labs Summit"></textarea>
+      </label>
+      <p id="o-ronda" class="ayuda"></p>
+      <label class="check"><input type="checkbox" id="o-ensayo"> Es un ensayo: se marca como «no oficial» y permite una hora que ya pasó</label>
+      <button type="button" id="o-generar" class="btn pri">Cerrar la lista y generar el sorteo</button>
+      <p id="o-error" class="aviso-error" role="alert" hidden></p>
+    </section>
+
+    <section class="paso" id="paso4" aria-labelledby="t-p4" hidden>
+      <h2 id="t-p4"><span class="num">4</span> Publicar antes de la hora del sorteo</h2>
+      <div id="o-resumen" class="resumen"></div>
+      <ol class="instrucciones">
+        <li>Descarga los tres archivos.</li>
+        <li>Guarda el <b>archivo privado</b> fuera de la carpeta del sitio. Tiene los datos de los compradores: no lo subas ni lo compartas.</li>
+        <li>Copia el archivo del sorteo y <code>indice.json</code> en la carpeta <code>sorteos/datos/</code> del sitio y publica.</li>
+        <li>Antes de la hora del sorteo, muestra en pantalla la huella y el enlace del sorteo.</li>
+      </ol>
+      <div class="fila-botones">
+        <button type="button" id="o-bajar-publico" class="btn pri">Archivo del sorteo (.json)</button>
+        <button type="button" id="o-bajar-indice" class="btn">indice.json actualizado</button>
+        <button type="button" id="o-bajar-privado" class="btn peligro">Archivo PRIVADO</button>
+        <button type="button" id="o-pantalla" class="btn">Abrir pantalla del sorteo</button>
+      </div>
+    </section>
+
+    <section class="paso" id="paso5" aria-labelledby="t-p5">
+      <h2 id="t-p5"><span class="num">5</span> Después del sorteo: contactar a los ganadores</h2>
+      <p>Carga el archivo privado y, si no es el sorteo que acabas de generar, también el archivo público. Cuando salga la ronda de drand verás los datos completos de los ganadores.</p>
+      <div class="fila-botones">
+        <label class="btn">Archivo privado<input type="file" id="o-privado" accept=".json,application/json" class="oculto"></label>
+        <label class="btn sec">Archivo público<input type="file" id="o-publico" accept=".json,application/json" class="oculto"></label>
+      </div>
+      <p id="o-estado-ganadores" class="estado-o" aria-live="polite"></p>
+      <div id="o-ganadores"></div>
+    </section>
+  </div>
+
+  <section id="o-vista-sec" hidden>
+    <div class="barra-vista"><button type="button" id="o-cerrar-vista" class="btn sec">← Volver a la herramienta</button></div>
+    <div id="o-vista" class="sv-raiz"></div>
+  </section>
+</main>
+
+<script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
+<script src="/sorteos/sorteo-nucleo.js?v=1" defer></script>
+<script src="/sorteos/sorteo-vista.js?v=1" defer></script>
+<script src="/sorteos/sorteo-organizador.js?v=1" defer></script>
+</body>
+</html>

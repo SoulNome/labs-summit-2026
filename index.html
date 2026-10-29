@@ -39,7 +39,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="css/styles.css?v=20261027h"/>
+<link rel="stylesheet" href="css/styles.css?v=20261029s"/>
 <style>
 /* ══ EXPERIENCIA INMERSIVA — BOTÓN ÉPICO ══ */
 
@@ -726,6 +726,7 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <li><a href="/mapa">Mapa</a></li>
     <li><a href="#days">Días</a></li>
     <li><a href="#speakers">Speakers</a></li>
+    <li><a href="/sorteos/">Sorteos</a></li>
     <!-- <li><a href="#videos">Videos</a></li> -->
     <li><a href="#faq">FAQ</a></li>
   </ul>
@@ -2094,6 +2095,23 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
   </div>
 </section>
 
+<!-- ══ SORTEOS ══
+     La página /sorteos/ muestra la lista, el azar público (drand) y el resultado
+     de cada sorteo para que cualquiera lo compruebe. -->
+<section id="sorteos-asistentes" aria-labelledby="t-sorteos-asist">
+  <div style="text-align:center">
+    <span class="s-label">Para quienes tienen boleta</span>
+    <h2 class="s-title reveal" id="t-sorteos-asist">Sorteos <span class="ac">verificables</span></h2>
+    <p class="sa-txt">Participan todas las boletas compradas hasta la hora de cierre de cada sorteo, también las de taquilla de ese mismo día. El azar lo pone drand, una red pública que nadie del evento controla, y cualquiera puede comprobar el resultado.</p>
+  </div>
+  <ol class="sa-pasos">
+    <li><b>1</b><span>Cerramos la lista y mostramos su huella digital</span></li>
+    <li><b>2</b><span>El número aleatorio sale de una ronda pública de drand</span></li>
+    <li><b>3</b><span>Compruebas el ganador desde tu celular</span></li>
+  </ol>
+  <div style="text-align:center"><a class="btn-pri" href="/sorteos/">Ver los sorteos</a></div>
+</section>
+
 <!-- ══ FAQ ══ -->
 <section id="faq">
   <div style="text-align:center">
@@ -2172,6 +2190,8 @@ src="https://www.facebook.com/tr?id=481397476029941&ev=PageView&noscript=1"
     <div class="foot-meta">© 2026 Labs Summit. Todos los derechos reservados.</div>
     <div class="foot-meta" style="margin-top:.5rem;font-size:.7rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;justify-content:center">
       <a href="/terminos.html" target="_blank" style="color:rgba(168,85,247,.7);text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='#A855F7'" onmouseout="this.style.color='rgba(168,85,247,.7)'">Términos y condiciones</a>
+      <span style="color:rgba(255,255,255,.2)">|</span>
+      <a href="/sorteos/" style="color:rgba(168,85,247,.7);text-decoration:underline;text-underline-offset:3px">Sorteos</a>
       <span style="color:rgba(255,255,255,.2)">|</span>
       <a href="/politica.html" target="_blank" style="color:rgba(168,85,247,.7);text-decoration:underline;text-underline-offset:3px;transition:color .2s" onmouseover="this.style.color='#A855F7'" onmouseout="this.style.color='rgba(168,85,247,.7)'">Política de tratamiento de datos</a>
     </div>

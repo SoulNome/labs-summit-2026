@@ -1,0 +1,191 @@
+/* Labs Summit 2026 · páginas de sorteos (/sorteos/). Mismos colores del sitio. */
+:root{
+  --bg:#07020F;--bg2:#0D0519;--soft:#160830;--borde:rgba(168,85,247,.22);
+  --txt:#F0EAFF;--gris:#9890B8;--morado:#A855F7;--morado-cl:#C9AEFF;--rosa:#E879F9;
+  --bien:#4ADE80;--mal:#F87171;--oro:#F2C46D;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body.sorteos{margin:0;min-height:100vh;background:radial-gradient(1200px 600px at 50% -200px,rgba(147,51,234,.28),transparent 70%),var(--bg);
+  color:var(--txt);font:400 16px/1.6 'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+a{color:var(--morado-cl)}
+a:hover{color:#fff}
+h1,h2,h3{font-family:'Space Grotesk','Inter',sans-serif;line-height:1.15;margin:0 0 .6rem}
+code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em;word-break:break-all}
+[hidden]{display:none!important}
+.oculto{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+
+/* barra superior */
+.barra{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:1rem clamp(1rem,4vw,3rem);border-bottom:1px solid var(--borde);background:rgba(7,2,15,.8)}
+.marca{font:800 .95rem 'Inter',sans-serif;letter-spacing:.12em;color:#fff;text-decoration:none;white-space:nowrap}
+.marca span{color:var(--morado)}
+.barra nav{display:flex;gap:1.2rem;flex-wrap:wrap}
+.barra nav a{color:var(--gris);text-decoration:none;font-weight:600;font-size:.9rem}
+.barra nav a[aria-current]{color:#fff}
+.tag-org{font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--oro);border:1px solid rgba(242,196,109,.4);padding:.25rem .7rem;border-radius:100px}
+
+main{max-width:980px;margin:0 auto;padding:clamp(1.2rem,4vw,3rem) clamp(1rem,4vw,2rem) 4rem}
+section{margin-bottom:3rem}
+.intro .etiqueta{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--morado-cl);margin-bottom:.8rem}
+.intro h1{font-size:clamp(2.2rem,7vw,3.6rem)}
+.ac{background:linear-gradient(90deg,var(--morado),var(--rosa));-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro p{max-width:680px;color:rgba(240,234,255,.82);font-size:1.05rem}
+h2{font-size:1.5rem}
+
+/* botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.7rem 1.15rem;border-radius:12px;border:1px solid var(--borde);
+  background:rgba(168,85,247,.12);color:#fff;font:600 .92rem 'Inter',sans-serif;cursor:pointer;text-decoration:none;position:relative}
+.btn:hover{background:rgba(168,85,247,.24)}
+.btn.pri{background:linear-gradient(90deg,#9333EA,#C026D3);border-color:transparent}
+.btn.pri:hover{filter:brightness(1.1)}
+.btn.sec{background:transparent}
+.btn.peligro{border-color:rgba(248,113,113,.55);background:rgba(248,113,113,.1)}
+.btn:disabled{opacity:.6;cursor:wait}
+.fila-botones,.sv-acciones{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:1rem 0}
+
+/* tarjetas de la lista */
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.tarjeta{display:flex;flex-direction:column;gap:.3rem;padding:1.2rem;border-radius:18px;border:1px solid var(--borde);background:rgba(13,5,25,.85);text-decoration:none;color:var(--txt)}
+.tarjeta:hover{border-color:var(--morado)}
+.tarjeta.prox{border-color:rgba(232,121,249,.6);box-shadow:0 20px 50px -30px rgba(232,121,249,.8)}
+.tarjeta .tt{font-size:1.1rem}
+.tarjeta .estado-t{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--morado-cl)}
+.tarjeta.prox .estado-t{color:var(--rosa)}
+.tarjeta .cuando{color:#fff;font-weight:600}
+.tarjeta .cuantos{color:var(--gris);font-size:.85rem}
+.vacio,.cargando{color:var(--gris)}
+.sello-ensayo{align-self:flex-start;display:inline-block;padding:.2rem .65rem;border-radius:100px;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#12061f;background:var(--oro);margin-bottom:.5rem}
+
+/* cómo funciona / preguntas */
+.tres{list-style:none;counter-reset:p;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
+.tres li{counter-increment:p;padding:1.3rem;border-radius:18px;background:rgba(22,8,48,.7);border:1px solid var(--borde)}
+.tres li::before{content:counter(p);display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;margin-bottom:.7rem;font-weight:800;background:linear-gradient(135deg,#9333EA,#E879F9)}
+.tres p{color:rgba(240,234,255,.75);margin:.4rem 0 0;font-size:.93rem}
+.faq details{border-bottom:1px solid var(--borde);padding:.9rem 0}
+.faq summary{cursor:pointer;font-weight:700}
+.faq p{color:rgba(240,234,255,.78);margin:.6rem 0 0}
+.archivo p{color:rgba(240,234,255,.78)}
+.volver{display:inline-block;margin-bottom:1.2rem;text-decoration:none;font-weight:600}
+.pie{text-align:center;color:var(--gris);font-size:.85rem;padding:2rem 1rem 3rem;border-top:1px solid var(--borde)}
+
+/* avisos */
+.aviso-error{padding:1rem 1.2rem;border-radius:14px;border:1px solid rgba(248,113,113,.5);background:rgba(248,113,113,.1);color:#FECACA}
+.aviso-error ul{margin:.4rem 0 0;padding-left:1.2rem}
+.aviso{padding:.8rem 1rem;border-radius:12px;border:1px solid rgba(242,196,109,.5);background:rgba(242,196,109,.08);color:#FDE7B5}
+
+/* ---------- vista de un sorteo ---------- */
+.sv-cab{margin-bottom:1.5rem}
+.sv-titulo{font-size:clamp(1.9rem,6vw,3rem)}
+.sv-premios{list-style:none;padding:0;margin:.4rem 0 0;display:flex;flex-direction:column;gap:.3rem}
+.sv-premios li{font-size:1.05rem;color:#fff}
+.sv-premios .n{display:inline-block;min-width:3.2rem;font-weight:800;color:var(--oro)}
+.sv-estado{margin:1.5rem 0;padding:clamp(1.2rem,4vw,2rem);border-radius:22px;background:linear-gradient(160deg,#25104a,#110620 70%);border:1px solid rgba(192,132,252,.35);text-align:center}
+.sv-estado .l{display:block;font-size:.75rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--morado-cl);margin-bottom:.5rem}
+.sv-cuenta-num{display:block;font:900 clamp(2.6rem,11vw,5.5rem)/1 'Inter',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em;text-shadow:0 0 40px rgba(232,121,249,.5)}
+.sv-cuenta small,.sv-buscando b{display:block;margin-top:.8rem;color:rgba(240,234,255,.75);font-weight:500}
+.sv-buscando{display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.giro{width:38px;height:38px;border-radius:50%;border:3px solid rgba(168,85,247,.25);border-top-color:var(--rosa);animation:giro 1s linear infinite}
+@keyframes giro{to{transform:rotate(360deg)}}
+.sv-ganadores{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1rem}
+.sv-ganador{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:1rem;border-radius:16px;background:rgba(7,2,15,.45)}
+.sv-ganador .pr{font-size:.85rem;font-weight:700;color:var(--oro)}
+.sv-ganador .et{font:800 clamp(1.5rem,6vw,2.6rem)/1.15 'Space Grotesk',sans-serif;color:#fff}
+.sv-ganador small{color:var(--gris)}
+.sv-ganador.girando .et{color:var(--morado-cl);filter:blur(.6px)}
+.sv-ganador.listo{animation:brillo 1.2s ease-out}
+.sv-ganador .revelado{color:var(--bien)}
+@keyframes brillo{from{box-shadow:0 0 0 0 rgba(232,121,249,.9)}to{box-shadow:0 0 0 22px rgba(232,121,249,0)}}
+
+.sv-datos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-bottom:1.5rem}
+.dato{display:flex;flex-direction:column;gap:.15rem;padding:1rem;border-radius:16px;background:rgba(13,5,25,.85);border:1px solid var(--borde)}
+.dato .l{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gris)}
+.dato b{font-size:1.35rem;color:#fff}
+.dato small{color:var(--gris)}
+.dato.ancho{grid-column:1/-1}
+.sv-huella-corta{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em}
+.sv-huella-txt{color:rgba(240,234,255,.7);display:block;margin:.2rem 0}
+.sv-huella-ok{font-size:.85rem;color:var(--gris)}
+.sv-huella-ok.mal{color:var(--mal)}
+.visto{display:inline-grid;place-items:center;width:1.4rem;height:1.4rem;border-radius:50%;font-weight:900;font-size:.8rem;flex:0 0 auto}
+.visto.si{background:rgba(74,222,128,.18);color:var(--bien)}
+.visto.no{background:rgba(248,113,113,.2);color:var(--mal)}
+.visto.espera{background:rgba(152,144,184,.18);color:var(--gris)}
+
+.sv-busqueda input[type=search]{width:100%;padding:.85rem 1rem;border-radius:12px;border:1px solid var(--borde);background:rgba(13,5,25,.9);color:#fff;font:500 1rem 'Inter',sans-serif}
+.ayuda{color:var(--gris);font-size:.88rem}
+.sv-resultados ul{list-style:none;padding:0;margin:.5rem 0}
+.sv-resultados li{padding:.45rem 0;border-bottom:1px solid rgba(168,85,247,.12)}
+.sv-resultados .nada{color:#FDE7B5}
+.sv-todos{margin-top:1rem}
+.sv-todos summary{cursor:pointer;font-weight:600;color:var(--morado-cl)}
+.sv-lista{columns:2 240px;column-gap:2rem;font-size:.88rem;color:rgba(240,234,255,.8);padding-left:3.2rem}
+.sv-verif{padding:1.4rem;border-radius:20px;background:rgba(22,8,48,.55);border:1px solid var(--borde)}
+.pasos{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:1.1rem}
+.pasos>li{display:flex;gap:.8rem;align-items:flex-start}
+.pasos p{margin:.25rem 0;color:rgba(240,234,255,.78);font-size:.92rem}
+.pasos ul{padding-left:1.1rem;margin:.3rem 0;font-size:.8rem;color:var(--gris)}
+.sv-origen{color:var(--oro);font-size:.88rem}
+.sv-pie-pantalla{text-align:center;color:var(--morado-cl);font-weight:700;font-size:1.1rem;margin-top:1.5rem}
+
+/* ---------- pantalla grande del evento ---------- */
+body.modo-pantalla .barra,body.modo-pantalla .intro,body.modo-pantalla .como,body.modo-pantalla .faq,
+body.modo-pantalla .archivo,body.modo-pantalla .pie,body.modo-pantalla .volver{display:none}
+body.modo-pantalla main{max-width:1400px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:3vh 4vw}
+body.modo-pantalla .sv-titulo{font-size:clamp(2.4rem,5vw,4.6rem);text-align:center}
+body.modo-pantalla .sv-cab .sello-ensayo{display:table;margin:0 auto .8rem}
+body.modo-pantalla .sv-premios{align-items:center}
+body.modo-pantalla .sv-premios li{font-size:clamp(1.2rem,2.2vw,1.9rem)}
+body.modo-pantalla .sv-cuenta-num{font-size:clamp(4rem,12vw,9rem)}
+body.modo-pantalla .sv-estado{margin:1rem 0}
+body.modo-pantalla .sv-datos{grid-template-columns:repeat(4,minmax(0,1fr))}
+body.modo-pantalla .dato.ancho{grid-column:auto}
+body.modo-pantalla .sv-huella-txt{font-size:.62rem;line-height:1.35}
+body.modo-pantalla .sv-cab{margin-bottom:.6rem}
+html:fullscreen .sv-acciones,html:fullscreen .sv-origen{display:none}
+body.modo-pantalla .sv-ganador .et{font-size:clamp(2.2rem,6vw,5rem)}
+body.modo-pantalla .sv-acciones,body.modo-pantalla .sv-origen{justify-content:center;text-align:center}
+body.modo-pantalla .dato b{font-size:clamp(1.2rem,2.1vw,1.8rem);white-space:nowrap}
+body.modo-pantalla .dato b.sv-huella-corta{font-size:clamp(1.05rem,1.7vw,1.5rem);white-space:normal}
+body.modo-pantalla .barra-vista{margin-bottom:1rem}
+
+/* ---------- herramienta del organizador ---------- */
+.paso{padding:clamp(1.1rem,3vw,1.8rem);border-radius:22px;background:rgba(13,5,25,.85);border:1px solid var(--borde)}
+.paso h2{display:flex;align-items:center;gap:.7rem}
+.paso h2 .num{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;font-size:1rem;background:linear-gradient(135deg,#9333EA,#E879F9);flex:0 0 auto}
+.paso h3{font-size:1rem;margin-top:1.2rem;color:var(--morado-cl)}
+.campo{display:flex;flex-direction:column;gap:.35rem;font-weight:600;font-size:.9rem;margin:.8rem 0}
+.campo input,.campo select,.campo textarea{padding:.7rem .85rem;border-radius:10px;border:1px solid var(--borde);background:#0b0418;color:#fff;font:500 .95rem 'Inter',sans-serif;width:100%}
+.campo textarea{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem}
+.rejilla-campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 1rem}
+.check{display:flex;align-items:center;gap:.5rem;margin:.5rem 0;font-size:.92rem;cursor:pointer}
+.check input{width:1.1rem;height:1.1rem;accent-color:var(--morado)}
+.valores{border:1px solid var(--borde);border-radius:14px;padding:.6rem 1rem;margin:1rem 0}
+.valores legend{font-weight:700;font-size:.85rem;padding:0 .4rem}
+.valores small{color:var(--gris)}
+.muestra{padding-left:1.2rem;color:rgba(240,234,255,.85)}
+.muestra .mal,.estado-o.mal{color:var(--mal)}
+.estado-o.bien{color:var(--bien)}
+.resumen .grande{font-size:1.3rem}
+.resumen .grande b{font-size:2rem;color:#fff}
+.resumen .l{margin-bottom:0;color:var(--gris);font-size:.85rem}
+.huella-grande{font:800 clamp(1.8rem,6vw,3rem)/1.1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;margin:.2rem 0;color:#fff}
+.instrucciones{padding-left:1.2rem;color:rgba(240,234,255,.85)}
+.instrucciones li{margin:.3rem 0}
+.tarjeta-ganador{padding:1.1rem;border-radius:16px;border:1px solid rgba(74,222,128,.45);background:rgba(74,222,128,.06);margin:1rem 0}
+.tarjeta-ganador.mal{border-color:rgba(248,113,113,.6);background:rgba(248,113,113,.08)}
+.tarjeta-ganador .l{display:block;color:var(--oro);font-weight:700;font-size:.85rem}
+.tarjeta-ganador b{font-size:1.25rem}
+.datos-fila{border-collapse:collapse;margin-top:.6rem;font-size:.88rem;width:100%}
+.datos-fila th,.datos-fila td{text-align:left;padding:.35rem .6rem;border-bottom:1px solid rgba(168,85,247,.15);vertical-align:top;word-break:break-word}
+.datos-fila th{color:var(--gris);font-weight:600;width:38%}
+
+@media (max-width:560px){
+  .sv-datos{grid-template-columns:1fr 1fr}
+  .sv-datos .dato:nth-child(3){grid-column:1/-1}
+  .sv-lista{columns:1;padding-left:2.6rem}
+  .barra{padding:.8rem 1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .giro,.sv-ganador.listo{animation:none}
+}

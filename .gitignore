@@ -42,3 +42,11 @@ How to use Claude/
 
 # Vista previa local del mapa (no va a la web)
 VISTA-PREVIA-*.html
+
+# Sorteos: el archivo PRIVADO (datos de compradores + sales) nunca se publica
+*.privado.json
+*privado*.json
+*PRIVADO*
+
+# Estado local de wrangler (pruebas de labs-summit-tests)
+.wrangler/

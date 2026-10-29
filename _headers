@@ -9,7 +9,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), interest-cohort=()
   Cross-Origin-Opener-Policy: same-origin-allow-popups
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://*.clarity.ms https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev; connect-src 'self' https://*.clarity.ms https://connect.facebook.net https://www.facebook.com; frame-src https://www.google.com https://maps.google.com https://www.facebook.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.clarity.ms https://*.clarity.ms https://connect.facebook.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: https://pub-f3042ff3c66c46a6bf292d00ef414169.r2.dev; connect-src 'self' https://*.clarity.ms https://connect.facebook.net https://www.facebook.com https://api.drand.sh https://api2.drand.sh https://api3.drand.sh https://drand.cloudflare.com; frame-src https://www.google.com https://maps.google.com https://www.facebook.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests
   ! Access-Control-Allow-Origin
 
 /mapa/vendor/*
@@ -42,3 +42,28 @@
 
 /403.html
   X-Robots-Tag: noindex
+
+# Informe interno: que no salga en Google
+/sustentacion
+  X-Robots-Tag: noindex, nofollow
+
+/sustentacion.html
+  X-Robots-Tag: noindex, nofollow
+
+# Sorteos: una segunda política, más estricta, que se suma a la general (el navegador
+# aplica las dos). Solo scripts propios, sin analítica (Clarity graba la pantalla y aquí
+# el organizador carga la lista de compradores) y nada de HTML inyectado (Trusted Types).
+/sorteos/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.drand.sh https://api2.drand.sh https://api3.drand.sh https://drand.cloudflare.com; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; require-trusted-types-for 'script'
+
+/sorteos/organizador
+  X-Robots-Tag: noindex, nofollow
+
+/sorteos/organizador.html
+  X-Robots-Tag: noindex, nofollow
+
+/sorteos/datos/*
+  X-Robots-Tag: noindex
+
+/sorteos/vendor/*
+  Cache-Control: public, max-age=31536000, immutable

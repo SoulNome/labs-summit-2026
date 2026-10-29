@@ -35,7 +35,7 @@
   /* ---------------- datos ---------------- */
   var zonasDatos = {}, sesiones = {}, tipos = D.tipos;
   function indexar() {
-    zonasDatos = {}; sesiones = {};
+    zonasDatos = Object.create(null); sesiones = Object.create(null);   // sin prototipo: ?z=__proto__ no es una zona
     D.zonas.forEach(function (z) { zonasDatos[z.id] = z; sesiones[z.id] = []; });
     D.agenda.forEach(function (s) { if (sesiones[s.zona]) sesiones[s.zona].push(s); });
     Object.keys(sesiones).forEach(function (k) { sesiones[k].sort(function (a, b) { return hm(a.inicio) - hm(b.inicio); }); });
@@ -1266,7 +1266,7 @@
     construirFiltros();
 
     var p = params.get('p');
-    if (p && D.puntos && D.puntos[p.toLowerCase()]) {
+    if (p && D.puntos && Object.prototype.hasOwnProperty.call(D.puntos, p.toLowerCase())) {
       puntoQR = D.puntos[p.toLowerCase()];
       marcar('qr', p.toLowerCase());
     }

@@ -2955,3 +2955,14 @@ section+section::before{content:'';display:block;position:absolute;top:0;left:5%
   .fab-area{transition:transform .35s ease,opacity .35s ease}
   body.cta-hero .fab-area{transform:translateY(140%);opacity:0;pointer-events:none}
 }
+
+/* ══════════════════════════════════════════════════════
+   SORTEOS VERIFICABLES (enlace a /sorteos/)
+   ══════════════════════════════════════════════════════ */
+#sorteos-asistentes{background:var(--bg)}
+#sorteos-asistentes .sa-txt{max-width:640px;margin:1rem auto 0;color:rgba(240,234,255,.75);font-size:.98rem;line-height:1.7}
+.sa-pasos{list-style:none;margin:2rem auto;padding:0;max-width:900px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.sa-pasos li{display:flex;align-items:center;gap:.8rem;padding:1rem 1.1rem;border-radius:16px;background:rgba(22,8,48,.7);border:1px solid rgba(168,85,247,.22);color:#F0EAFF;font-size:.9rem;font-weight:600;line-height:1.35}
+.sa-pasos b{display:grid;place-items:center;flex:0 0 auto;width:2rem;height:2rem;border-radius:50%;background:linear-gradient(135deg,#9333EA,#E879F9);color:#fff;font-size:.9rem}
+#sorteos-asistentes .btn-pri{display:inline-block;text-decoration:none}
+@media (max-width:768px){.sa-pasos{grid-template-columns:1fr}}

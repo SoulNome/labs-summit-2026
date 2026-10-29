@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorteos verificables · Labs Summit 2026</title>
+<meta name="description" content="Sorteos para quienes compraron su boleta de Labs Summit 2026: la lista, el azar público de drand y el resultado, comprobables por cualquiera.">
+<meta name="theme-color" content="#07020F">
+<meta property="og:title" content="Sorteos verificables · Labs Summit 2026">
+<meta property="og:description" content="Mira la lista de boletas, el azar público y el resultado. Compruébalo tú mismo.">
+<meta property="og:url" content="https://labssummit.com/sorteos/">
+<meta property="og:image" content="https://labssummit.com/bannerInferior/imgg.jpg?v=3">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=1">
+</head>
+<body class="sorteos">
+
+<header class="barra">
+  <a class="marca" href="/">TULUÁ <span>LABS</span> SUMMIT</a>
+  <nav aria-label="Menú">
+    <a href="/">Inicio</a>
+    <a href="/mapa/">Mapa</a>
+    <a href="/sorteos/" aria-current="page">Sorteos</a>
+  </nav>
+</header>
+
+<main id="principal">
+  <section class="intro">
+    <span class="etiqueta">Para quienes compraron su boleta</span>
+    <h1>Sorteos <span class="ac">verificables</span></h1>
+    <p>Participan todas las boletas compradas hasta la hora de cierre de cada sorteo, también las de taquilla de ese mismo día. Aquí ves la lista, el azar y el resultado, y puedes comprobarlo tú mismo.</p>
+  </section>
+
+  <section id="sorteos" aria-labelledby="t-sorteos">
+    <h2 id="t-sorteos">Sorteos</h2>
+    <div id="lista-sorteos" class="tarjetas" aria-live="polite"><p class="cargando">Cargando sorteos…</p></div>
+  </section>
+
+  <section id="detalle" hidden>
+    <a class="volver" href="/sorteos/">← Todos los sorteos</a>
+    <div id="vista" class="sv-raiz"></div>
+  </section>
+
+  <section class="como" aria-labelledby="t-como">
+    <h2 id="t-como">Cómo funciona</h2>
+    <ol class="tres">
+      <li>
+        <b>Cerramos la lista y mostramos su huella</b>
+        <p>Minutos antes del sorteo cerramos la lista de boletas, con las vendidas en taquilla hasta esa hora. Con la lista se calcula una huella digital (SHA-256) que mostramos en pantalla y publicamos aquí. Si alguien agrega, quita o cambia una sola boleta, la huella cambia.</p>
+      </li>
+      <li>
+        <b>El azar lo pone drand, no nosotros</b>
+        <p>Al cerrar la lista fijamos una ronda futura de drand, la red pública de aleatoriedad que mantienen universidades y empresas de varios países (League of Entropy, entre ellas Cloudflare). Cada 3 segundos publica un número aleatorio firmado que nadie puede predecir ni cambiar.</p>
+      </li>
+      <li>
+        <b>Cualquiera calcula el ganador</b>
+        <p>El ganador sale de una fórmula pública que mezcla la huella con ese número. Tu celular verifica la firma y hace la cuenta. También puedes hacerla con el <a href="/sorteos/verificar.py" download="verificar.py">verificador en Python</a>.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section class="faq" aria-labelledby="t-faq">
+    <h2 id="t-faq">Preguntas</h2>
+    <details>
+      <summary>¿Quién participa?</summary>
+      <p>Cada boleta pagada hasta la hora de cierre que indica el sorteo, sin importar si la compraste en línea o en taquilla ese mismo día. Si tienes varias boletas, tienes varias oportunidades.</p>
+    </details>
+    <details>
+      <summary>Compré mi boleta después del cierre</summary>
+      <p>Cada sorteo tiene su propia hora de cierre. Tu boleta entra en los sorteos que cierren después de tu compra.</p>
+    </details>
+    <details>
+      <summary>¿Por qué no aparece mi nombre completo?</summary>
+      <p>Para cuidar tus datos solo publicamos el nombre abreviado y los últimos dígitos del código. No publicamos documentos, correos ni teléfonos.</p>
+    </details>
+    <details>
+      <summary>¿Pueden hacer trampa los organizadores?</summary>
+      <p>No pueden elegir el número: sale de drand, en una ronda que se fija antes del sorteo y que nadie conoce. Tampoco pueden cambiar la lista después, porque la huella se muestra antes del sorteo. Lo que tú sí puedes revisar es que tu boleta esté en la lista y que el total de boletas tenga sentido.</p>
+    </details>
+    <details>
+      <summary>¿Y si se cae el internet durante el sorteo?</summary>
+      <p>El resultado ya quedó fijado por la ronda de drand. Cuando vuelva la conexión, cualquiera lo puede calcular y siempre dará lo mismo.</p>
+    </details>
+    <details>
+      <summary>¿Cómo me entero si gané?</summary>
+      <p>Te contactamos con los datos de tu compra. <b>Nunca te pediremos pagos, recargas ni claves para entregarte un premio.</b> Si alguien lo hace, es un intento de estafa.</p>
+    </details>
+  </section>
+
+  <section class="archivo" aria-labelledby="t-archivo">
+    <h2 id="t-archivo">¿Te pasaron un archivo de sorteo?</h2>
+    <p>Puedes verificarlo aquí. El archivo se revisa en tu equipo y no se envía a ningún lado.</p>
+    <label class="btn">Verificar un archivo<input type="file" id="archivo" accept=".json,application/json" class="oculto"></label>
+    <p id="archivo-error" class="aviso-error" role="alert" hidden></p>
+  </section>
+</main>
+
+<footer class="pie">
+  <p>Labs Summit 2026 · Tuluá, Valle del Cauca</p>
+  <p><a href="/terminos.html">Términos y condiciones</a> · <a href="/politica.html">Política de datos</a></p>
+</footer>
+
+<script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
+<script src="/sorteos/sorteo-nucleo.js?v=1" defer></script>
+<script src="/sorteos/sorteo-vista.js?v=1" defer></script>
+<script src="/sorteos/sorteo-publico.js?v=1" defer></script>
+</body>
+</html>
