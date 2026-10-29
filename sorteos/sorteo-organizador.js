@@ -36,7 +36,16 @@
     if (si) lista.push({ id: idBase(p.id), etiqueta: p.etiqueta, premio: premio, sorteo: sorteo });
     guardarLocal(CLAVE_GANADORES, lista);
     pintarExcluidos();
+    pintarPremiosEvento();
     if (est.filas.length) pintarMuestra();
+  }
+  // «Marcar que recibió el premio»: también para un ganador de un ensayo que se usó como sorteo real
+  function botonRecibio(persona, premio, titulo) {
+    var b = h('button', { type: 'button', class: 'btn sec mini' });
+    function pintar() { b.textContent = yaGano(persona.id) ? 'Recibió el premio ✓ (quitar)' : 'Marcar que recibió el premio'; }
+    b.addEventListener('click', function () { marcarGanador(persona, premio, titulo, !yaGano(persona.id)); pintar(); });
+    pintar();
+    return b;
   }
   // Cada ganador que sale en esta pantalla queda anotado en este computador (aunque el sorteo no se publique)
   function guardarEnHistorial(pub, priv, ganadores) {
@@ -418,6 +427,7 @@
   function pintarPremiosEvento() {
     var hechos = Object.create(null), caja = vaciar($('o-premios-evento'));
     leerLocal(CLAVE_DIA).forEach(function (x) { if (x && !x.ensayo) hechos[x.titulo] = true; });
+    leerLocal(CLAVE_GANADORES).forEach(function (g) { if (g && g.sorteo) hechos[g.sorteo] = true; });   // marcados a mano
     PREMIOS_EVENTO.forEach(function (p, i) {
       var activo = premioElegido === p;
       caja.appendChild(h('button', { type: 'button', class: 'btn sec chip' + (activo ? ' activo' : '') + (hechos[p.titulo] ? ' hecho' : ''), 'aria-pressed': activo ? 'true' : 'false',
@@ -822,7 +832,7 @@
         h('p', { text: x.ok ? '✓ Coincide con el compromiso publicado.' : '✕ No coincide con el compromiso publicado.' }),
         x.p ? h('p', { text: 'Identificador: ' + x.p.idOriginal + (x.p.nombre ? ' · ' + x.p.nombre : '') }) : null,
         filas.length ? h('table', { class: 'datos-fila' }, [h('tbody', null, filas)]) : null,
-        x.p && x.ok && !pub.ensayo ? botonGanador(x, pub) : null
+        x.p && x.ok ? botonGanador(x, pub) : null
       ]));
     });
     if (todosOk && priv.revelable !== true) {
@@ -862,11 +872,12 @@
     }).catch(function (e) { texto('o-historial-estado', e.message || String(e), 'estado-o mal'); })
       .finally(function () { b.disabled = false; });
   });
-  function filaHistorial(premio, quien, etiqueta) {
+  function filaHistorial(premio, quien, etiqueta, titulo) {
     return h('li', null, [
       h('span', { class: 'pr', text: premio }),
       h('b', { text: quien.length ? quien.map(function (q) { return nombreBonito(q.nombre) + ' · ' + q.celular; }).join(' / ') : etiqueta }),
-      quien.length === 1 ? null : h('small', { text: quien.length ? '(' + quien.length + ' inscritos tienen esa misma etiqueta)' : '(ya no está en los registros: ' + etiqueta + ')' })
+      quien.length === 1 ? botonRecibio({ id: N.normalizarId(quien[0].celular), etiqueta: etiqueta }, premio, titulo)
+        : h('small', { text: quien.length ? '(' + quien.length + ' inscritos tienen esa misma etiqueta)' : '(ya no está en los registros: ' + etiqueta + ')' })
     ]);
   }
   function tarjetaHistorial(t, porEtiqueta) {
@@ -884,7 +895,7 @@
     // lo anotado en este computador trae el nombre exacto de quien salió en la pantalla
     if (t.local) {
       tarjeta.replaceChild(h('ul', { class: 'th-ganadores' }, t.local.ganadores.map(function (g) {
-        return filaHistorial(g.premio, g.nombre ? [{ nombre: g.nombre, celular: g.celular }] : [], g.etiqueta);
+        return filaHistorial(g.premio, g.nombre ? [{ nombre: g.nombre, celular: g.celular }] : [], g.etiqueta, x.titulo);
       })), nota);
       return Promise.resolve();
     }
@@ -895,7 +906,7 @@
         var privado = est.privado && est.privado.huella === pub.huella ? est.privado : null;
         tarjeta.replaceChild(h('ul', { class: 'th-ganadores' }, r.ganadores.map(function (g) {
           var p = privado ? privado.participantes[g.posicion - 1] : null;
-          return filaHistorial(g.premio, p ? [{ nombre: p.nombre, celular: p.idOriginal }] : porEtiqueta[g.etiqueta] || [], g.etiqueta);
+          return filaHistorial(g.premio, p ? [{ nombre: p.nombre, celular: p.idOriginal }] : porEtiqueta[g.etiqueta] || [], g.etiqueta, pub.titulo);
         })), nota);
       });
     }).catch(function (e) { nota.textContent = 'No se pudo calcular: ' + (e.message || e); });
