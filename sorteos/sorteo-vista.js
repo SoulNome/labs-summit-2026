@@ -87,7 +87,7 @@
     var huellaCalc = h('code', { class: 'sv-huella-txt', text: s.huella });
     var huellaMarca = h('span', { class: 'sv-huella-ok' }, [marca(null), ' comprobando…']);
     caja.appendChild(h('section', { class: 'sv-datos' }, [
-      h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Participan' }), h('b', { text: s.participantes.length.toLocaleString('es-CO') }), h('small', { text: s.participantes.length === 1 ? 'boleta' : 'boletas' })]),
+      h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Participan' }), h('b', { text: s.participantes.length.toLocaleString('es-CO') }), h('small', { text: s.participantes.length === 1 ? 'participación' : 'participaciones' })]),
       h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Lista cerrada' }), h('b', { text: horaCol(Date.parse(s.cierre)) }), h('small', { text: fechaCol(Date.parse(s.cierre)) })]),
       h('div', { class: 'dato' }, [h('span', { class: 'l', text: 'Azar de drand' }), h('b', { text: horaCol(hora, true) }), h('small', { text: 'ronda ' + s.azar.ronda.toLocaleString('es-CO') })]),
       h('div', { class: 'dato ancho' }, [
@@ -202,7 +202,7 @@
       return h('li', { class: 'sv-ganador' }, [
         h('span', { class: 'pr', text: x.premio }),
         h('b', { class: 'et', text: x.etiqueta }),
-        h('small', { text: 'Boleta n.º ' + x.posicion.toLocaleString('es-CO') + ' de la lista' }),
+        h('small', { text: 'N.º ' + x.posicion.toLocaleString('es-CO') + ' de la lista' }),
         x.revelado ? h('small', { class: 'revelado' }, [marca(true), ' Código revelado por el organizador y comprobado: ' + x.revelado]) : null
       ]);
     }
@@ -236,7 +236,7 @@
         h('li', null, [marca(res.ganadores.length ? true : null), h('div', null, [
           h('b', { text: 'El resultado sale de una fórmula pública' }),
           h('p', { text: 'Ganador = sha256(«' + N.FORMATO + '|huella|número aleatorio|premio|intento») convertido en número, módulo los que quedan. Se descartan los valores que darían ventaja a alguien. Cualquier computador da el mismo resultado.' }),
-          res.ganadores.length ? h('ul', { class: 'mono' }, res.ganadores.map(function (x) { return h('li', { text: 'premio ' + x.numeroPremio + ' → boleta n.º ' + x.posicion + ' (semilla ' + x.semilla.slice(0, 16) + '…)' }); })) : null,
+          res.ganadores.length ? h('ul', { class: 'mono' }, res.ganadores.map(function (x) { return h('li', { text: 'premio ' + x.numeroPremio + ' → n.º ' + x.posicion + ' (semilla ' + x.semilla.slice(0, 16) + '…)' }); })) : null,
           h('a', { href: '/sorteos/verificar.py', download: 'verificar.py', text: 'Descargar el verificador en Python' })
         ])])
       ]));
@@ -266,14 +266,14 @@
       if (q.length < 2) return;
       var hallados = [];
       for (var i = 0; i < indice.length && hallados.length < 50; i++) if (indice[i].indexOf(q) >= 0) hallados.push(i);
-      if (!hallados.length) { salida.appendChild(h('p', { class: 'nada', text: 'No encontramos boletas con «' + input.value.trim() + '». Prueba con otra parte de tu nombre o con los últimos 4 dígitos.' })); return; }
-      salida.appendChild(h('p', { text: hallados.length >= 50 ? 'Más de 50 coincidencias, escribe algo más preciso:' : hallados.length + (hallados.length === 1 ? ' boleta encontrada:' : ' boletas encontradas:') }));
+      if (!hallados.length) { salida.appendChild(h('p', { class: 'nada', text: 'No encontramos a nadie con «' + input.value.trim() + '». Prueba con otra parte de tu nombre o con los últimos 4 dígitos.' })); return; }
+      salida.appendChild(h('p', { text: hallados.length >= 50 ? 'Más de 50 coincidencias, escribe algo más preciso:' : hallados.length + (hallados.length === 1 ? ' coincidencia:' : ' coincidencias:') }));
       salida.appendChild(h('ul', null, hallados.map(function (i) { return h('li', null, [h('b', { text: 'n.º ' + (i + 1) }), ' ', s.participantes[i][0]]); })));
     });
     pintarLista(100);
     return h('section', { class: 'sv-busqueda' }, [
       h('h2', null, [h('label', { for: 'sv-buscar', text: '¿Estoy participando?' })]),
-      h('p', { id: 'sv-buscar-ayuda', class: 'ayuda', text: 'Cada boleta aparece con tu nombre abreviado y los últimos 4 dígitos de tu celular o de tu boleta. No publicamos documentos, correos ni teléfonos completos.' }),
+      h('p', { id: 'sv-buscar-ayuda', class: 'ayuda', text: 'Cada participante aparece con su nombre abreviado y los últimos 4 dígitos de su celular o de su boleta. No publicamos documentos, correos ni teléfonos completos.' }),
       input, salida,
       h('details', { class: 'sv-todos' }, [h('summary', { text: 'Ver la lista completa (' + s.participantes.length.toLocaleString('es-CO') + ')' }), lista, verMas])
     ]);

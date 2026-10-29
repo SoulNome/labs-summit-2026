@@ -67,7 +67,9 @@
   function normalizarId(s) {
     var t = limpiar(s);
     if (t.indexOf('@') > 0) return t.replace(/\s+/g, '').toUpperCase();
-    return t.replace(/[\s.\-_\/]/g, '').toUpperCase();
+    t = t.replace(/[\s.\-_\/()]/g, '').toUpperCase();
+    var cel = /^\+?57(3\d{9})$/.exec(t);   // «+57 300 123 4567» y «3001234567» son el mismo celular
+    return cel ? cel[1] : t;
   }
 
   function capital(p) {

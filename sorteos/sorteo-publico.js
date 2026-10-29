@@ -43,7 +43,7 @@
       x.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo' }) : null,
       h('b', { class: 'tt', text: x.titulo }),
       h('span', { class: 'cuando', text: V.fechaCol(hora) + ' · ' + V.horaCol(hora) }),
-      h('span', { class: 'cuantos', text: (x.participantes || 0).toLocaleString('es-CO') + ' boletas · huella ' + String(x.huella || '').slice(0, 8) })
+      h('span', { class: 'cuantos', text: (x.participantes || 0).toLocaleString('es-CO') + ' participaciones · huella ' + String(x.huella || '').slice(0, 8) })
     ]);
   }
 

@@ -63,7 +63,7 @@
     est.cabeceras = nombres;
     est.filas = filas;
     convertirFechas();
-    texto('o-leido', 'Leímos ' + miles(filas.length) + ' boletas (filas) con ' + ancho + ' columnas.', 'estado-o bien');
+    texto('o-leido', 'Leímos ' + miles(filas.length) + ' filas con ' + ancho + ' columnas.', 'estado-o bien');
     llenarColumnas();
     $('paso2').hidden = false;
     $('paso3').hidden = false;
@@ -75,9 +75,13 @@
   function convertirFechas() {
     est.fechas = -1;
     est.cabeceras.forEach(function (c, i) {
-      if (!/fecha|dia|date|hora|vendid/.test(sinTildes(c))) return;
+      if (!/fecha|dia|date|hora|vendid|marca temporal|timestamp/.test(sinTildes(c))) return;
       var serie = est.filas.filter(function (f) { return /^\d{5}(\.\d+)?$/.test(String(celda(f, i)).trim()); }).length;
       if (serie && serie >= est.filas.length * 0.9) est.filas.forEach(function (f) { if (i < f.length) f[i] = N.fechaDeExcel(f[i]); });
+      est.filas.forEach(function (f) {
+        var m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})[ ,T]+(\d{1,2}):(\d{2})/.exec(String(celda(f, i)).trim());   // día/mes/año, como en Colombia
+        if (m) f[i] = m[3] + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2) + ' ' + ('0' + m[4]).slice(-2) + ':' + m[5];
+      });
       var iso = est.filas.filter(function (f) { return /^\d{4}-\d{2}-\d{2}/.test(String(celda(f, i))); }).length;
       if (est.fechas < 0 && iso >= est.filas.length * 0.9) est.fechas = i;
     });
@@ -115,9 +119,9 @@
   function llenarColumnas() {
     var cant = adivinar([/^(cantidad|cant\.?|qty|quantity)\b|cantidad de (boletas|entradas|tickets)/], []);
     var id = adivinar([/^codigo del enlace/, /codigo|cod\.|boleta|ticket|entrada|orden|order|pedido|referencia|localizador/,
-      /cedula|documento|identificacion|\bid\b|numero|correo|e-?mail/], [cant], 0.5);
+      /cedula|documento|identificacion|\bid\b|numero|correo|e-?mail/, /\btel|celular|\bcel\b|movil|telefono|phone|whatsapp/], [cant], 0.5);
     if (id < 0) {   // ningún título conocido: la columna con más valores distintos
-      var u = est.cabeceras.map(function (c, i) { return i === cant ? -1 : unicidad(i); });
+      var u = est.cabeceras.map(function (c, i) { return i === cant || i === est.fechas ? -1 : unicidad(i); });
       id = u.indexOf(Math.max.apply(null, u.concat([0])));
     }
     var nombre = adivinar([/nombre|name|comprador|asistente|cliente|titular/], [id, cant]);
@@ -187,18 +191,18 @@
   function pintarMuestra() {
     var reg = registros(), r = reg.lista, caja = vaciar($('o-muestra'));
     r.slice(0, 6).forEach(function (x) { caja.appendChild(h('li', { text: etiquetaPrevia(x) })); });
-    if (!r.length) caja.appendChild(h('li', { class: 'mal', text: 'Con estos filtros no queda ninguna boleta.' }));
+    if (!r.length) caja.appendChild(h('li', { class: 'mal', text: 'Con estos filtros no queda nadie.' }));
     pintarAvisos(reg);
   }
 
   function pintarAvisos(reg) {
     var caja = vaciar($('o-avisos')), r = reg.lista;
     function aviso(t, clase) { caja.appendChild(h('p', { class: clase || 'aviso', text: t })); }
-    aviso(miles(r.length) + ' de ' + miles(est.filas.length) + ' boletas participan con estos filtros. Compara el total con el que te muestra Coccoa.', 'ayuda');
+    aviso(miles(r.length) + ' de ' + miles(est.filas.length) + ' filas participan con estos filtros. Compara el total con tu fuente (el formulario del QR o Coccoa).', 'ayuda');
     // rango de ventas: confirma que el archivo se bajó a la hora de cierre y trae las ventas de hoy
     if (est.fechas >= 0) {
       var fechas = r.map(function (x) { return String(celda(x.fila, est.fechas)); }).filter(function (v) { return /^\d{4}-\d{2}-\d{2}/.test(v); }).sort();
-      if (fechas.length) aviso('Ventas incluidas: desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Si vendieron después, vuelve a descargar el archivo.', 'ayuda');
+      if (fechas.length) aviso('El archivo trae registros desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Si llegaron más después, vuelve a descargarlo.', 'ayuda');
     }
     if (idDeEnlace()) aviso('El identificador es el código del enlace de cada boleta. En la lista pública solo aparecen sus últimos 4 dígitos y nunca se publica completo: con él se puede abrir la boleta.', 'ayuda');
     else {
@@ -220,8 +224,7 @@
     filtrosActivos().forEach(function (g) {
       Object.keys(g.ok).forEach(function (v) { if (/cortes/.test(sinTildes(v))) cortesias += r.filter(function (x) { return N.limpiar(celda(x.fila, g.columna)) === v; }).length; });
     });
-    // Decisión del organizador: participan todos los asistentes, también los de cortesía
-    if (cortesias) aviso(miles(cortesias) + ' boletas son de cortesía («Cortesía») y también participan: cuentan todos los asistentes. Desmárcalas solo si un sorteo es exclusivo para quienes compraron.', 'ayuda');
+    if (cortesias) aviso(miles(cortesias) + ' de las que participan son de cortesía («Cortesía»). Desmárcalas arriba si no deben entrar.', 'ayuda');
   }
 
   /* ---------------- 3 · datos del sorteo ---------------- */
@@ -241,7 +244,7 @@
     var titulo = N.limpiar($('o-titulo').value);
     var premios = $('o-premios').value.split(/\r?\n/).map(N.limpiar).filter(Boolean);
     var horaMs = msDeLocal($('o-hora').value), ensayo = $('o-ensayo').checked;
-    if (!est.filas.length) return mostrarError('Primero lee la lista de boletas (paso 1).');
+    if (!est.filas.length) return mostrarError('Primero lee la lista (paso 1).');
     if (!titulo) return mostrarError('Escribe el título del sorteo.');
     if (!premios.length) return mostrarError('Escribe al menos un premio.');
     if (premios.length > 50) return mostrarError('Máximo 50 premios por sorteo.');
@@ -285,7 +288,7 @@
     if (prep.duplicados) fuera.push(prep.duplicados.toLocaleString('es-CO') + ' repetidas (se contaron una vez)');
     caja.appendChild(h('div', null, [
       pub.ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo · no oficial' }) : null,
-      h('p', { class: 'grande' }, [h('b', { text: pub.participantes.length.toLocaleString('es-CO') }), ' boletas participan en «' + pub.titulo + '»']),
+      h('p', { class: 'grande' }, [h('b', { text: pub.participantes.length.toLocaleString('es-CO') }), ' participaciones en «' + pub.titulo + '»']),
       fuera.length ? h('p', { class: 'ayuda', text: 'No participan: ' + fuera.join(' · ') + '.' }) : null,
       h('p', { text: 'Sorteo: ' + V.fechaCol(hora) + ' a las ' + V.horaCol(hora, true) + ' · ronda ' + pub.azar.ronda.toLocaleString('es-CO') + ' de drand quicknet.' }),
       h('p', { class: 'l', text: 'Huella del acta (muéstrala en pantalla antes del sorteo):' }),
@@ -386,7 +389,7 @@
       if (x.p && Array.isArray(x.p.fila)) x.p.fila.forEach(function (v, i) { filas.push(h('tr', null, [h('th', { text: (priv.columnas && priv.columnas[i]) || 'Columna ' + (i + 1) }), h('td', { text: v })])); });
       caja.appendChild(h('article', { class: 'tarjeta-ganador' + (x.ok ? '' : ' mal') }, [
         h('span', { class: 'l', text: 'Premio ' + x.g.numeroPremio + ': ' + x.g.premio }),
-        h('b', { text: x.g.etiqueta + ' · boleta n.º ' + x.g.posicion }),
+        h('b', { text: x.g.etiqueta + ' · n.º ' + x.g.posicion }),
         h('p', { text: x.ok ? '✓ Coincide con el compromiso publicado.' : '✕ No coincide con el compromiso publicado.' }),
         x.p ? h('p', { text: 'Identificador: ' + x.p.idOriginal + (x.p.nombre ? ' · ' + x.p.nombre : '') }) : null,
         filas.length ? h('table', { class: 'datos-fila' }, [h('tbody', null, filas)]) : null
