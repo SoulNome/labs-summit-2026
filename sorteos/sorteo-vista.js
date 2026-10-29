@@ -92,6 +92,9 @@
     var hora = N.horaDeRonda(s.azar.ronda);
     var abiertoAntes = Date.now() < hora;   // ¿llegamos antes del sorteo? (entonces se anima la revelación)
     var publicado = op.publicado ? Date.parse(op.publicado) : NaN;
+    // En la pantalla del organizador (con el archivo privado) el ganador sale con su nombre completo
+    var nombreDe = typeof op.nombres === 'function' ? op.nombres : null;
+    function textoGanador(x) { return (nombreDe && nombreDe(x.posicion)) || x.etiqueta; }
     var principales = s.premios.filter(function (p) { return !esSuplente(p); }), suplentes = s.premios.length - principales.length;
     if (!principales.length) { principales = s.premios; suplentes = 0; }
 
@@ -239,18 +242,19 @@
         (function rodar() {
           if (!vivo) return;
           var p = (Date.now() - t0) / dur;
-          if (p >= 1) { nombre.textContent = x.etiqueta; fila.classList.remove('girando'); fila.classList.add('listo'); despues(siguiente, i < gp.length ? 1600 : 150); return; }
-          nombre.textContent = s.participantes[Math.floor(Math.random() * s.participantes.length)][0];
+          if (p >= 1) { nombre.textContent = textoGanador(x); fila.classList.remove('girando'); fila.classList.add('listo'); despues(siguiente, i < gp.length ? 1600 : 150); return; }
+          var azar = Math.floor(Math.random() * s.participantes.length);
+          nombre.textContent = (nombreDe && nombreDe(azar + 1)) || s.participantes[azar][0];
           despues(rodar, 40 + 260 * p * p);
         })();
       })();
     }
     function filaGanador(x, suplente) {
-      if (suplente) return h('li', { class: 'sv-suplente' }, [h('b', { class: 'et', text: x.etiqueta }), h('small', { text: ' · ' + x.premio + ' · n.º ' + x.posicion.toLocaleString('es-CO') })]);
+      if (suplente) return h('li', { class: 'sv-suplente' }, [h('b', { class: 'et', text: textoGanador(x) }), h('small', { text: ' · ' + x.premio + ' · n.º ' + x.posicion.toLocaleString('es-CO') })]);
       return h('li', { class: 'sv-ganador' }, [
         h('span', { class: 'pr', text: x.premio }),
-        h('b', { class: 'et', text: x.etiqueta }),
-        h('small', { text: 'N.º ' + x.posicion.toLocaleString('es-CO') + ' de la lista' }),
+        h('b', { class: 'et', text: textoGanador(x) }),
+        h('small', { text: (nombreDe ? x.etiqueta + ' · ' : '') + 'N.º ' + x.posicion.toLocaleString('es-CO') + ' de la lista' }),
         x.revelado ? h('small', { class: 'revelado' }, [marca(true), ' Código revelado por el organizador y comprobado: ' + x.revelado]) : null
       ]);
     }

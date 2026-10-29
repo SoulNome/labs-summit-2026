@@ -3,7 +3,7 @@
    GET  /api/participa      → { abierto, total }                         público, caché de 15 s
    POST /api/participa      → inscribe { nombre, celular, autoriza }     público, con límites
    GET  /api/registros      → { abierto, total, registros: [...] }       solo con la clave del sorteo
-   POST /api/registros      → { accion: 'abrir' | 'cerrar' | 'quitar' | 'vaciar' }   solo con la clave
+   POST /api/registros      → { accion: 'abrir' | 'cerrar' | 'quitar' | 'vaciar' | 'reiniciar' }   solo con la clave
    GET  /api/sorteos        → { sorteos: [...] }                         público, caché de 15 s
    GET  /api/sorteos?id=…   → el archivo público de ese sorteo           público, caché de 15 s
    POST /api/sorteos        → publica un archivo de sorteo, o { accion: 'borrar', id }   solo con la clave
@@ -32,7 +32,7 @@ const ESQUEMA = [
   'CREATE TABLE IF NOT EXISTS ajustes (clave TEXT PRIMARY KEY, valor TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS limites (clave TEXT PRIMARY KEY, n INTEGER NOT NULL, hasta INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS sorteos (id TEXT PRIMARY KEY, huella TEXT NOT NULL, titulo TEXT NOT NULL, ensayo INTEGER NOT NULL, ronda INTEGER NOT NULL, participantes INTEGER NOT NULL, publicado TEXT NOT NULL, datos TEXT NOT NULL)',
-  "INSERT OR IGNORE INTO ajustes (clave, valor) VALUES ('abierto', '1'), ('total', '0')",
+  "INSERT OR IGNORE INTO ajustes (clave, valor) VALUES ('abierto', '1'), ('total', '0'), ('version', '1')",
   "CREATE TRIGGER IF NOT EXISTS contar_registro AFTER INSERT ON registros BEGIN UPDATE ajustes SET valor = CAST(valor AS INTEGER) + 1 WHERE clave = 'total'; END"
 ];
 let esquemaListo = null;
@@ -45,6 +45,8 @@ async function valor(db, clave) {
   return f ? f.valor : null;
 }
 const recontar = (db) => db.prepare("UPDATE ajustes SET valor = CAST((SELECT COUNT(*) FROM registros) AS TEXT) WHERE clave = 'total'");
+// Sube cada vez que se borran todos los registros: así los celulares que ya se habían registrado vuelven a ver el formulario
+const nuevaVersion = (db) => db.prepare("UPDATE ajustes SET valor = CAST(CAST(valor AS INTEGER) + 1 AS TEXT) WHERE clave = 'version'");
 
 async function sha256(texto) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
@@ -119,8 +121,8 @@ function limpiarCelular(v) {
 function estado(request, db, context) {
   return conCache(request, context, '/api/participa?estado', async () => {
     await preparar(db);
-    const [a, t] = await Promise.all([valor(db, 'abierto'), valor(db, 'total')]);
-    return json({ abierto: a === '1', total: Number(t) || 0 }, 200, PUBLICO_15S);
+    const [a, t, v] = await Promise.all([valor(db, 'abierto'), valor(db, 'total'), valor(db, 'version')]);
+    return json({ abierto: a === '1', total: Number(t) || 0, version: Number(v) || 1 }, 200, PUBLICO_15S);
   });
 }
 
@@ -150,7 +152,8 @@ async function inscribir(request, env, db) {
   const nuevo = !!(r.meta && r.meta.changes);
   // Si el celular ya estaba, se responde con el nombre con que quedó registrado
   const guardado = nuevo ? nombre : ((await db.prepare('SELECT nombre FROM registros WHERE celular = ?1').bind(celular).first()) || {}).nombre || nombre;
-  return json({ ok: true, nuevo, etiqueta: N.etiquetaDe(guardado, celular), total: Number(await valor(db, 'total')) || 0 }, nuevo ? 201 : 200);
+  const [t, v] = await Promise.all([valor(db, 'total'), valor(db, 'version')]);
+  return json({ ok: true, nuevo, etiqueta: N.etiquetaDe(guardado, celular), total: Number(t) || 0, version: Number(v) || 1 }, nuevo ? 201 : 200);
 }
 
 /* ---------------- organizador (con la clave) ---------------- */
@@ -191,7 +194,13 @@ async function registros(request, env, db) {
       await recontar(db).run();
     } else if (accion === 'vaciar') {
       if (d.confirmar !== 'VACIAR') return json({ error: 'Falta confirmar con la palabra VACIAR.' }, 400);
-      await db.batch([db.prepare('DELETE FROM registros'), recontar(db)]);
+      await db.batch([db.prepare('DELETE FROM registros'), recontar(db), nuevaVersion(db)]);
+    } else if (accion === 'reiniciar') {
+      // Deja todo como nuevo después de las pruebas: sin registros, sin sorteos publicados y el registro abierto
+      if (d.confirmar !== 'REINICIAR') return json({ error: 'Falta confirmar con la palabra REINICIAR.' }, 400);
+      await db.batch([db.prepare('DELETE FROM registros'), db.prepare('DELETE FROM sorteos'), db.prepare('DELETE FROM limites'),
+        db.prepare("UPDATE ajustes SET valor = '1' WHERE clave = 'abierto'"), recontar(db), nuevaVersion(db)]);
+      await olvidar(request, ['/api/sorteos?lista']);
     } else return json({ error: 'Acción no válida.' }, 400);
     await olvidar(request, ['/api/participa?estado']);
   }

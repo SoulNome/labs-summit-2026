@@ -19,6 +19,8 @@
   function msDeLocal(v) { return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v || '') ? Date.parse(v + ':00-05:00') : NaN; }
   function isoCol(ms) { return new Date(ms - 5 * 3600e3).toISOString().slice(0, 19) + '-05:00'; }
   function miles(n) { return n.toLocaleString('es-CO'); }
+  // Un sorteo oficial sale al menos 1 minuto después de cerrar la lista: nadie conoce todavía ese número de drand
+  var MINIMO = 60e3;
   // «en N minutos», redondeado al minuto siguiente (el campo de hora va de minuto en minuto)
   function enMinutos(n) { return valorLocal(Math.ceil((Date.now() + n * 60e3 + 20e3) / 6e4) * 6e4); }
 
@@ -70,7 +72,7 @@
     if (cuerpo) { op.headers['Content-Type'] = 'application/json'; op.body = typeof cuerpo === 'string' ? cuerpo : JSON.stringify(cuerpo); }
     return fetch(ruta, op).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (d) {
-        if (r.ok) return d;
+        if (r.ok) { if (d && typeof d === 'object') Object.defineProperty(d, '_fecha', { value: r.headers.get('Date') }); return d; }
         var e = new Error(d.error || 'El servidor respondió con el error ' + r.status + '.');
         e.status = r.status;
         throw e;
@@ -110,17 +112,20 @@
   // «2026-10-29T15:04:05Z» → «2026-10-29 10:04» (hora de Colombia)
   function fechaRegistro(iso) { var ms = Date.parse(iso); return isNaN(ms) ? '' : valorLocal(ms).replace('T', ' '); }
 
+  function usarRegistros(lista) {
+    est.archivos = [{ nombre: 'Registros del QR', tabla: [['Fecha de registro', 'Nombre completo', 'Celular']].concat(lista.map(function (x) { return [fechaRegistro(x.creado), x.nombre, x.celular]; })) }];
+    est.fuente = 'qr';
+    $('o-pegar').value = '';
+    $('o-encabezado').checked = true;
+    texto('o-archivos', '');
+    leer();
+  }
   $('o-traer').addEventListener('click', function () {
     conClave(this, '/api/registros', null, function (d) {
       var lista = Array.isArray(d.registros) ? d.registros : [];
       if (!lista.length) return texto('o-qr-msg', 'Todavía no hay nadie registrado.', 'estado-o mal');
-      est.archivos = [{ nombre: 'Registros del QR', tabla: [['Fecha de registro', 'Nombre completo', 'Celular']].concat(lista.map(function (x) { return [fechaRegistro(x.creado), x.nombre, x.celular]; })) }];
-      est.fuente = 'qr';
-      $('o-pegar').value = '';
-      $('o-encabezado').checked = true;
-      texto('o-archivos', '');
       texto('o-qr-msg', '✓ ' + miles(lista.length) + (lista.length === 1 ? ' registro traído' : ' registros traídos') + ' (' + V.horaCol(Date.now(), true) + '). Quienes se registren después entran en el próximo sorteo.', 'estado-o bien');
-      leer();
+      usarRegistros(lista);
     });
   });
   $('o-abrir-cerrar').addEventListener('click', function () {
@@ -147,6 +152,24 @@
       texto('o-qr-msg', 'Se borraron todos los registros.', 'estado-o bien');
     });
   });
+
+  // Después de las pruebas: todo en cero, en el servidor y en este navegador (la clave se conserva)
+  $('o-reiniciar').addEventListener('click', function () {
+    var r = prompt('Esto borra TODOS los registros del QR, TODOS los sorteos publicados en labssummit.com/sorteos (también los ensayos) y la lista de ganadores de este computador. No se puede deshacer.\n\nEscribe REINICIAR para confirmar:');
+    if (r === null) return;
+    if (N.limpiar(r).toUpperCase() !== 'REINICIAR') return texto('o-qr-msg', 'No se borró nada.', 'estado-o');
+    conClave(this, '/api/registros', { accion: 'reiniciar', confirmar: 'REINICIAR' }, function () {
+      [CLAVE_GANADORES, CLAVE_DIA, CLAVE_DIA + '.marcados', CLAVE_ULTIMO].forEach(function (k) { try { localStorage.removeItem(k); } catch (e) { /* nada */ } });
+      try { sessionStorage.setItem('lsSorteoReiniciado', '1'); } catch (e) { /* nada */ }
+      location.reload();
+    });
+  });
+  try {
+    if (sessionStorage.getItem('lsSorteoReiniciado')) {
+      sessionStorage.removeItem('lsSorteoReiniciado');
+      texto('o-qr-msg', '✓ Todo quedó en cero: sin registros, sin sorteos publicados y sin ganadores. El registro está abierto.', 'estado-o bien');
+    }
+  } catch (e) { /* nada */ }
 
   /* ---------------- 1 · leer la lista ---------------- */
   $('o-archivo').addEventListener('change', function (e) {
@@ -395,10 +418,7 @@
   pintarPremiosEvento();
 
   function textoGenerar() { return $('o-ensayo').checked ? 'Cerrar la lista y generar el ENSAYO' : 'Cerrar la lista y generar el sorteo'; }
-  $('o-ensayo').addEventListener('change', function () {
-    $('o-1min').hidden = !$('o-ensayo').checked;
-    $('o-generar').textContent = textoGenerar();
-  });
+  $('o-ensayo').addEventListener('change', function () { $('o-generar').textContent = textoGenerar(); });
   $('o-hora').addEventListener('input', pintarRonda);
   $('o-ensayo').addEventListener('change', pintarRonda);
   function pintarRonda() {
@@ -406,7 +426,7 @@
     if (isNaN(ms)) { e.textContent = ''; return; }
     var r = N.rondaEn(ms), hora = N.horaDeRonda(r);
     var txt = 'Se usará la ronda ' + r.toLocaleString('es-CO') + ' de drand quicknet, que sale el ' + V.fechaCol(hora) + ' a las ' + V.horaCol(hora, true);
-    if (!$('o-ensayo').checked && hora < Date.now() + 3 * 60e3) txt += ' ⚠ Debe ser al menos 3 minutos en el futuro.';
+    if (!$('o-ensayo').checked && hora < Date.now() + MINIMO) txt += ' ⚠ Debe ser al menos 1 minuto en el futuro.';
     e.textContent = txt;
   }
 
@@ -416,23 +436,32 @@
   });
 
   $('o-generar').addEventListener('click', function () {
+    var boton = $('o-generar');
+    boton.disabled = true; boton.textContent = 'Generando…';
+    generar({}).catch(function () { /* el error ya se muestra */ })
+      .finally(function () { boton.disabled = false; boton.textContent = textoGenerar(); });
+  });
+
+  // Cierra la lista y arma el sorteo. op.ronda: la ronda de drand ya elegida (sorteo en vivo).
+  function generar(op) {
     mostrarError('');
     var titulo = N.limpiar($('o-titulo').value);
     var premios = $('o-premios').value.split(/\r?\n/).map(N.limpiar).filter(Boolean);
-    var horaMs = msDeLocal($('o-hora').value), ensayo = $('o-ensayo').checked;
-    if (!est.filas.length) return mostrarError('Primero lee la lista (paso 1).');
-    if (!titulo) return mostrarError('Escribe el título del sorteo.');
-    if (!premios.length) return mostrarError('Escribe al menos un premio.');
-    if (premios.length > 50) return mostrarError('Máximo 50 premios por sorteo.');
-    if (isNaN(horaMs)) return mostrarError('Elige la fecha y la hora del sorteo.');
-    var ronda = N.rondaEn(horaMs);
-    if (!ensayo && N.horaDeRonda(ronda) < Date.now() + 3 * 60e3) {
-      return mostrarError('La hora del sorteo debe ser al menos 3 minutos después de cerrar la lista: así nadie conoce el azar cuando se cierra. Si solo quieres probar, marca «Es un ensayo».');
+    var horaMs = op.ronda ? N.horaDeRonda(op.ronda) : msDeLocal($('o-hora').value), ensayo = $('o-ensayo').checked;
+    function falla(t) { mostrarError(t); return Promise.reject(new Error(t)); }
+    if (!est.filas.length) return falla('Primero lee la lista (paso 1).');
+    if (!titulo) return falla('Escribe el título del sorteo.');
+    if (!premios.length) return falla('Escribe al menos un premio.');
+    if (premios.length > 50) return falla('Máximo 50 premios por sorteo.');
+    if (isNaN(horaMs)) return falla('Elige la fecha y la hora del sorteo.');
+    var ronda = op.ronda || N.rondaEn(horaMs);
+    if (!op.ronda && !ensayo && N.horaDeRonda(ronda) < Date.now() + MINIMO) {
+      return falla('La hora del sorteo debe ser al menos 1 minuto después de cerrar la lista: así nadie conoce el azar cuando se cierra. Si solo quieres probar, marca «Es un ensayo».');
     }
     var reg = registros();
-    var boton = $('o-generar');
-    boton.disabled = true; boton.textContent = 'Generando…';
-    N.prepararParticipantes(reg.lista).then(function (prep) {
+    return N.prepararParticipantes(reg.lista).then(function (prep) {
+      // con pocos inscritos sobran suplentes: se quitan los que no alcanzan
+      while (premios.length > prep.participantes.length && premios.length > 1 && /^suplente\b/i.test(premios[premios.length - 1])) premios.pop();
       if (prep.participantes.length < premios.length) throw new Error('Hay ' + prep.participantes.length + ' participantes y ' + premios.length + ' premios: debe haber al menos un participante por premio.');
       var datos = { id: N.idSorteo(titulo, horaMs) + (ensayo ? '-ensayo' : ''), titulo: titulo, ensayo: ensayo, cierre: isoCol(Date.now()), premios: premios, ronda: ronda };
       return N.armarPublico(datos, prep.participantes).then(function (pub) {
@@ -457,13 +486,13 @@
           pintarPremiosEvento();
         }
         guardarUltimo();
-        pintarResumen(pub, prep, reg);
+        pintarResumen(pub, prep, reg, !!op.ronda);
         publicar(pub);
         buscarGanadores();
+        return pub;
       });
-    }).catch(function (e) { mostrarError(e.message || String(e)); })
-      .finally(function () { boton.disabled = false; boton.textContent = textoGenerar(); });
-  });
+    }).catch(function (e) { mostrarError(e.message || String(e)); throw e; });
+  }
 
   function pintarResumen(pub, prep, reg, sinMover) {
     var hora = N.horaDeRonda(pub.azar.ronda), caja = vaciar($('o-resumen'));
@@ -570,16 +599,135 @@
     return false;
   }
 
+  // Nombre completo de quien está en la posición n (sale del archivo privado: solo en esta pantalla, nunca en la web)
+  var PARTICULAS = ['de', 'del', 'la', 'las', 'los', 'y', 'e', 'da', 'das', 'do', 'dos', 'van', 'von', 'di'];
+  function nombreCompleto(pos) {
+    var p = est.privado && Array.isArray(est.privado.participantes) ? est.privado.participantes[pos - 1] : null;
+    var n = p ? N.limpiar(p.nombre) : '';
+    if (!n || (n !== n.toUpperCase() && n !== n.toLowerCase())) return n;   // si ya viene bien escrito, se deja igual
+    return n.toLocaleLowerCase('es').split(' ').map(function (w, i) {
+      return i && PARTICULAS.indexOf(w) >= 0 ? w : w.charAt(0).toLocaleUpperCase('es') + w.slice(1);
+    }).join(' ');
+  }
+
+  /* ---------------- sorteo en vivo: N minutos para inscribirse y el ganador ~5 s después ---------------- */
+  var PRUEBA_VIVO = window.__LS_SORTEO_PRUEBA || {};   // solo para las pruebas automáticas
+  var vivo = null;
+  function mostrarPantalla() {
+    $('o-pasos').hidden = true;
+    $('o-vista-sec').hidden = false;
+    document.body.classList.add('modo-pantalla');
+  }
+  function premioPrincipal() { return $('o-premios').value.split(/\r?\n/).map(N.limpiar).filter(Boolean)[0] || ''; }
+  $('o-iniciar').addEventListener('click', function () {
+    texto('o-vivo-msg', '');
+    if (!clave()) { texto('o-vivo-msg', 'Escribe la clave del sorteo (arriba).', 'estado-o mal'); return $('o-clave').focus(); }
+    if (!N.limpiar($('o-titulo').value) || !premioPrincipal()) return texto('o-vivo-msg', 'Elige el premio de este sorteo.', 'estado-o mal');
+    var minutos = parseInt($('o-ventana').value, 10) || 5;
+    if (est.control) est.control.detener();
+    vivo = { fin: Date.now() + (PRUEBA_VIVO.ventanaMs || minutos * 60e3), cerrando: false };
+    mostrarPantalla();
+    $('o-cerrar-ya').hidden = false;
+    var ensayo = $('o-ensayo').checked;
+    vaciar($('o-vista')).appendChild(h('div', { class: 'sv-inscripcion' }, [
+      h('div', { class: 'svi-texto' }, [
+        ensayo ? h('span', { class: 'sello-ensayo', text: 'Ensayo · no es un sorteo oficial' }) : null,
+        h('p', { class: 'svi-etiqueta', text: 'Sorteo en vivo' }),
+        h('h1', { class: 'sv-titulo', text: N.limpiar($('o-titulo').value) }),
+        h('p', { class: 'svi-premio', text: premioPrincipal() }),
+        h('div', { class: 'sv-estado' }, [
+          h('span', { class: 'l', id: 'svi-l', text: 'Inscríbete antes de que llegue a cero' }),
+          h('b', { class: 'sv-cuenta-num', id: 'svi-cuenta', text: '' }),
+          h('small', { id: 'svi-nota', text: 'Escanea el QR o entra a labssummit.com/participa. Si ya te registraste hoy, ya estás participando.' })
+        ]),
+        h('p', { class: 'svi-inscritos', id: 'svi-inscritos' })
+      ]),
+      h('figure', { class: 'svi-qr' }, [
+        h('img', { src: '/sorteos/qr-participa.svg', alt: 'QR para inscribirse: labssummit.com/participa', width: 360, height: 360 }),
+        h('figcaption', null, ['labssummit.com/', h('b', { text: 'participa' })])
+      ])
+    ]));
+    vivo.reloj = setInterval(ticVivo, 250);
+    vivo.conteo = setInterval(contarInscritos, 10000);
+    ticVivo();
+    contarInscritos();
+  });
+  function ticVivo() {
+    if (!vivo || vivo.cerrando) return;
+    var falta = vivo.fin - Date.now();
+    if (falta <= 0) return cerrarEnVivo();
+    var m = Math.floor(falta / 6e4), sg = Math.ceil(falta % 6e4 / 1e3);
+    if (sg === 60) { m++; sg = 0; }
+    var e = $('svi-cuenta'), txt = (m < 10 ? '0' : '') + m + ':' + (sg < 10 ? '0' : '') + sg;
+    if (e.textContent !== txt) e.textContent = txt;
+    e.classList.toggle('final', falta < 10500);
+  }
+  function contarInscritos() {
+    fetch('/api/participa', { cache: 'no-store', credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+      var e = $('svi-inscritos');
+      if (e && typeof d.total === 'number') e.textContent = d.total === 1 ? '1 persona inscrita' : miles(d.total) + ' personas inscritas';
+    }).catch(function () { /* sin señal: queda el último número */ });
+  }
+  function pararVivo() {
+    if (!vivo) return;
+    clearInterval(vivo.reloj);
+    clearInterval(vivo.conteo);
+    clearTimeout(vivo.reintento);
+    vivo = null;
+    $('o-cerrar-ya').hidden = true;
+  }
+  // Al llegar a cero: trae los inscritos, cierra la lista, elige una ronda de drand ~5 s después (con la hora del servidor) y la publica
+  function cerrarEnVivo() {
+    if (!vivo || vivo.cerrando) return;
+    vivo.cerrando = true;
+    clearInterval(vivo.reloj);
+    clearInterval(vivo.conteo);
+    $('o-cerrar-ya').hidden = true;
+    var aviso = function (t, mal) {
+      var l = $('svi-l'), c = $('svi-cuenta'), n = $('svi-nota');
+      if (l) l.textContent = '¡Se cerró la inscripción!';
+      if (c) { c.textContent = '00:00'; c.classList.remove('final'); }
+      if (n) { n.textContent = t; n.className = mal ? 'mal' : ''; }
+    };
+    aviso('Preparando el sorteo…');
+    var intentos = 0;
+    (function intentar() {
+      api('/api/registros').then(function (d) {
+        var lista = Array.isArray(d.registros) ? d.registros : [];
+        if (!lista.length) throw new Error('No hay nadie inscrito.');
+        usarRegistros(lista);
+        var desfase = d._fecha ? Date.parse(d._fecha) - Date.now() : 0;
+        if (!(Math.abs(desfase) > 1500)) desfase = 0;   // la cabecera Date va de segundo en segundo
+        return generar({ ronda: PRUEBA_VIVO.rondaVivo || N.rondaEn(Date.now() + desfase + 5000) });
+      }).then(function (pub) {
+        pararVivo();
+        est.control = V.mostrar($('o-vista'), pub, { pantalla: true, nombres: nombreCompleto });
+        $('o-vista').appendChild(h('p', { class: 'sv-pie-pantalla', text: 'Verifícalo en tu celular: labssummit.com/sorteos' }));
+      }, function (e) {
+        if (!vivo) return;
+        var deRed = !e.status && /conexión/.test(e.message || '') || e.status >= 500;
+        if (deRed && ++intentos < 6) { aviso('Sin conexión, reintentando…'); vivo.reintento = setTimeout(intentar, 2500); return; }
+        aviso('No se pudo hacer el sorteo: ' + (e.message || e) + ' Vuelve a la herramienta para revisarlo.', true);
+        pararVivo();
+      });
+    })();
+  }
+  $('o-cerrar-ya').addEventListener('click', function () {
+    if (vivo && confirm('¿Cerrar la inscripción ya? Participan los inscritos hasta este momento.')) cerrarEnVivo();
+  });
+
   /* ---------------- pantalla (vista previa local) ---------------- */
   $('o-pantalla').addEventListener('click', function () {
     if (!est.publico) return;
     $('o-pasos').hidden = true;
     $('o-vista-sec').hidden = false;
     document.body.classList.add('modo-pantalla');
-    est.control = V.mostrar($('o-vista'), est.publico, { pantalla: true });
+    est.control = V.mostrar($('o-vista'), est.publico, { pantalla: true, nombres: est.privado && est.privado.huella === est.publico.huella ? nombreCompleto : null });
     $('o-vista').appendChild(h('p', { class: 'sv-pie-pantalla', text: 'Verifícalo en tu celular: labssummit.com/sorteos' }));
   });
   $('o-cerrar-vista').addEventListener('click', function () {
+    if (vivo && !vivo.cerrando && !confirm('¿Cancelar el sorteo en vivo? Todavía no se ha cerrado la lista.')) return;
+    pararVivo();
     if (est.control) est.control.detener();
     document.body.classList.remove('modo-pantalla');
     $('o-vista-sec').hidden = true;

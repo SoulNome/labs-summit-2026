@@ -116,7 +116,7 @@
     pedir('POST', { nombre: campos.nombre.value, celular: campos.celular.value, autoriza: campos.autoriza.checked, sitio: $('p-sitio').value })
       .then(function (r) {
         if ((r.status === 200 || r.status === 201) && r.d.ok) {
-          guardar({ etiqueta: r.d.etiqueta, cuando: new Date().toISOString() });
+          guardar({ etiqueta: r.d.etiqueta, cuando: new Date().toISOString(), version: r.d.version });
           contador(r.d.total);
           listo(r.d.etiqueta, r.status === 200 ? 'Este celular ya estaba registrado.' : '');
           return;
@@ -144,6 +144,9 @@
     return pedir('GET').then(function (r) {
       if (r.status === 503) { if (!leerGuardado()) mostrar('p-pronto'); return; }
       if (r.status !== 200) return;
+      // Si el organizador borró los registros (p. ej. después de las pruebas), este celular ya no está inscrito
+      var g = leerGuardado();
+      if (g && typeof r.d.version === 'number' && g.version !== r.d.version) { olvidar(); mostrar('p-form'); }
       contador(r.d.total);
       if (r.d.abierto === false && !leerGuardado()) mostrar('p-cerrado');
       else if (!$('p-pronto').hidden) mostrar('p-form');
