@@ -1,13 +1,13 @@
 /* Labs Summit 2026 · herramienta del organizador (/sorteos/organizador.html)
-   Lee la lista de boletas (CSV o pegado desde Excel), cierra la lista, genera el
-   archivo público (sin datos personales) y el privado, y al final muestra los
-   datos de contacto de los ganadores. Nada sale de este computador. */
+   Lee la lista de boletas (el Excel de Coccoa, CSV o filas pegadas desde Excel),
+   cierra la lista, genera el archivo público (sin datos personales) y el privado,
+   y al final muestra los datos de contacto de los ganadores. Nada sale de este computador. */
 (function () {
   'use strict';
 
   var N = window.LSSorteo, V = window.LSVista, h = V.h, vaciar = V.vaciar;
   var $ = function (s) { return document.getElementById(s); };
-  var est = { cabeceras: [], filas: [], archivos: [], publico: null, privado: null, control: null };
+  var est = { cabeceras: [], filas: [], archivos: [], publico: null, privado: null, control: null, fechas: -1 };
   var cargado = { privado: null, publico: null }, reintento = null;
 
   function sinTildes(s) { return N.limpiar(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
@@ -17,6 +17,7 @@
   function valorLocal(ms) { return new Date(ms - 5 * 3600e3).toISOString().slice(0, 16); }
   function msDeLocal(v) { return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v || '') ? Date.parse(v + ':00-05:00') : NaN; }
   function isoCol(ms) { return new Date(ms - 5 * 3600e3).toISOString().slice(0, 19) + '-05:00'; }
+  function miles(n) { return n.toLocaleString('es-CO'); }
 
   /* ---------------- 1 · leer la lista ---------------- */
   $('o-archivo').addEventListener('change', function (e) {
@@ -24,24 +25,28 @@
     est.archivos = [];
     texto('o-archivos', '');
     if (!fs.length) return;
+    texto('o-leido', 'Leyendo…', 'estado-o');
     Promise.all(fs.map(function (f) {
-      return f.arrayBuffer().then(function (b) { return { nombre: f.name, texto: N.decodificar(b) }; });
+      return f.arrayBuffer().then(function (b) {
+        if (N.esZip(b)) return N.leerXlsx(b).then(function (t) { return { nombre: f.name, tabla: t }; });
+        if (/\.xls$/i.test(f.name)) throw new Error('«' + f.name + '» es un Excel antiguo (.xls). Ábrelo en Excel y guárdalo como .xlsx o CSV.');
+        return { nombre: f.name, tabla: N.leerTabla(N.decodificar(b)) };
+      });
     })).then(function (xs) {
       est.archivos = xs;
       texto('o-archivos', xs.map(function (x) { return x.nombre; }).join(', '));
       leer();
-    });
+    }, function (err) { texto('o-leido', err.message || String(err), 'estado-o mal'); });
   });
   $('o-leer').addEventListener('click', leer);
   $('o-encabezado').addEventListener('change', function () { if (est.filas.length) leer(); });
 
   function leer() {
-    var fuentes = est.archivos.map(function (x) { return x.texto; });
-    if ($('o-pegar').value.trim()) fuentes.push($('o-pegar').value);
-    if (!fuentes.length) { texto('o-leido', 'Sube un archivo o pega la lista.', 'estado-o mal'); return; }
+    var tablas = est.archivos.map(function (x) { return x.tabla.map(function (f) { return f.slice(); }); });
+    if ($('o-pegar').value.trim()) tablas.push(N.leerTabla($('o-pegar').value));
+    if (!tablas.length) { texto('o-leido', 'Sube un archivo o pega la lista.', 'estado-o mal'); return; }
     var conTitulos = $('o-encabezado').checked, cab = null, filas = [], distintas = false;
-    fuentes.forEach(function (t) {
-      var tabla = N.leerTabla(t);
+    tablas.forEach(function (tabla) {
       if (!tabla.length) return;
       if (conTitulos) {
         var c = tabla.shift().map(N.limpiar);
@@ -57,7 +62,8 @@
     for (var k = 0; k < ancho; k++) nombres.push((cab && cab[k]) || 'Columna ' + (k + 1));
     est.cabeceras = nombres;
     est.filas = filas;
-    texto('o-leido', 'Leímos ' + filas.length.toLocaleString('es-CO') + ' filas con ' + ancho + ' columnas.', 'estado-o bien');
+    convertirFechas();
+    texto('o-leido', 'Leímos ' + miles(filas.length) + ' boletas (filas) con ' + ancho + ' columnas.', 'estado-o bien');
     llenarColumnas();
     $('paso2').hidden = false;
     $('paso3').hidden = false;
@@ -65,85 +71,156 @@
     pintarRonda();
   }
 
+  // Coccoa exporta la fecha de venta como número de serie de Excel («46324.7083»): se pasa a «2026-10-29 17:00»
+  function convertirFechas() {
+    est.fechas = -1;
+    est.cabeceras.forEach(function (c, i) {
+      if (!/fecha|dia|date|hora|vendid/.test(sinTildes(c))) return;
+      var serie = est.filas.filter(function (f) { return /^\d{5}(\.\d+)?$/.test(String(celda(f, i)).trim()); }).length;
+      if (serie && serie >= est.filas.length * 0.9) est.filas.forEach(function (f) { if (i < f.length) f[i] = N.fechaDeExcel(f[i]); });
+      var iso = est.filas.filter(function (f) { return /^\d{4}-\d{2}-\d{2}/.test(String(celda(f, i))); }).length;
+      if (est.fechas < 0 && iso >= est.filas.length * 0.9) est.fechas = i;
+    });
+  }
+
   /* ---------------- 2 · columnas ---------------- */
-  function adivinar(patrones, excluir) {
+  // Qué tan distintos son los valores de una columna (1 = todos distintos)
+  function unicidad(i) {
+    var vistos = Object.create(null), n = 0, d = 0;
+    est.filas.forEach(function (f) { var v = N.normalizarId(celda(f, i)); if (!v) return; n++; if (!vistos[v]) { vistos[v] = true; d++; } });
+    return n ? d / n : 0;
+  }
+  // La primera columna cuyo título coincide con un patrón (en orden de preferencia).
+  // Con «minimo», solo valen columnas con valores casi todos distintos y gana la más única:
+  // así «Visualizar código» (siempre «Ver código») no se confunde con el código de la boleta.
+  function adivinar(patrones, excluir, minimo) {
     for (var p = 0; p < patrones.length; p++) {
+      var mejor = -1, mejorU = -1;
       for (var i = 0; i < est.cabeceras.length; i++) {
-        if (excluir.indexOf(i) < 0 && patrones[p].test(sinTildes(est.cabeceras[i]))) return i;
+        if (excluir.indexOf(i) >= 0 || !patrones[p].test(sinTildes(est.cabeceras[i]))) continue;
+        if (!minimo) return i;
+        var u = unicidad(i);
+        if (u >= minimo && u > mejorU) { mejor = i; mejorU = u; }
       }
+      if (mejor >= 0) return mejor;
     }
     return -1;
   }
-  function opciones(sel, opcional, elegida) {
+  function opciones(sel, extras, elegida) {
     vaciar(sel);
-    if (opcional) sel.appendChild(h('option', { value: '', text: '— ninguna —' }));
+    (extras || []).forEach(function (x) { sel.appendChild(h('option', { value: x[0], text: x[1] })); });
     est.cabeceras.forEach(function (c, i) { sel.appendChild(h('option', { value: String(i), text: c })); });
-    sel.value = elegida >= 0 ? String(elegida) : opcional ? '' : '0';
+    sel.value = elegida >= 0 ? String(elegida) : extras && extras.length ? extras[0][0] : '0';
   }
   function llenarColumnas() {
     var cant = adivinar([/^(cantidad|cant\.?|qty|quantity)\b|cantidad de (boletas|entradas|tickets)/], []);
-    var id = adivinar([/(codigo|cod\.)|boleta|ticket|entrada|orden|order|pedido|referencia|localizador/, /cedula|documento|identificacion|\bid\b|numero|correo|e-?mail/], [cant]);
+    var id = adivinar([/^codigo del enlace/, /codigo|cod\.|boleta|ticket|entrada|orden|order|pedido|referencia|localizador/,
+      /cedula|documento|identificacion|\bid\b|numero|correo|e-?mail/], [cant], 0.5);
+    if (id < 0) {   // ningún título conocido: la columna con más valores distintos
+      var u = est.cabeceras.map(function (c, i) { return i === cant ? -1 : unicidad(i); });
+      id = u.indexOf(Math.max.apply(null, u.concat([0])));
+    }
     var nombre = adivinar([/nombre|name|comprador|asistente|cliente|titular/], [id, cant]);
-    var filtro = adivinar([/^(estado|status)\b|estado (del )?pago|estado de la orden/], [id, nombre, cant]);
-    opciones($('o-col-id'), false, id);
-    opciones($('o-col-nombre'), true, nombre);
-    opciones($('o-col-cantidad'), true, cant);
-    opciones($('o-col-filtro'), true, filtro);
-    pintarFiltro();
+    var cel = adivinar([/\btel|celular|\bcel\b|movil|telefono|phone|whatsapp/], [id, nombre, cant]);
+    opciones($('o-col-id'), null, id);
+    opciones($('o-col-nombre'), [['', '— ninguna —']], nombre);
+    opciones($('o-col-cantidad'), [['', '— ninguna —']], cant);
+    opciones($('o-col-visible'), [['', '— el identificador —'], ['nada', '— nada —']], cel);
+    pintarFiltros();
   }
-  ['o-col-id', 'o-col-nombre', 'o-col-cantidad'].forEach(function (s) { $(s).addEventListener('change', pintarMuestra); });
-  $('o-col-filtro').addEventListener('change', pintarFiltro);
+  ['o-col-id', 'o-col-nombre', 'o-col-cantidad', 'o-col-visible'].forEach(function (s) { $(s).addEventListener('change', pintarMuestra); });
 
   function col(sel) { var v = $(sel).value; return v === '' ? -1 : parseInt(v, 10); }
+  function colVisible() { var v = $('o-col-visible').value; return v === '' ? col('o-col-id') : v === 'nada' ? -2 : parseInt(v, 10); }
   function celda(fila, i) { return i >= 0 && i < fila.length ? fila[i] : ''; }
 
-  // Valores que normalmente no deben participar (pagos pendientes, anulados…)
-  var NO_PAGADO = /pendiente|cancel|rechaz|reembols|devol|devuelt|anulad|fallid|expirad|vencid|declin|refund|pending|failed|void/;
-  function pintarFiltro() {
-    var i = col('o-col-filtro'), caja = vaciar($('o-valores'));
-    $('o-valores-filtro').hidden = i < 0;
-    if (i >= 0) {
+  // Valores que normalmente no deben participar (pagos pendientes, anulados, boletas no válidas…)
+  var NO_VALE = /pendiente|cancel|rechaz|reembols|devol|devuelt|anulad|fallid|expirad|vencid|declin|refund|pending|failed|void|no valid|invalid|eliminad|bloquead/;
+  // Columnas de Coccoa que son botones de la tabla, no datos
+  var NO_FILTRO = /^(cambiar estado|visualizar codigo|eliminar boleta|reenviar|entrada|firma|comision|codigo del enlace)/;
+
+  // Un grupo de casillas por cada columna con pocos valores distintos (tipo, etapa, estado, promotor…)
+  function pintarFiltros() {
+    var caja = vaciar($('o-grupos')), hay = false;
+    est.cabeceras.forEach(function (c, i) {
+      if (NO_FILTRO.test(sinTildes(c)) || i === est.fechas) return;
       var cuenta = Object.create(null), orden = [];
-      est.filas.forEach(function (f) { var v = N.limpiar(celda(f, i)) || '(vacío)'; if (!cuenta[v]) { cuenta[v] = 0; orden.push(v); } cuenta[v]++; });
-      if (orden.length > 40) {
-        caja.appendChild(h('p', { class: 'aviso', text: 'Esta columna tiene ' + orden.length + ' valores distintos: no sirve para filtrar. Elige otra o «ninguna».' }));
-      } else {
-        orden.sort(function (a, b) { return cuenta[b] - cuenta[a]; }).forEach(function (v) {
-          var marcado = !NO_PAGADO.test(sinTildes(v));
-          caja.appendChild(h('label', { class: 'check' }, [h('input', { type: 'checkbox', value: v, checked: marcado, onchange: pintarMuestra }), ' ' + v + ' ', h('small', { text: '(' + cuenta[v].toLocaleString('es-CO') + ')' })]));
-        });
-      }
-    }
+      est.filas.forEach(function (f) { var v = N.limpiar(celda(f, i)) || '(vacío)'; if (!(v in cuenta)) { cuenta[v] = 0; orden.push(v); } cuenta[v]++; });
+      if (orden.length < 2 || orden.length > 12 || orden.length > est.filas.length / 2) return;
+      if (orden.every(function (v) { return v === '(vacío)' || /^[\d.,\s$-]+$/.test(v); })) return;   // precios, ids de pago…
+      hay = true;
+      var grupo = h('fieldset', { class: 'valores', 'data-col': i }, [h('legend', { text: c })]);
+      orden.sort(function (a, b) { return cuenta[b] - cuenta[a]; }).forEach(function (v) {
+        grupo.appendChild(h('label', { class: 'check' }, [
+          h('input', { type: 'checkbox', value: v, checked: !NO_VALE.test(sinTildes(v)), onchange: pintarMuestra }),
+          ' ' + v + ' ', h('small', { text: '(' + miles(cuenta[v]) + ')' })
+        ]));
+      });
+      caja.appendChild(grupo);
+    });
+    $('o-filtros').hidden = !hay;
     pintarMuestra();
   }
-  function valoresPermitidos() {
-    var i = col('o-col-filtro');
-    if (i < 0) return null;
-    var cajas = $('o-valores').querySelectorAll('input[type=checkbox]');
-    if (!cajas.length) return null;
-    var ok = Object.create(null);
-    Array.prototype.forEach.call(cajas, function (c) { if (c.checked) ok[c.value] = true; });
-    return { columna: i, ok: ok };
+  function filtrosActivos() {
+    return Array.prototype.map.call($('o-grupos').querySelectorAll('fieldset[data-col]'), function (g) {
+      var ok = Object.create(null);
+      Array.prototype.forEach.call(g.querySelectorAll('input[type=checkbox]'), function (c) { if (c.checked) ok[c.value] = true; });
+      return { columna: parseInt(g.getAttribute('data-col'), 10), ok: ok };
+    });
   }
   function registros() {
-    var ci = col('o-col-id'), cn = col('o-col-nombre'), cc = col('o-col-cantidad'), filtro = valoresPermitidos();
+    var ci = col('o-col-id'), cn = col('o-col-nombre'), cc = col('o-col-cantidad'), cv = colVisible(), filtros = filtrosActivos();
     var r = [], fuera = 0;
     est.filas.forEach(function (f) {
-      if (filtro && !filtro.ok[N.limpiar(celda(f, filtro.columna)) || '(vacío)']) { fuera++; return; }
-      r.push({ id: celda(f, ci), nombre: cn >= 0 ? celda(f, cn) : '', cantidad: cc >= 0 ? celda(f, cc) : 1, fila: f });
+      for (var g = 0; g < filtros.length; g++) {
+        if (!filtros[g].ok[N.limpiar(celda(f, filtros[g].columna)) || '(vacío)']) { fuera++; return; }
+      }
+      r.push({ id: celda(f, ci), nombre: cn >= 0 ? celda(f, cn) : '', visible: cv === -2 ? null : celda(f, cv), cantidad: cc >= 0 ? celda(f, cc) : 1, fila: f });
     });
     return { lista: r, filtradas: fuera };
   }
+  function etiquetaPrevia(x) {
+    return N.etiquetaDe(x.nombre, x.visible === null ? '' : N.limpiar(x.visible) ? x.visible : x.id);
+  }
+  function idDeEnlace() { return /^codigo del enlace/.test(sinTildes(est.cabeceras[col('o-col-id')] || '')); }
+
   function pintarMuestra() {
-    var r = registros().lista, caja = vaciar($('o-muestra'));
-    r.slice(0, 6).forEach(function (x) { caja.appendChild(h('li', { text: N.etiquetaDe(x.nombre, x.id) })); });
-    if (!r.length) caja.appendChild(h('li', { class: 'mal', text: 'Con este filtro no queda ninguna fila.' }));
-    // ¿El identificador parece un token de acceso (QR)? Entonces no conviene usarlo.
-    var muestra = r.slice(0, 50).map(function (x) { return N.limpiar(x.id); }).filter(Boolean);
-    var largos = muestra.filter(function (v) { return /^[A-Za-z0-9_\-]{16,}$/.test(v) && /[A-Za-z]/.test(v) && /\d/.test(v); }).length;
-    var aviso = $('o-aviso-id');
-    aviso.hidden = !(muestra.length && largos / muestra.length > 0.5);
-    aviso.textContent = 'Este identificador parece un código de acceso (como el del QR). Si es el que se escanea en la entrada, elige otra columna, por ejemplo el número de orden.';
+    var reg = registros(), r = reg.lista, caja = vaciar($('o-muestra'));
+    r.slice(0, 6).forEach(function (x) { caja.appendChild(h('li', { text: etiquetaPrevia(x) })); });
+    if (!r.length) caja.appendChild(h('li', { class: 'mal', text: 'Con estos filtros no queda ninguna boleta.' }));
+    pintarAvisos(reg);
+  }
+
+  function pintarAvisos(reg) {
+    var caja = vaciar($('o-avisos')), r = reg.lista;
+    function aviso(t, clase) { caja.appendChild(h('p', { class: clase || 'aviso', text: t })); }
+    aviso(miles(r.length) + ' de ' + miles(est.filas.length) + ' boletas participan con estos filtros. Compara el total con el que te muestra Coccoa.', 'ayuda');
+    // rango de ventas: confirma que el archivo se bajó a la hora de cierre y trae las ventas de hoy
+    if (est.fechas >= 0) {
+      var fechas = r.map(function (x) { return String(celda(x.fila, est.fechas)); }).filter(function (v) { return /^\d{4}-\d{2}-\d{2}/.test(v); }).sort();
+      if (fechas.length) aviso('Ventas incluidas: desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1] + '. Si vendieron después, vuelve a descargar el archivo.', 'ayuda');
+    }
+    if (idDeEnlace()) aviso('El identificador es el código del enlace de cada boleta. En la lista pública solo aparecen sus últimos 4 dígitos y nunca se publica completo: con él se puede abrir la boleta.', 'ayuda');
+    else {
+      // ¿Parece un código de acceso (QR)? Entonces no conviene usarlo.
+      var muestra = r.slice(0, 50).map(function (x) { return N.limpiar(x.id); }).filter(Boolean);
+      var largos = muestra.filter(function (v) { return /^[A-Za-z0-9_\-]{16,}$/.test(v) && /[A-Za-z]/.test(v) && /\d/.test(v); }).length;
+      if (muestra.length && largos / muestra.length > 0.5) aviso('Este identificador parece un código de acceso (como el del QR). Si es el que se escanea en la entrada, elige otra columna, por ejemplo el número de orden.');
+    }
+    // Un mismo identificador con nombres distintos: se juntarían personas diferentes en una sola participación
+    var nombres = Object.create(null), mezclados = 0, filas = 0;
+    r.forEach(function (x) { var k = N.normalizarId(x.id); if (!k) return; (nombres[k] = nombres[k] || []).push(sinTildes(x.nombre)); });
+    Object.keys(nombres).forEach(function (k) {
+      var distintos = nombres[k].filter(function (v, i, a) { return v && a.indexOf(v) === i; }).length;
+      if (distintos > 1) { mezclados++; filas += nombres[k].length; }
+    });
+    if (mezclados) aviso('Ojo: ' + miles(mezclados) + (mezclados === 1 ? ' valor' : ' valores') + ' de «' + est.cabeceras[col('o-col-id')] + '» se repite' + (mezclados === 1 ? '' : 'n') + ' con nombres distintos (' + miles(filas) + ' boletas). Con este identificador esas personas contarían como una sola. Usa el código de cada boleta.');
+    // Cortesías: decisión del organizador
+    var cortesias = 0;
+    filtrosActivos().forEach(function (g) {
+      Object.keys(g.ok).forEach(function (v) { if (/cortes/.test(sinTildes(v))) cortesias += r.filter(function (x) { return N.limpiar(celda(x.fila, g.columna)) === v; }).length; });
+    });
+    if (cortesias) aviso(miles(cortesias) + ' boletas que participan están marcadas como «Cortesía». Si en taquilla registran así las ventas en efectivo, déjalas. Si son invitaciones y el sorteo es solo para quienes compraron, desmárcalas arriba.');
   }
 
   /* ---------------- 3 · datos del sorteo ---------------- */
@@ -186,6 +263,7 @@
           formato: N.FORMATO + '-privado',
           aviso: 'ARCHIVO PRIVADO: tiene datos personales y las sales de los compromisos. No lo publiques ni lo subas al repositorio.',
           id: pub.id, huella: pub.huella, columnas: est.cabeceras,
+          revelable: !idDeEnlace(),   // el código del enlace abre la boleta: nunca se revela
           participantes: prep.participantes.map(function (p) {
             return { posicion: p.posicion, etiqueta: p.etiqueta, id: p.id, idOriginal: p.idOriginal, nombre: p.nombre, sal: p.sal, fila: p.fila };
           })
@@ -313,7 +391,9 @@
         filas.length ? h('table', { class: 'datos-fila' }, [h('tbody', null, filas)]) : null
       ]));
     });
-    if (todosOk) {
+    if (todosOk && priv.revelable === false) {
+      caja.appendChild(h('p', { class: 'ayuda', text: 'La revelación pública no está disponible: el identificador es el código del enlace de la boleta y con él se podría abrir.' }));
+    } else if (todosOk) {
       caja.appendChild(h('p', { class: 'ayuda', text: 'Opcional: publica la revelación para que cualquiera compruebe que el ganador corresponde a esa boleta. Hazlo solo si el identificador es el código de la boleta o de la orden, nunca una cédula, un teléfono o un correo.' }));
       caja.appendChild(h('button', { type: 'button', class: 'btn', text: 'Descargar archivo público con la revelación', onclick: function () {
         var conRev = JSON.parse(JSON.stringify(pub));

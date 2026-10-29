@@ -161,6 +161,9 @@ body.modo-pantalla .barra-vista{margin-bottom:1rem}
 .check{display:flex;align-items:center;gap:.5rem;margin:.5rem 0;font-size:.92rem;cursor:pointer}
 .check input{width:1.1rem;height:1.1rem;accent-color:var(--morado)}
 .valores{border:1px solid var(--borde);border-radius:14px;padding:.6rem 1rem;margin:1rem 0}
+.grupos-filtro{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.8rem}
+.grupos-filtro .valores{margin:0}
+#o-avisos p{margin:.5rem 0}
 .valores legend{font-weight:700;font-size:.85rem;padding:0 .4rem}
 .valores small{color:var(--gris)}
 .muestra{padding-left:1.2rem;color:rgba(240,234,255,.85)}

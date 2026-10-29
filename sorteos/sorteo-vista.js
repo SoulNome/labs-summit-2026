@@ -273,7 +273,7 @@
     pintarLista(100);
     return h('section', { class: 'sv-busqueda' }, [
       h('h2', null, [h('label', { for: 'sv-buscar', text: '¿Estoy participando?' })]),
-      h('p', { id: 'sv-buscar-ayuda', class: 'ayuda', text: 'Cada boleta aparece con tu nombre abreviado y los últimos dígitos del código. No publicamos documentos, correos ni teléfonos.' }),
+      h('p', { id: 'sv-buscar-ayuda', class: 'ayuda', text: 'Cada boleta aparece con tu nombre abreviado y los últimos 4 dígitos de tu celular o de tu boleta. No publicamos documentos, correos ni teléfonos completos.' }),
       input, salida,
       h('details', { class: 'sv-todos' }, [h('summary', { text: 'Ver la lista completa (' + s.participantes.length.toLocaleString('es-CO') + ')' }), lista, verMas])
     ]);

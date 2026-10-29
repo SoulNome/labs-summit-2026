@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap">
-<link rel="stylesheet" href="/sorteos/sorteos.css?v=1">
+<link rel="stylesheet" href="/sorteos/sorteos.css?v=2">
 </head>
 <body class="sorteos organizador">
 
@@ -29,9 +29,9 @@
 
     <section class="paso" id="paso1" aria-labelledby="t-p1">
       <h2 id="t-p1"><span class="num">1</span> Lista de boletas</h2>
-      <p>Exporta desde Coccoa las boletas <b>pagadas</b> hasta la hora de cierre y agrega las de taquilla si van en otra planilla. Puedes subir uno o varios CSV con las mismas columnas, o copiar las celdas en Excel y pegarlas aquí con la fila de títulos.</p>
+      <p>Sube el Excel que descargas de Coccoa tal cual (.xlsx), justo a la hora de cierre. También sirven uno o varios CSV con las mismas columnas, o las celdas copiadas de Excel y pegadas aquí con la fila de títulos.</p>
       <div class="fila-botones">
-        <label class="btn">Subir CSV<input type="file" id="o-archivo" accept=".csv,.tsv,.txt,text/csv,text/plain" multiple class="oculto"></label>
+        <label class="btn">Subir Excel o CSV<input type="file" id="o-archivo" accept=".xlsx,.csv,.tsv,.txt,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv,text/plain" multiple class="oculto"></label>
         <span id="o-archivos" class="ayuda"></span>
       </div>
       <label class="campo">o pega aquí las filas
@@ -54,16 +54,17 @@
         <label class="campo">Cantidad de boletas en la fila (opcional)
           <select id="o-col-cantidad"></select>
         </label>
-        <label class="campo">Filtrar por (opcional)
-          <select id="o-col-filtro"></select>
+        <label class="campo">En la lista pública, mostrar los últimos 4 dígitos de
+          <select id="o-col-visible"></select>
         </label>
       </div>
-      <p class="ayuda">Usa el código de la boleta o el número de orden: así cada boleta es una oportunidad. Si eliges la cédula o el correo, cada persona participa una sola vez. <b>No uses el código del QR de entrada.</b></p>
-      <p id="o-aviso-id" class="aviso" hidden></p>
-      <fieldset id="o-valores-filtro" class="valores" hidden>
-        <legend>Participan las filas con estos valores</legend>
-        <div id="o-valores"></div>
-      </fieldset>
+      <p class="ayuda">Con el código de cada boleta, cada boleta es una oportunidad. Si eliges la cédula o el correo, cada persona participa una sola vez. Con los dígitos del celular, cada asistente se reconoce fácil en la lista.</p>
+      <div id="o-avisos"></div>
+      <div id="o-filtros" hidden>
+        <h3>¿Qué boletas participan?</h3>
+        <p class="ayuda">Desmarca lo que no debe entrar al sorteo.</p>
+        <div id="o-grupos" class="grupos-filtro"></div>
+      </div>
       <h3>Así se verán en la lista pública</h3>
       <ul id="o-muestra" class="muestra"></ul>
     </section>
@@ -123,8 +124,8 @@
 </main>
 
 <script src="/sorteos/vendor/drand-bls.min.js?v=1" defer></script>
-<script src="/sorteos/sorteo-nucleo.js?v=1" defer></script>
-<script src="/sorteos/sorteo-vista.js?v=1" defer></script>
-<script src="/sorteos/sorteo-organizador.js?v=1" defer></script>
+<script src="/sorteos/sorteo-nucleo.js?v=2" defer></script>
+<script src="/sorteos/sorteo-vista.js?v=2" defer></script>
+<script src="/sorteos/sorteo-organizador.js?v=2" defer></script>
 </body>
 </html>

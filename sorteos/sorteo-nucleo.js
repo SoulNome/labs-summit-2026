@@ -144,9 +144,183 @@
     return filas;
   }
 
+  /* ---------------- Excel (.xlsx) sin librerías ---------------- */
+  // Un .xlsx es un ZIP con XML adentro. Se lee la primera hoja: textos, números, resultados de fórmulas
+  // y enlaces. Coccoa pone el código de cada boleta solo en el enlace «Ver código», así que por cada
+  // columna con enlaces se agrega otra, «Código del enlace (…)», con el final de cada enlace.
+  // El XML se recorre con expresiones regulares: DOMParser está bloqueado por Trusted Types.
+  var LIMITE_XLSX = 60e6;   // bytes descomprimidos; un Excel de boletas pesa mucho menos
+
+  function esZip(buffer) {
+    var b = new Uint8Array(buffer, 0, Math.min(4, buffer.byteLength));
+    return b.length === 4 && b[0] === 0x50 && b[1] === 0x4b && b[2] === 3 && b[3] === 4;
+  }
+  function inflar(datos, esperado) {
+    if (typeof DecompressionStream === 'undefined') return Promise.reject(new Error('Este navegador no puede abrir archivos de Excel: guárdalo como CSV.'));
+    var lector = new Blob([datos]).stream().pipeThrough(new DecompressionStream('deflate-raw')).getReader();
+    var partes = [], total = 0;
+    function leer() {
+      return lector.read().then(function (r) {
+        if (r.done) {
+          var out = new Uint8Array(total), o = 0;
+          partes.forEach(function (p) { out.set(p, o); o += p.length; });
+          return out;
+        }
+        total += r.value.length;
+        // un ZIP que se infla más de lo que declara está dañado o es una «bomba»
+        if (total > esperado + 1024 || total > LIMITE_XLSX) { lector.cancel(); throw new Error('El archivo de Excel está dañado.'); }
+        partes.push(r.value);
+        return leer();
+      });
+    }
+    return leer();
+  }
+  /** Bytes de un ZIP → { nombre: texto } con los .xml y .rels de dentro. */
+  function leerZip(buffer) {
+    var b = new Uint8Array(buffer), v = new DataView(buffer), fin = -1, malo = new Error('El archivo de Excel está dañado.');
+    for (var i = b.length - 22; i >= 0 && i >= b.length - 22 - 65535; i--) { if (v.getUint32(i, true) === 0x06054b50) { fin = i; break; } }
+    if (fin < 0) return Promise.reject(new Error('El archivo no es un Excel (.xlsx) válido.'));
+    var n = v.getUint16(fin + 10, true), p = v.getUint32(fin + 16, true), total = 0, entradas = {}, trabajos = [];
+    for (var k = 0; k < n; k++) {
+      if (p + 46 > b.length || v.getUint32(p, true) !== 0x02014b50) return Promise.reject(malo);
+      var metodo = v.getUint16(p + 10, true), comprimido = v.getUint32(p + 20, true), tam = v.getUint32(p + 24, true);
+      var ln = v.getUint16(p + 28, true), local = v.getUint32(p + 42, true);
+      var nombre = new TextDecoder().decode(b.subarray(p + 46, p + 46 + ln));
+      p += 46 + ln + v.getUint16(p + 30, true) + v.getUint16(p + 32, true);
+      if (!/\.(xml|rels)$/.test(nombre)) continue;
+      if ((total += tam) > LIMITE_XLSX) return Promise.reject(new Error('El archivo de Excel es demasiado grande.'));
+      if (local + 30 > b.length || v.getUint32(local, true) !== 0x04034b50) return Promise.reject(malo);
+      var ini = local + 30 + v.getUint16(local + 26, true) + v.getUint16(local + 28, true);
+      if (ini + comprimido > b.length) return Promise.reject(malo);
+      trabajos.push((function (nombre, metodo, datos, tam) {
+        var bytes = metodo === 0 ? Promise.resolve(datos) : metodo === 8 ? inflar(datos, tam) : Promise.reject(new Error('El archivo de Excel usa una compresión desconocida.'));
+        return bytes.then(function (d) { entradas[nombre] = new TextDecoder('utf-8').decode(d); });
+      })(nombre, metodo, b.subarray(ini, ini + comprimido), tam));
+    }
+    return Promise.all(trabajos).then(function () { return entradas; });
+  }
+
+  function textoXml(s) {
+    return s.replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos);/gi, function (m, e) {
+      var t = e.toLowerCase();
+      if (t[0] !== '#') return { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }[t];
+      var cp = t[1] === 'x' ? parseInt(t.slice(2), 16) : parseInt(t.slice(1), 10);
+      return cp > 0 && cp <= 0x10ffff ? String.fromCodePoint(cp) : '';
+    }).replace(/_x([0-9a-f]{4})_/gi, function (m, x) { return String.fromCharCode(parseInt(x, 16)); });   // así guarda Excel los caracteres de control
+  }
+  function atributo(etiqueta, nombre) {
+    var m = new RegExp('\\s' + nombre + '="([^"]*)"').exec(etiqueta);
+    return m ? textoXml(m[1]) : null;
+  }
+  // Todo el texto de los <t> de un fragmento (también el texto con formato), sin la guía fonética <rPh>
+  function textosT(xml) {
+    var out = '', re = /<t(?:\s[^>]*)?>([\s\S]*?)<\/t>/g, m;
+    xml = xml.replace(/<rPh\b[\s\S]*?<\/rPh>/g, '');
+    while ((m = re.exec(xml))) out += textoXml(m[1]);
+    return out;
+  }
+  function columnaDe(ref) {
+    var m = /^([A-Z]+)/.exec(ref || ''), n = 0;
+    if (!m) return -1;
+    for (var i = 0; i < m[1].length; i++) n = n * 26 + m[1].charCodeAt(i) - 64;
+    return n - 1;
+  }
+  function filaDe(ref) { return parseInt(String(ref).replace(/^[A-Z]+/, ''), 10); }
+  // «worksheets/sheet1.xml» desde «xl/workbook.xml» → «xl/worksheets/sheet1.xml»
+  function rutaRelativa(desde, destino) {
+    if (destino[0] === '/') return destino.slice(1);
+    var partes = desde.split('/').slice(0, -1);
+    destino.split('/').forEach(function (p) { if (p === '..') partes.pop(); else if (p && p !== '.') partes.push(p); });
+    return partes.join('/');
+  }
+  function relaciones(xml) {
+    var r = Object.create(null), re = /<Relationship\b[^>]*>/g, m;
+    while ((m = re.exec(xml || ''))) { var id = atributo(m[0], 'Id'), t = atributo(m[0], 'Target'); if (id && t !== null) r[id] = t; }
+    return r;
+  }
+  function codigoDeEnlace(url) {
+    var limpio = String(url).split(/[?#]/)[0].replace(/\/+$/, '');
+    return limpio.split('/').pop() || limpio;
+  }
+
+  /** Bytes de un .xlsx → filas (arreglos de textos) de su primera hoja, como leerTabla(). */
+  function leerXlsx(buffer) {
+    return leerZip(buffer).then(function (e) {
+      var libro = e['xl/workbook.xml'];
+      if (!libro) throw new Error('El archivo no es un Excel (.xlsx) válido.');
+      var rutaHoja = 'xl/worksheets/sheet1.xml', hoja = /<sheet\b[^>]*>/.exec(libro);
+      if (hoja) {
+        var rid = atributo(hoja[0], 'r:id'), rel = relaciones(e['xl/_rels/workbook.xml.rels']);
+        if (rid && rel[rid]) rutaHoja = rutaRelativa('xl/workbook.xml', rel[rid]);
+      }
+      var xml = e[rutaHoja];
+      if (!xml) throw new Error('No encontramos la hoja de cálculo dentro del archivo.');
+
+      var compartidos = [], reSi = /<si\b[^>]*?(?:\/>|>([\s\S]*?)<\/si>)/g, ms;
+      while ((ms = reSi.exec(e['xl/sharedStrings.xml'] || ''))) compartidos.push(textosT(ms[1] || ''));
+
+      var filas = [], reFila = /<row\b([^>]*?)(?:\/>|>([\s\S]*?)<\/row>)/g, mf, siguiente = 1;
+      while ((mf = reFila.exec(xml))) {
+        var num = parseInt(atributo(mf[1], 'r'), 10) || siguiente, celdas = [], reC = /<c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g, mc, col = 0;
+        siguiente = num + 1;
+        while ((mc = reC.exec(mf[2] || ''))) {
+          var ref = atributo(mc[1], 'r'), tipo = atributo(mc[1], 't') || 'n', cuerpo = mc[2] || '';
+          var c = ref ? columnaDe(ref) : col, v = /<v(?:\s[^>]*)?>([\s\S]*?)<\/v>/.exec(cuerpo), valor = '';
+          if (c < 0 || c > 16383) continue;
+          if (tipo === 's') valor = v ? compartidos[parseInt(v[1], 10)] || '' : '';
+          else if (tipo === 'inlineStr') valor = textosT(cuerpo);
+          else if (tipo === 'b') valor = v ? (v[1] === '1' ? 'VERDADERO' : 'FALSO') : '';
+          else valor = v ? textoXml(v[1]) : '';
+          while (celdas.length < c) celdas.push('');
+          celdas[c] = valor;
+          col = c + 1;
+        }
+        filas.push({ num: num, celdas: celdas });
+      }
+
+      // enlaces de la hoja: <hyperlink ref="P2" r:id="rId3"/> + sheet1.xml.rels
+      var enlaces = Object.create(null), porColumna = {}, reH = /<hyperlink\b[^>]*>/g, mh;
+      var relHoja = relaciones(e[rutaRelativa(rutaHoja, '_rels/' + rutaHoja.split('/').pop() + '.rels')]);
+      while ((mh = reH.exec(xml))) {
+        var rango = atributo(mh[0], 'ref'), idEnlace = atributo(mh[0], 'r:id'), destino = idEnlace ? relHoja[idEnlace] : null;
+        if (!rango || !destino) continue;
+        var partes = rango.split(':'), a = partes[0], z = partes[1] || partes[0];
+        for (var f = filaDe(a); f <= Math.min(filaDe(z), filaDe(a) + 100000); f++) {
+          for (var cc = columnaDe(a); cc <= columnaDe(z); cc++) {
+            if (!(f + ':' + cc in enlaces)) porColumna[cc] = (porColumna[cc] || 0) + 1;
+            enlaces[f + ':' + cc] = destino;
+          }
+        }
+      }
+      var conEnlace = Object.keys(porColumna).map(Number)
+        .filter(function (c) { return porColumna[c] >= Math.max(1, (filas.length - 1) / 2); }).sort(function (x, y) { return x - y; });
+      var ancho = filas.reduce(function (m, f) { return Math.max(m, f.celdas.length); }, 0);
+      return filas.map(function (f, i) {
+        var celdas = f.celdas.slice();
+        while (celdas.length < ancho) celdas.push('');
+        conEnlace.forEach(function (c) {
+          var d = enlaces[f.num + ':' + c];
+          // la primera fila sin enlace es la de títulos
+          celdas.push(d ? codigoDeEnlace(d) : i === 0 ? 'Código del enlace (' + (limpiar(f.celdas[c]) || 'columna ' + (c + 1)) + ')' : '');
+        });
+        return celdas;
+      }).filter(function (fila) { return fila.some(function (x) { return String(x).trim() !== ''; }); });
+    });
+  }
+
+  /** «46324.7083» (número de serie de fecha de Excel) → «2026-10-29 17:00». Otros textos quedan igual. */
+  function fechaDeExcel(valor) {
+    var t = String(valor).trim();
+    if (!/^\d{5}(\.\d+)?$/.test(t)) return valor;
+    var n = parseFloat(t);
+    if (n < 30000 || n > 80000) return valor;   // fuera de 1982–2119: no es una fecha
+    return new Date(Math.round((n - 25569) * 864e5)).toISOString().slice(0, 16).replace('T', ' ');
+  }
+
   /* ---------------- lista de participantes ---------------- */
   /**
-   * registros: [{ id, nombre, cantidad, fila }] (ya filtrados por el organizador).
+   * registros: [{ id, nombre, visible, cantidad, fila }] (ya filtrados por el organizador).
+   * «visible» es el dato del que se muestran los últimos 4 caracteres (por defecto, el id; null = ninguno).
    * Cada boleta es una participación; «cantidad» > 1 crea una participación por boleta.
    * Devuelve { participantes: [...], sinId, duplicados } — participantes con sal y compromiso.
    */
@@ -161,7 +335,8 @@
         var id = n > 1 ? base + '#' + k : base;
         if (vistos[id]) { duplicados++; continue; }
         vistos[id] = true;
-        lista.push({ id: id, idOriginal: limpiar(r.id), nombre: limpiar(r.nombre), etiqueta: etiquetaDe(r.nombre, r.id, n > 1 ? k + '/' + n : ''), fila: r.fila || null, sal: salAleatoria() });
+        var visible = r.visible === null ? '' : r.visible !== undefined && limpiar(r.visible) ? r.visible : r.id;
+        lista.push({ id: id, idOriginal: limpiar(r.id), nombre: limpiar(r.nombre), etiqueta: etiquetaDe(r.nombre, visible, n > 1 ? k + '/' + n : ''), fila: r.fila || null, sal: salAleatoria() });
       }
     });
     return Promise.all(lista.map(function (p) { return compromisoDe(p.sal, p.id); })).then(function (cs) {
@@ -353,6 +528,9 @@
     idSorteo: idSorteo,
     decodificar: decodificar,
     leerTabla: leerTabla,
+    esZip: esZip,
+    leerXlsx: leerXlsx,
+    fechaDeExcel: fechaDeExcel,
     prepararParticipantes: prepararParticipantes,
     compromisoDe: compromisoDe,
     textoActa: textoActa,
